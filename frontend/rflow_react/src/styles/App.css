@@ -1,0 +1,48 @@
+/* Sticky header */
+.header {
+    position: -webkit-sticky; /* For Safari */
+    position: sticky;
+    top: 0;
+    background-color: white; 
+    z-index: 1000;
+    padding: 20px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-and-icons {
+    display: flex;
+    align-items: center;
+    gap: 20px; 
+    background-color: white;
+    padding: 10px; 
+    border-radius: 5px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.icon-buttons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.icon-buttons .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    padding: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.icon-buttons .btn:hover {
+    background-color: #11a0ff; 
+}

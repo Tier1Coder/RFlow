@@ -1,3 +1,5 @@
-/Pipfile.lock
+/backend/Pipfile.lock
 /rflow_django/uploads/
 /rflow_django/db.sqlite3
+/backend/rflow_django/db.sqlite3
+/backend/rflow_django/uploads/

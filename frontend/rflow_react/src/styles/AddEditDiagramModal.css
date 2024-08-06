@@ -1,0 +1,50 @@
+.custom-modal-header {
+    background-color: #007BFF;
+    color: white;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.custom-modal-body {
+    padding: 20px;
+}
+
+.custom-modal-footer {
+    background-color: #f1f1f1;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px; 
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px 20px;
+}
+
+.custom-cancel-button {
+    color: #007BFF;
+    border-color: #007BFF;
+    background-color: white; 
+    margin-right: 10px;
+}
+
+.custom-cancel-button:hover {
+    background-color: #b30000; 
+    color: white; 
+}
+
+.custom-save-button {
+    background-color: #007BFF;
+    color: white;
+    border-color: #007BFF; 
+}
+
+.custom-save-button:hover {
+    background-color: #0056b3;
+    color: white; 
+}
+
+.form-group + .form-group {
+    margin-top: 20px; 
+}

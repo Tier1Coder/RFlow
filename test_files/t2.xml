@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="Definition"
+             targetNamespace="http://www.example.org/SimpleExample"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+             xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI">
+
+  <collaboration id="collaboration1">
+    <participant id="pool1" name="Pool 1" processRef="process1"/>
+  </collaboration>
+
+  <process processType="Private" isExecutable="true" id="process1" name="Process 1">
+    <startEvent id="startEvent_1" name="Start Event" />
+    <userTask id="userTask_1" name="User Task 1" />
+    <scriptTask id="scriptTask_1" name="Script Task 1">
+      <script>console.log("Executing script task 1");</script>
+    </scriptTask>
+    <parallelGateway id="parallelGateway_1" name="Parallel Gateway 1" />
+    <endEvent id="endEvent_1" name="End Event" />
+
+    <sequenceFlow id="flow_start_userTask" sourceRef="startEvent_1" targetRef="userTask_1" />
+    <sequenceFlow id="flow_userTask_scriptTask" sourceRef="userTask_1" targetRef="scriptTask_1" />
+    <sequenceFlow id="flow_scriptTask_parallelGateway" sourceRef="scriptTask_1" targetRef="parallelGateway_1" />
+    <sequenceFlow id="flow_parallelGateway_end" sourceRef="parallelGateway_1" targetRef="endEvent_1" />
+  </process>
+
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="collaboration1">
+      <bpmndi:BPMNShape id="pool1_di" bpmnElement="pool1" isHorizontal="true">
+        <dc:Bounds x="0" y="0" width="1100" height="400"/>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="startEvent_1_di" bpmnElement="startEvent_1">
+        <dc:Bounds x="100" y="100" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="userTask_1_di" bpmnElement="userTask_1">
+        <dc:Bounds x="200" y="100" width="80" height="60"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="scriptTask_1_di" bpmnElement="scriptTask_1">
+        <dc:Bounds x="350" y="100" width="80" height="60"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="parallelGateway_1_di" bpmnElement="parallelGateway_1">
+        <dc:Bounds x="500" y="100" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="endEvent_1_di" bpmnElement="endEvent_1">
+        <dc:Bounds x="650" y="100" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNEdge id="flow_start_userTask_di" bpmnElement="flow_start_userTask">
+        <di:waypoint x="136" y="118"/>
+        <di:waypoint x="200" y="130"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_userTask_scriptTask_di" bpmnElement="flow_userTask_scriptTask">
+        <di:waypoint x="280" y="130"/>
+        <di:waypoint x="350" y="130"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_scriptTask_parallelGateway_di" bpmnElement="flow_scriptTask_parallelGateway">
+        <di:waypoint x="430" y="130"/>
+        <di:waypoint x="500" y="125"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_parallelGateway_end_di" bpmnElement="flow_parallelGateway_end">
+        <di:waypoint x="550" y="125"/>
+        <di:waypoint x="650" y="118"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
