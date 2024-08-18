@@ -1,18 +1,17 @@
 import React from 'react';
 
-const SequenceFlowIcon = ({ waypoints, strokeWidth = 2 }) => {
-    if (waypoints.length < 2) return null;
+function DataInputAssociationFlowIcon({ waypoints }) {
 
     const points = waypoints.map(wp => `${wp.x},${wp.y}`).join(' ');
 
     return (
-        <svg style={{ position: 'absolute', left: 0, top: 0 }}>
+        <svg style={{ position: 'absolute', left: 0, top: 0, overflow: 'visible'}}>
             <defs>
                 <marker
                     id="arrowhead"
                     markerWidth="10"
                     markerHeight="7"
-                    refX="5" // Adjust the refX to position the arrowhead correctly
+                    refX="5"
                     refY="3.5"
                     orient="auto"
                 >
@@ -21,11 +20,16 @@ const SequenceFlowIcon = ({ waypoints, strokeWidth = 2 }) => {
             </defs>
             <polyline
                 points={points}
-                style={{ fill: 'none', stroke: 'currentColor', strokeWidth }}
+                style={{
+                    fill: 'none',
+                    stroke: 'currentColor',
+                    strokeWidth: 2,
+                    strokeDasharray: '5,5' // Dashed line for Data Input Association
+                }}
                 markerEnd="url(#arrowhead)"
             />
         </svg>
     );
-};
+}
 
-export default SequenceFlowIcon;
+export default DataInputAssociationFlowIcon;

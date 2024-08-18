@@ -1,18 +1,12 @@
-import React, { useState } from 'react';
+import * as React from 'react';
 
-const UserTaskIcon = ({ initialWidth = 83, initialHeight = 48, initialX = 0, initialY = 0 }) => {
-    const [dimensions] = useState({
-        width: initialWidth,
-        height: initialHeight,
-        x: initialX,
-        y: initialY,
-        strokeWidth: 120,
-    });
+function UserTaskIcon(props: React.SVGProps<SVGSVGElement>) {
+
 
     return (
         <svg
-            width={dimensions.width}
-            height={dimensions.height}
+            width={props.width}
+            height={props.height}
             viewBox="0 0 2000 2000"
             style={{ color: 'currentColor', background: 'transparent' }}
             xmlns="http://www.w3.org/2000/svg"
@@ -25,7 +19,6 @@ const UserTaskIcon = ({ initialWidth = 83, initialHeight = 48, initialX = 0, ini
                         x="100"
                         y="-677.638"
                         fill="transparent"
-                        strokeWidth={dimensions.strokeWidth}
                         rx="329.651"
                         ry="328.5"
                     />

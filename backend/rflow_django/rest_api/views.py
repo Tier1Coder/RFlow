@@ -1,5 +1,4 @@
 import os
-import xml.etree.ElementTree
 from django.conf import settings
 from django.http import JsonResponse, HttpResponse, Http404
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -8,7 +7,9 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from .models import BPMNDiagram
 from .serializers import BPMNDiagramSerializer
-from utils.bpmn_factory import BPMNFactory
+from utils.bpmn_parser import BPMNParser
+from utils.exceptions import ValidationError, ElementIdDuplicatedError
+import lxml.etree as etree
 
 
 class BPMNDiagramView(viewsets.ModelViewSet):
@@ -176,15 +177,16 @@ class BPMNDiagramView(viewsets.ModelViewSet):
         xml_file_path = diagram.file.path
         if os.path.exists(xml_file_path):
             try:
-                bpmn_factory = BPMNFactory(xml_file_path)
+                bpmn_factory = BPMNParser(xml_file_path)
                 parsed_json_data = bpmn_factory.parse()
                 return Response({"xml_content": parsed_json_data}, status=status.HTTP_200_OK)
-            except ValueError as e:  # Content of .xml file invalid according to .xsd file
-                return Response({"error": str(e)},
-                                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-            except xml.etree.ElementTree.ParseError as e:  # Invalid .xml file structure
-                return Response({"error": str(e)},
-                                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            except ValidationError as e:
+                return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            except etree.XMLSyntaxError as e:
+                return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            except ElementIdDuplicatedError as e:
+                return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
         else:
             return Response({"error": "File not found"}, status=status.HTTP_404_NOT_FOUND)
 

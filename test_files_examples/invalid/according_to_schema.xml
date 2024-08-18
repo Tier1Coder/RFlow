@@ -3,7 +3,7 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
              targetNamespace="http://bpmn.io/schema/bpmn">
-  
+
   <process id="Process_1" isExecutable="true">
     <startEvent id="StartEvent_1" name="Start">
       <outgoing>SequenceFlow_1</outgoing>

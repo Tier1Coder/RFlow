@@ -1,18 +1,11 @@
-import React, { useState } from 'react';
+import * as React from 'react';
 
-const ScriptTaskIcon = ({ initialWidth = 83, initialHeight = 48, initialX = 0, initialY = 0 }) => {
-    const [dimensions] = useState({
-        width: initialWidth,
-        height: initialHeight,
-        x: initialX,
-        y: initialY,
-        strokeWidth: 120,
-    });
+function ScriptTaskIcon(props: React.SVGProps<SVGSVGElement>) {
 
     return (
         <svg
-            width={dimensions.width}
-            height={dimensions.height}
+            width={props.width || "40"}
+            height={props.height || "40"}
             viewBox="0 0 2000 2000"
             style={{ color: 'currentColor', background: 'transparent' }}
             xmlns="http://www.w3.org/2000/svg"
@@ -25,7 +18,6 @@ const ScriptTaskIcon = ({ initialWidth = 83, initialHeight = 48, initialX = 0, i
                         x="100"
                         y="-677.638"
                         fill="transparent"
-                        strokeWidth={dimensions.strokeWidth}
                         rx="329.651"
                         ry="328.5"
                     />

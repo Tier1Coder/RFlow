@@ -4,7 +4,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import DiagramTable from './components/DiagramTable';
 import DiagramRenderer from './components/DiagramRenderer';
-import RenderDiagram from './components/RenderDiagram';
 import AddEditDiagramModal from './components/modals/AddEditDiagramModal';
 import { AppLogoIcon } from './assets/icons/AppLogoIcon';
 import { ChooseSchemaIconButton } from './assets/icons/ChooseSchemaIcon';
@@ -113,8 +112,7 @@ const App = () => {
         } catch (error) {
             console.error('Error fetching diagram data', error);
             const errorMessage = error.response?.data?.error || 'Error fetching diagram data';
-            const errorDetails = error.response?.data?.details || '';
-            toast.error(`${errorMessage}: ${errorDetails}`);
+            toast.error(errorMessage);
         }
     };
 
@@ -177,7 +175,7 @@ const WrappedApp = () => (
     <Router>
         <Routes>
             <Route path="/" element={<App />} />
-            <Route path="/visualize/:id" element={<RenderDiagram/>} />
+            <Route path="/visualize/:id" element={<DiagramRenderer/>} />
         </Routes>
     </Router>
 );

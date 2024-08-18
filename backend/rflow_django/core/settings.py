@@ -14,7 +14,7 @@ import os
 from pathlib import Path
 
 
-# Build paths inside the core like this: BASE_DIR / 'subdir'.
+# Build paths like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
