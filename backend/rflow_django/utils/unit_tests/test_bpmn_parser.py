@@ -1,5 +1,5 @@
 """
-    This module contains the unit tests for the bpmn_parser module.
+    This file contains the unit tests for the bpmn_parser module.
 
 """
 

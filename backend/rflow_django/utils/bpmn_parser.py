@@ -9,7 +9,6 @@ DEFAULT_ROOT_ATTRIBUTES = {
     'typeLanguage': 'http://www.java.com/javaTypes',
     'expressionLanguage': 'http://www.mvel.org/2.0',
 }
-
 DEFAULT_ROOT_NAMESPACES = {
     'xsd': 'http://www.w3.org/2001/XMLSchema',
     'xs': 'http://www.w3.org/2001/XMLSchema-instance',
@@ -19,6 +18,8 @@ DEFAULT_ROOT_NAMESPACES = {
     'di': 'http://www.omg.org/spec/DD/20100524/DI',
     'bpmn': "http://www.omg.org/spec/BPMN/20100524/MODEL"
 }
+LOGIC_ELEMENTS_NAMESPACE = '{http://www.omg.org/spec/BPMN/20100524/MODEL'
+VISUALIZATION_ELEMENTS_NAMESPACE = '{http://www.omg.org/spec/BPMN/20100524/DI'
 
 
 def get_all_attributes_recursively(element: etree.ElementBase) -> dict:
@@ -179,18 +180,19 @@ class BPMNParser:
             raise ValidationError(f"XML file is not valid according to the BPMN 2.0 schema: {last_error}")
 
     def parse(self) -> dict:
-        # TODO: parsowanie elementów wszystkich - np. intermediate catch event nie wiem jaki to jest kompletnie z tego kodu
-        # TODO:
-        #intermediateCatchEvent
-        #association
-        #boundaryEvent
-        #
+        """
+        Parses the BPMN 2.0 XML file and returns a dictionary containing the BPMN elements.
 
-
+        Returns:
+        -------
+        dict
+            A dictionary containing the BPMN elements parsed from the XML file.
+        """
         tree = etree.parse(self.xml_path)
         etree.strip_tags(tree, etree.Comment)  # Remove comments from the XML
         root = tree.getroot()
-        updated_xml_root = update_xml_root_attributes_namespaces(root, DEFAULT_ROOT_ATTRIBUTES,
+        updated_xml_root = update_xml_root_attributes_namespaces(root,
+                                                                 DEFAULT_ROOT_ATTRIBUTES,
                                                                  DEFAULT_ROOT_NAMESPACES)
         self.validate_xml(updated_xml_root)
         all_elements = list(updated_xml_root.iter())
@@ -200,9 +202,9 @@ class BPMNParser:
         full_elements = {}
 
         for element in all_elements:
-            if element.tag.startswith("{http://www.omg.org/spec/BPMN/20100524/MODEL"):
+            if element.tag.startswith(LOGIC_ELEMENTS_NAMESPACE):
                 logic_elements.append(element)
-            elif element.tag.startswith("{http://www.omg.org/spec/BPMN/20100524/DI"):
+            elif element.tag.startswith(VISUALIZATION_ELEMENTS_NAMESPACE):
                 visualization_elements.append(element)
 
         logic_element_ids = [element.attrib.get('id') for element in logic_elements if 'id' in element.attrib]

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import '../styles/DiagramRenderer.css';
 import StartEventIcon from '../assets/icons/diagrams/StartEventIcon.tsx';
 import EndEventIcon from '../assets/icons/diagrams/EndEventIcon.tsx';
 import SequenceFlowIcon from '../assets/icons/diagrams/SequenceFlowIcon.tsx';
@@ -14,7 +15,6 @@ import DataInputIcon from '../assets/icons/diagrams/DataInputIcon.tsx';
 import SendTaskIcon from '../assets/icons/diagrams/SendTaskIcon.tsx';
 import DataOutputIcon from '../assets/icons/diagrams/DataOutputIcon.tsx';
 import TaskIcon from '../assets/icons/diagrams/TaskIcon.tsx';
-import '../styles/DiagramRenderer.css';
 import TextAnnotationIcon from '../assets/icons/diagrams/TextAnnotationIcon.tsx';
 import DataInputAssociationFlowIcon from '../assets/icons/diagrams/DataInputAssociationFlowIcon.tsx';
 import DataOutputAssociationFlowIcon from '../assets/icons/diagrams/DataOutputAssociationFlowIcon.tsx';
@@ -23,7 +23,7 @@ import AssociationFlowIcon from '../assets/icons/diagrams/AssociationFlowIcon.ts
 import EventBasedGatewayIcon from '../assets/icons/diagrams/EventBasedGatewayIcon.tsx';
 import LaneIcon from '../assets/icons/diagrams/LaneIcon.tsx';
 
-
+// Components that have bounds
 const elementComponents = {
     startEvent: StartEventIcon,
     endEvent: EndEventIcon,
@@ -41,9 +41,9 @@ const elementComponents = {
     dataObject: DataObjectIcon,
     eventBasedGateway: EventBasedGatewayIcon,
     lane: LaneIcon
-    
 };
 
+// Components that have waypoints
 const flowElementComponents = {
     sequenceFlow: SequenceFlowIcon,
     messageFlow: MessageFlowIcon,
@@ -74,13 +74,18 @@ const DiagramRenderer = () => {
             return (
                 <div
                     id={key}
+                    className={
+                        element.elementType === 'participant' ? 'participant' :
+                        element.elementType === 'lane' ? 'lane' :
+                        'flow-element'
+                    }
                     style={{
                         position: 'absolute',
                         left: `${x}px`,
                         top: `${y}px`,
                         width: `${width}px`,
                         height: `${height}px`,
-                        border: `1px solid black`
+                        border: `1px solid black`,
                     }}>
                     <ElementComponent 
                         width={width} 
@@ -101,7 +106,8 @@ const DiagramRenderer = () => {
                 .map(key => element[key]);
             if (waypoints.length > 1) {
                 return (
-                    <div id={key}>
+                    <div id={key}
+                         className='flow-element'>
                         <FlowElementComponent waypoints={waypoints}/>
                     </div>
                 );
@@ -126,8 +132,6 @@ const DiagramRenderer = () => {
             </div>
         </div>
     );
-    
-    
 };
 
 export default DiagramRenderer;

@@ -4,8 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-xmlschema = "==3.3.0"
 djangorestframework = "*"
+django = "*"
+lxml = "*"
+pathlib = "*"
+gunicorn = "*"
 
 [dev-packages]
 

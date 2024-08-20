@@ -1,4 +1,5 @@
 import os
+import lxml.etree as etree
 from django.conf import settings
 from django.http import JsonResponse, HttpResponse, Http404
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -9,7 +10,6 @@ from .models import BPMNDiagram
 from .serializers import BPMNDiagramSerializer
 from utils.bpmn_parser import BPMNParser
 from utils.exceptions import ValidationError, ElementIdDuplicatedError
-import lxml.etree as etree
 
 
 class BPMNDiagramView(viewsets.ModelViewSet):
@@ -47,7 +47,7 @@ class BPMNDiagramView(viewsets.ModelViewSet):
         file = request.FILES.get('file')
         name = request.data.get('name')
         if not file:
-            return Response({"error": "No file uploaded"},
+            return Response({"error": "No file uploaded."},
                             status=status.HTTP_400_BAD_REQUEST)
 
         if not file.name.endswith('.xml'):
@@ -180,13 +180,8 @@ class BPMNDiagramView(viewsets.ModelViewSet):
                 bpmn_factory = BPMNParser(xml_file_path)
                 parsed_json_data = bpmn_factory.parse()
                 return Response({"xml_content": parsed_json_data}, status=status.HTTP_200_OK)
-            except ValidationError as e:
+            except (ValidationError, etree.XMLSyntaxError, ElementIdDuplicatedError) as e:
                 return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-            except etree.XMLSyntaxError as e:
-                return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-            except ElementIdDuplicatedError as e:
-                return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
         else:
             return Response({"error": "File not found"}, status=status.HTTP_404_NOT_FOUND)
 
