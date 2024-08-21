@@ -1,8 +1,9 @@
 {
+  "homepage": "https://tier1coder.github.io/RFlow/",
   "name": "rflow_react",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:8080",
+  "proxy": "https://rflow.onrender.com",
   "overrides": {
     "autoprefixer": "10.4.5"
   },
@@ -27,7 +28,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
@@ -51,6 +54,7 @@
     "@babel/plugin-transform-private-property-in-object": "^7.24.7",
     "@svgr/webpack": "^8.1.0",
     "axios": "^1.7.4",
+    "gh-pages": "^6.1.1",
     "nth-check": "^2.1.1",
     "postcss": "^8.4.41"
   }

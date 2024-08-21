@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const fetchDiagrams = async () => {
     try {
-        const response = await axios.get('/api/diagrams/');
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/diagrams/`);
         return response.data;
     } catch (error) {
         console.error('Error fetching diagrams:', error);
@@ -12,7 +12,7 @@ const fetchDiagrams = async () => {
 
 const deleteDiagram = async (id) => {
     try {
-        await axios.delete(`/api/diagrams/${id}/`);
+        await axios.delete(`${process.env.REACT_APP_API_URL}/api/diagrams/${id}/`);
     } catch (error) {
         console.error('Error deleting diagram:', error);
         throw error;
@@ -21,7 +21,7 @@ const deleteDiagram = async (id) => {
 
 const downloadFile = async (id) => {
     try {
-        const response = await axios.get(`/api/diagrams/${id}/view_file/`, {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/diagrams/${id}/view_file/`, {
             responseType: 'blob',
         });
         const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -46,7 +46,7 @@ const addDiagram = async (item) => {
     }
 
     try {
-        await axios.post('/api/diagrams/', formData, {
+        await axios.post(`${process.env.REACT_APP_API_URL}/api/diagrams/`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -63,12 +63,12 @@ const editDiagram = async (item) => {
 
     if (item.file && item.file instanceof File) {
         // Delete the original file that is on the server
-        await axios.delete(`/api/diagrams/${item.id}/delete_file/`);
+        await axios.delete(`${process.env.REACT_APP_API_URL}/api/diagrams/${item.id}/delete_file/`);
         formData.append('file', item.file);
     }
 
     try {
-        await axios.put(`/api/diagrams/${item.id}/`, formData, {
+        await axios.put(`${process.env.REACT_APP_API_URL}/api/diagrams/${item.id}/`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -81,7 +81,7 @@ const editDiagram = async (item) => {
 
 const visualizeDiagram = async (id) => {
     try {
-        const response = await axios.get(`/api/diagrams/${id}/visualize/`);
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/diagrams/${id}/visualize/`);
         return response.data;
     } catch (error) {
         console.error('Error fetching diagram data:', error);
