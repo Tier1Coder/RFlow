@@ -9,6 +9,11 @@ django = "*"
 lxml = "*"
 pathlib = "*"
 gunicorn = "*"
+dj-database-url = "*"
+python-decouple = "*"
+psycopg2 = "*"
+psycopg2-binary = "*"
+whitenoise = {extras = ["brotli"], version = "*"}
 
 [dev-packages]
 

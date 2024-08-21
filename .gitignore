@@ -22,3 +22,4 @@ backend/rflow_django/utils/__pycache__/__init__.cpython-312.pyc
 backend/rflow_django/utils/__pycache__/bpmn_parser.cpython-312.pyc
 backend/rflow_django/utils/__pycache__/exceptions.cpython-312.pyc
 backend/rflow_django/utils/unit_tests/__pycache__/__init__.cpython-312.pyc
+/backend/.env
