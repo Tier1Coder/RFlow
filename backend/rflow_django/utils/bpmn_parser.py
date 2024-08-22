@@ -241,4 +241,8 @@ class BPMNParser:
                     get_all_attributes_recursively(visualization_element)
                 )
 
+        # TODO: Elements that are not referenced by any DI element are not included in the final dictionary
+        # TODO: intermediateCatchEvent and intermediateThrowEvent are not included in the final dictionary (should be
+        #  properly parsed)
+
         return full_elements

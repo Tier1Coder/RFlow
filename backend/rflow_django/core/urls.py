@@ -1,8 +1,8 @@
 """
 URL configuration for rflow_django core.
 
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.0/topics/http/urls/
+The `urlpatterns` list routes URLs to views.
+
 Examples:
 Function views
     1. Add an import:  from my_app import views
