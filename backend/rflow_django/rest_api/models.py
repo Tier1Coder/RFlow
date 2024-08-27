@@ -11,9 +11,15 @@ class BPMNDiagram(models.Model):
         file (FileField): The file associated with the BPMN diagram.
         objects (Manager): The default manager for the model.
     """
-    name = models.CharField(max_length=120)
+    name = models.CharField(
+        blank=True,  # True for custom validation (see serializers.py)
+        unique=False,  # False for custom validation (see serializers.py)
+        max_length=9999)  # Max length is set to a different value (see serializers.py)
     creation_date = models.DateTimeField(auto_now_add=True)
-    file = models.FileField()
+    file = models.FileField(
+        max_length=9999,  # Max length is set to a different value (see serializers.py)
+        blank=True  # True for custom validation (see serializers.py)
+    )
     objects = models.Manager()
 
     def __str__(self):

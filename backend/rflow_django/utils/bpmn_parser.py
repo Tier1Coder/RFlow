@@ -1,6 +1,6 @@
 import lxml.etree as etree
 from pathlib import Path
-from utils.exceptions import ValidationError, ElementIdDuplicatedError
+from utils.exceptions import DocumentInvalidError, ElementIdDuplicatedError
 from collections import Counter
 
 
@@ -169,7 +169,7 @@ class BPMNParser:
 
         Raises:
         -------
-        ValidationError:
+        DocumentInvalidError:
             If the XML document is not valid according to the schema.
         """
         xml_schema = etree.XMLSchema(etree.parse(self.xsd_path))
@@ -177,7 +177,7 @@ class BPMNParser:
 
         if not is_valid:
             last_error = xml_schema.error_log.last_error
-            raise ValidationError(f"XML file is not valid according to the BPMN 2.0 schema: {last_error}")
+            raise DocumentInvalidError(f"XML file is not valid according to the BPMN 2.0 schema: {last_error}")
 
     def parse(self) -> dict:
         """
@@ -241,7 +241,7 @@ class BPMNParser:
                     get_all_attributes_recursively(visualization_element)
                 )
 
-        # TODO: Elements that are not referenced by any DI element are not included in the final dictionary
+        # TODO: Elements that are not containing any bounds/waypoints should be removed from the final dictionary
         # TODO: intermediateCatchEvent and intermediateThrowEvent are not included in the final dictionary (should be
         #  properly parsed)
 

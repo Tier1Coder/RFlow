@@ -1,6 +1,6 @@
 import os
 import lxml.etree as etree
-from django.conf import settings
+from django.db import transaction
 from django.http import JsonResponse, HttpResponse, Http404
 from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework import status, viewsets
@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from .models import BPMNDiagram
 from .serializers import BPMNDiagramSerializer
 from utils.bpmn_parser import BPMNParser
-from utils.exceptions import ValidationError, ElementIdDuplicatedError
+from utils.exceptions import DocumentInvalidError, ElementIdDuplicatedError
 
 
 class BPMNDiagramView(viewsets.ModelViewSet):
@@ -31,6 +31,21 @@ class BPMNDiagramView(viewsets.ModelViewSet):
     serializer_class = BPMNDiagramSerializer
     queryset = BPMNDiagram.objects.all()
 
+    def perform_create(self, serializer: BPMNDiagramSerializer):
+        serializer.save()
+
+    def perform_update(self, serializer: BPMNDiagramSerializer):
+        serializer.save()
+
+    def perform_destroy(self, instance: BPMNDiagram):
+        try:
+            file_path = instance.file.path
+            if os.path.exists(file_path):
+                os.remove(file_path)
+        except ValueError:  # When 'file' attribute has no file associated with it, delete anyway.
+            pass
+        instance.delete()
+
     def create(self, request, *args, **kwargs) -> Response:
         """
         Creates a new BPMN diagram instance.
@@ -44,25 +59,13 @@ class BPMNDiagramView(viewsets.ModelViewSet):
             Response: A response containing the serialized data of the created BPMN diagram,
                       or an error message if the creation fails.
         """
-        file = request.FILES.get('file')
-        name = request.data.get('name')
-        if not file:
-            return Response({"error": "No file uploaded."},
-                            status=status.HTTP_400_BAD_REQUEST)
+        serializer = self.get_serializer(data=request.data)
 
-        if not file.name.endswith('.xml'):
-            return Response({"error": "Invalid file type. Only XML files are allowed."},
-                            status=status.HTTP_400_BAD_REQUEST)
-
-        file_path = os.path.join(settings.MEDIA_ROOT, 'uploads', file.name)
-        if os.path.exists(file_path):
-            return Response({"error": "This file is already on the server. Change its name or upload another one."},
-                            status=status.HTTP_400_BAD_REQUEST)
-
-        bpmn_file = BPMNDiagram(name=name, file=file)
-        bpmn_file.save()
-        serializer = BPMNDiagramSerializer(bpmn_file)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        with transaction.atomic():
+            if serializer.is_valid(raise_exception=True):
+                self.perform_create(serializer)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, *args, **kwargs) -> Response:
         """
@@ -77,22 +80,15 @@ class BPMNDiagramView(viewsets.ModelViewSet):
             Response: A response containing the serialized data of the updated BPMN diagram,
                       or an error message if the update fails.
         """
-        kwargs.pop('partial', False)
+        partial = kwargs.pop('partial', False)
         instance = self.get_object()
-        file = request.FILES.get('file')
-        if file:
-            if not file.name.endswith('.xml'):
-                return Response({"error": "Invalid file type. Only XML files are allowed."},
-                                status=status.HTTP_400_BAD_REQUEST)
-            instance.file = file
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
 
-        name = request.data.get('name')
-        if name:
-            instance.name = name
-
-        instance.save()
-        serializer = BPMNDiagramSerializer(instance)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        with transaction.atomic():
+            if serializer.is_valid(raise_exception=True):
+                self.perform_update(serializer)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, *args, **kwargs) -> Response:
         """
@@ -108,10 +104,7 @@ class BPMNDiagramView(viewsets.ModelViewSet):
                        or an error message if the file could not be found.
          """
         instance = self.get_object()
-        file_path = instance.file.path
         self.perform_destroy(instance)
-        if os.path.exists(file_path):
-            os.remove(file_path)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=['get'], url_path='view_file')
@@ -156,8 +149,7 @@ class BPMNDiagramView(viewsets.ModelViewSet):
         if os.path.exists(file_path):
             os.remove(file_path)
             return Response(status=status.HTTP_204_NO_CONTENT)
-        else:
-            return Response({"error": "File not found"}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"error": "File not found"}, status=status.HTTP_404_NOT_FOUND)
 
     @action(detail=True, methods=['get'], url_path='visualize')
     def visualize_diagram(self, request, pk=None):
@@ -180,10 +172,9 @@ class BPMNDiagramView(viewsets.ModelViewSet):
                 bpmn_factory = BPMNParser(xml_file_path)
                 parsed_json_data = bpmn_factory.parse()
                 return Response({"xml_content": parsed_json_data}, status=status.HTTP_200_OK)
-            except (ValidationError, etree.XMLSyntaxError, ElementIdDuplicatedError) as e:
+            except (DocumentInvalidError, etree.XMLSyntaxError, ElementIdDuplicatedError) as e:
                 return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        else:
-            return Response({"error": "File not found"}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"error": "File not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
 @ensure_csrf_cookie

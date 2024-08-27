@@ -61,6 +61,7 @@ const App = () => {
         try {
             await deleteDiagram(item.id);
             loadDiagrams();
+            toast.success('Diagram deleted successfully');
         } catch (error) {
             console.error('Error deleting diagram:', error);
             toast.error('Error deleting diagram');
@@ -77,6 +78,7 @@ const App = () => {
     const handleDownload = async (item) => {
         try {
             await downloadFile(item.id);
+            toast.success('Diagram downloaded successfully');
         } catch (error) {
             console.error('Error downloading file:', error);
             toast.error('Error downloading file');
@@ -88,20 +90,25 @@ const App = () => {
             await addDiagram(item);
             toggle();
             loadDiagrams();
+            toast.success('Diagram added successfully');
         } catch (error) {
-            console.error('Error adding diagram:', error);
-            toast.error('Error adding diagram');
+            console.error('Error while adding diagram:', error); // DEBUG
+            const errorMessage = error.response?.data?.message || 'Unknown error while adding diagram';
+            toast.error(errorMessage);
         }
     };
+    
 
     const handleDiagramEdit = async (item) => {
         try {
             await editDiagram(item);
             toggle();
             loadDiagrams();
+            toast.success('Diagram edited successfully');
         } catch (error) {
-            console.error('Error updating diagram:', error);
-            toast.error('Error updating diagram');
+            console.error('Error while updating diagram:', error); // DEBUG
+            const errorMessage = error.response?.data?.message || 'Unknown error while adding diagram';
+            toast.error(errorMessage);
         }
     };
 

@@ -62,8 +62,6 @@ const editDiagram = async (item) => {
     formData.append('name', item.name);
 
     if (item.file && item.file instanceof File) {
-        // Delete the original file that is on the server
-        await axios.delete(`${process.env.REACT_APP_API_URL}/api/diagrams/${item.id}/delete_file/`);
         formData.append('file', item.file);
     }
 
@@ -73,6 +71,7 @@ const editDiagram = async (item) => {
                 'Content-Type': 'multipart/form-data'
             }
         });
+
     } catch (error) {
         console.error('Error updating diagram:', error);
         throw error;

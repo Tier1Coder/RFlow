@@ -54,3 +54,7 @@ REACT_APP_API_URL=[your_api_url]
 ## License
 
 TODO
+
+## Engineering thesis
+This project is a part of my engineering thesis at University of Zielona Góra. 
+The full title of the thesis is "Graphical visualization of BPMN diagrams contained in XML files".
