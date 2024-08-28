@@ -135,22 +135,22 @@ const App = () => {
         <div>
             <ToastContainer />
             <div className="header">
-                <div className="logo-and-icons">
-                    <div className="logo">
+                <div className="header-icons">
+                    <div className="header-logo">
                         <AppLogoIcon width="80" height="80" />
                     </div>
-                    <div className="icon-buttons">
+                    <div className="header-buttons">
                         <AddNewDiagramIconButton
                             width="40"
                             height="40"
                             onClick={addNewDiagram}
-                            className="btn btn-link"
+                            className="item"
                         />
                         <ChooseSchemaIconButton
                             width="40"
                             height="40"
                             onClick={chooseSchema}
-                            className="btn btn-link"
+                            className="item"
                         />
                     </div>
                 </div>

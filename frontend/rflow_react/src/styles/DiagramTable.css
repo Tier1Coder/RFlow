@@ -1,56 +1,77 @@
-.table-container {
+.diagram-table-container {
   display: flex;
   justify-content: center;
+  align-items: center;
   padding: 20px;
 }
 
 .diagram-table {
-  width: 80%;
-  margin: 0 auto;
   border-collapse: collapse;
-  border: 1px solid #ddd;
-  background-color: #fff;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 60%; 
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  word-break: break-all;
 }
 
-.diagram-table th,
-.diagram-table td {
-  padding: 12px 15px;
+.diagram-table-columns th {
+  background-color: #3c72d6;
+  color: white;
   text-align: left;
-  border-bottom: 1px solid #ddd;
-  width: 300px; 
-  max-width: 500px;
-  overflow-x: auto; 
-  white-space: nowrap;
-}
-
-.diagram-table th {
-  background-color: #f8f9fa;
+  padding: 12px 15px;
   font-weight: bold;
 }
 
-.diagram-table tr:hover {
+.diagram-table-columns th.column-name {
+  width: 25%;
+}
+
+.diagram-table-columns th.column-file {
+  width: 45%;
+}
+
+.diagram-table-columns th.column-options {
+  width: 30%;
+}
+
+.diagram-table tbody tr {
+  border-bottom: 1px solid #ddd;
+  transition: background-color 0.3s ease;
+}
+
+.diagram-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.diagram-table tbody tr:hover {
   background-color: #f1f1f1;
 }
 
-.diagram-table .button-group {
+.diagram-table tbody td {
+  padding: 12px 15px;
+  text-align: left;
+}
+
+.button-group {
   display: flex;
-  gap: 10px;
+  justify-content: space-between;
 }
 
-.diagram-table .button-group .item {
-  cursor: pointer;
+.item {
+  margin: 0 5px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.diagram-table .button-group .item:hover {
-  background-color: #e0e0e0;
+.item:hover {
+  transform: scale(1.25);
 }
 
-.diagram-table .button-group .item svg {
-  transition: transform 0.2s ease-in-out;
-}
 
-.diagram-table .button-group .item:hover svg {
-  transform: scale(1.2);
+@media (max-width: 768px) {
+  .diagram-table {
+    width: 90%;
+  }
 }
-

@@ -12,7 +12,7 @@
     justify-content: center;
 }
 
-.logo-and-icons {
+.header-icons {
     display: flex;
     align-items: center;
     gap: 20px; 
@@ -22,27 +22,30 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
 }
 
-.logo {
+.header-logo {
     display: flex;
     align-items: center;
+    transition: transform 0.5s ease;
 }
 
-.icon-buttons {
+.header-logo:hover {
+    transform: scale(1.25);
+}
+
+.header-buttons {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.icon-buttons .btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #f0f0f0;
-    border-radius: 10px;
-    padding: 10px;
-    transition: background-color 0.3s ease;
-}
-
-.icon-buttons .btn:hover {
-    background-color: #11a0ff; 
-}
+.item {
+    margin: 0 5px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .item:hover {
+    transform: scale(1.25);
+  }
+  

@@ -11,11 +11,11 @@ const DiagramTable = ({ diagrams, editItem, deleteItem, downloadFile, visualizeD
   return (
     <div className="diagram-table-container">
       <table className="diagram-table">
-        <thead>
+        <thead className="diagram-table-columns">
           <tr>
-            <th>Name</th>
-            <th>File</th>
-            <th>Options</th>
+            <th className="column-name">Name</th>
+            <th className="column-file">File</th>
+            <th className="column-options">Options</th>
           </tr>
         </thead>
         <tbody>

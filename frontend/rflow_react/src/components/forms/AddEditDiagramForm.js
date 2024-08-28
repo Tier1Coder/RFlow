@@ -26,7 +26,17 @@ const AddEditDiagramForm = ({ activeItem, originalItem, onChange }) => {
                     accept=".xml"
                 />
                 {originalItem && originalItem.file && typeof originalItem.file === 'string' && (
-                    <div>Current file: <a href={originalItem.file} target="_blank" rel="noopener noreferrer">{originalItem.file}</a></div>
+                    <div 
+                        className="current-file">Current file: 
+                            <div
+                                className="current-file-path">
+                                    <a 
+                                        href={originalItem.file} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer">{originalItem.file}
+                                    </a>
+                            </div>
+                    </div>
                 )}
             </div>
         </form>
