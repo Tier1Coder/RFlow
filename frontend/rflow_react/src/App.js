@@ -17,6 +17,8 @@ import {
     visualizeDiagram,
 } from './services/DiagramService';
 import './styles/App.css';
+import { InfoIconButton } from './assets/icons/InfoIcon';
+import InfoModal from './components/modals/InfoModal';
 
 const App = () => {
     const [diagrams, setDiagrams] = useState([]);
@@ -24,6 +26,11 @@ const App = () => {
     const [modalType, setModalType] = useState('');
     const [activeItem, setActiveItem] = useState({ name: '', file: '' });
     const [originalItem, setOriginalItem] = useState(null);
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
 
     const navigate = useNavigate();
 
@@ -97,7 +104,6 @@ const App = () => {
             toast.error(errorMessage);
         }
     };
-    
 
     const handleDiagramEdit = async (item) => {
         try {
@@ -152,6 +158,12 @@ const App = () => {
                             onClick={chooseSchema}
                             className="item"
                         />
+                        <InfoIconButton
+                            width="40"
+                            height="40"
+                            onClick={openModal}
+                            className="item"
+                        />
                     </div>
                 </div>
             </div>
@@ -174,6 +186,7 @@ const App = () => {
                 originalItem={originalItem}
                 handleFormChange={handleFormChange}
             />
+            <InfoModal isOpen={isModalOpen} toggle={closeModal} />
         </div>
     );
 };
