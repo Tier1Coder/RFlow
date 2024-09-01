@@ -16,6 +16,7 @@ import {
     editDiagram,
     visualizeDiagram,
 } from './services/DiagramService';
+import { login } from './services/AuthService';
 import './styles/App.css';
 import { InfoIconButton } from './assets/icons/InfoIcon';
 import InfoModal from './components/modals/InfoModal';
@@ -35,7 +36,16 @@ const App = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        loadDiagrams();
+        const authenticateAndLoadDiagrams = async () => {
+            try {
+                await login();
+                loadDiagrams();
+            } catch (error) {
+                toast.error('Error logging in');
+            }
+        };
+
+        authenticateAndLoadDiagrams();
     }, []);
 
     const toggle = () => {

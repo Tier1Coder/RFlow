@@ -6,6 +6,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from .models import BPMNDiagram
 from .serializers import BPMNDiagramSerializer
 from utils.bpmn_parser import BPMNParser
@@ -30,6 +31,7 @@ class BPMNDiagramView(viewsets.ModelViewSet):
     """
     serializer_class = BPMNDiagramSerializer
     queryset = BPMNDiagram.objects.all()
+    permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer: BPMNDiagramSerializer):
         serializer.save()

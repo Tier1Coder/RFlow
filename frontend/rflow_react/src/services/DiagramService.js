@@ -1,8 +1,8 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 
 const fetchDiagrams = async () => {
     try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/diagrams/`);
+        const response = await axiosInstance.get('/api/diagrams/');
         return response.data;
     } catch (error) {
         console.error('Error fetching diagrams:', error);
@@ -12,7 +12,7 @@ const fetchDiagrams = async () => {
 
 const deleteDiagram = async (id) => {
     try {
-        await axios.delete(`${process.env.REACT_APP_API_URL}/api/diagrams/${id}/`);
+        await axiosInstance.delete(`/api/diagrams/${id}/`);
     } catch (error) {
         console.error('Error deleting diagram:', error);
         throw error;
@@ -21,7 +21,7 @@ const deleteDiagram = async (id) => {
 
 const downloadFile = async (id) => {
     try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/diagrams/${id}/view_file/`, {
+        const response = await axiosInstance.get(`/api/diagrams/${id}/view_file/`, {
             responseType: 'blob',
         });
         const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -46,10 +46,10 @@ const addDiagram = async (item) => {
     }
 
     try {
-        await axios.post(`${process.env.REACT_APP_API_URL}/api/diagrams/`, formData, {
+        await axiosInstance.post('/api/diagrams/', formData, {
             headers: {
-                'Content-Type': 'multipart/form-data'
-            }
+                'Content-Type': 'multipart/form-data',
+            },
         });
     } catch (error) {
         console.error('Error adding diagram:', error);
@@ -66,12 +66,11 @@ const editDiagram = async (item) => {
     }
 
     try {
-        await axios.put(`${process.env.REACT_APP_API_URL}/api/diagrams/${item.id}/`, formData, {
+        await axiosInstance.put(`/api/diagrams/${item.id}/`, formData, {
             headers: {
-                'Content-Type': 'multipart/form-data'
-            }
+                'Content-Type': 'multipart/form-data',
+            },
         });
-
     } catch (error) {
         console.error('Error updating diagram:', error);
         throw error;
@@ -80,7 +79,7 @@ const editDiagram = async (item) => {
 
 const visualizeDiagram = async (id) => {
     try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/diagrams/${id}/visualize/`);
+        const response = await axiosInstance.get(`/api/diagrams/${id}/visualize/`);
         return response.data;
     } catch (error) {
         console.error('Error fetching diagram data:', error);

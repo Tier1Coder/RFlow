@@ -15,6 +15,7 @@ psycopg2 = "*"
 psycopg2-binary = "*"
 whitenoise = {extras = ["brotli"], version = "*"}
 django-cors-headers = "*"
+djangorestframework-simplejwt = "*"
 
 [dev-packages]
 
