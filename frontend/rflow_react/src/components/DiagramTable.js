@@ -3,16 +3,48 @@ import { ShowVisualizationIconButton } from '../assets/icons/ShowVisualizationIc
 import { DeleteCircleIconButton } from '../assets/icons/DeleteCircleIcon';
 import { DownloadFileIconButton } from '../assets/icons/DownloadFileIcon';
 import { EditIconButton } from '../assets/icons/EditIcon';
+import { FilterIconButton } from '../assets/icons/FilterIcon';
+import { SearchIconButton } from '../assets/icons/SearchIcon';
 import '../styles/DiagramTable.css';
 
 const DiagramTable = ({ diagrams, editItem, deleteItem, downloadFile, visualizeDiagram }) => {
     const [currentPage, setCurrentPage] = useState(1);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [sortOrder, setSortOrder] = useState({ column: 'name', order: 'asc' });
+    const [showSortOptions, setShowSortOptions] = useState(false);
     const diagramsPerPage = 10;
+
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+        setCurrentPage(1);
+    };
+
+    const handleSort = (column, order) => {
+        setSortOrder({ column, order });
+        setShowSortOptions(false);
+    };
+
+    const filteredDiagrams = diagrams.filter((item) =>
+        item.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    const sortedDiagrams = filteredDiagrams.sort((a, b) => {
+        const aValue = a[sortOrder.column].toLowerCase();
+        const bValue = b[sortOrder.column].toLowerCase();
+    
+        if (aValue < bValue) {
+            return sortOrder.order === 'asc' ? -1 : 1;
+        }
+        if (aValue > bValue) {
+            return sortOrder.order === 'asc' ? 1 : -1;
+        }
+        return 0;
+    });
 
     const indexOfLastDiagram = currentPage * diagramsPerPage;
     const indexOfFirstDiagram = indexOfLastDiagram - diagramsPerPage;
-    const currentDiagrams = diagrams.slice(indexOfFirstDiagram, indexOfLastDiagram);
-    const totalPages = Math.ceil(diagrams.length / diagramsPerPage);
+    const currentDiagrams = sortedDiagrams.slice(indexOfFirstDiagram, indexOfLastDiagram);
+    const totalPages = Math.ceil(sortedDiagrams.length / diagramsPerPage);
 
     const handlePageChange = (pageNumber) => {
         if (pageNumber >= 1 && pageNumber <= totalPages) {
@@ -41,6 +73,33 @@ const DiagramTable = ({ diagrams, editItem, deleteItem, downloadFile, visualizeD
 
     return (
         <div className="diagram-table-container">
+            <div className="search-sort-container">
+                <div className="search-bar">
+                    <SearchIconButton width="24" height="24" />
+                    <input
+                        type="text"
+                        placeholder="Search diagrams..."
+                        value={searchQuery}
+                        onChange={handleSearchChange}
+                    />
+                </div>
+                <div className="filter-button">
+                    <FilterIconButton
+                        width="24"
+                        height="24"
+                        onClick={() => setShowSortOptions(!showSortOptions)}
+                        title="Sort Options"
+                    />
+                    {showSortOptions && (
+                        <div className="sort-options">
+                            <button onClick={() => handleSort('name', 'asc')}>A-Z</button>
+                            <button onClick={() => handleSort('name', 'desc')}>Z-A</button>
+                            <button onClick={() => handleSort('creation_date', 'desc')}>Newest</button>
+                            <button onClick={() => handleSort('creation_date', 'asc')}>Oldest</button>
+                        </div>
+                    )}
+                </div>
+            </div>
             <table className="diagram-table">
                 <thead className="diagram-table-columns">
                     <tr>
