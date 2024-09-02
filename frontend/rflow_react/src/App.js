@@ -1,3 +1,4 @@
+// src/App.js
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
@@ -5,9 +6,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import DiagramTable from './components/DiagramTable';
 import DiagramRenderer from './components/DiagramRenderer';
 import AddEditDiagramModal from './components/modals/AddEditDiagramModal';
+import UserOptionsModal from './components/modals/UserOptionsModal';
 import { AppLogoIcon } from './assets/icons/AppLogoIcon';
 import { ChooseSchemaIconButton } from './assets/icons/ChooseSchemaIcon';
 import { AddNewDiagramIconButton } from './assets/icons/AddNewDiagramIcon';
+import { UserIconButton } from './assets/icons/UserIcon';
 import {
     fetchDiagrams,
     deleteDiagram,
@@ -16,7 +19,7 @@ import {
     editDiagram,
     visualizeDiagram,
 } from './services/DiagramService';
-import { login } from './services/AuthService';
+import LoginForm from './components/forms/LoginForm';
 import './styles/App.css';
 import { InfoIconButton } from './assets/icons/InfoIcon';
 import InfoModal from './components/modals/InfoModal';
@@ -27,8 +30,9 @@ const App = () => {
     const [modalType, setModalType] = useState('');
     const [activeItem, setActiveItem] = useState({ name: '', file: '' });
     const [originalItem, setOriginalItem] = useState(null);
-
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isUserOptionsModalOpen, setIsUserOptionsModalOpen] = useState(false);
 
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
@@ -36,17 +40,28 @@ const App = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const authenticateAndLoadDiagrams = async () => {
-            try {
-                await login();
-                loadDiagrams();
-            } catch (error) {
-                toast.error('Error logging in');
-            }
-        };
-
-        authenticateAndLoadDiagrams();
+        const token = localStorage.getItem('accessToken');
+        if (token) {
+            setIsAuthenticated(true);
+            loadDiagrams();
+        }
     }, []);
+
+    const handleLogin = (token) => {
+        setIsAuthenticated(true);
+        loadDiagrams();
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        setIsAuthenticated(false);
+        navigate('/');
+    };
+
+    const toggleUserOptionsModal = () => {
+        setIsUserOptionsModalOpen(!isUserOptionsModalOpen);
+    };
 
     const toggle = () => {
         setModal(!modal);
@@ -150,53 +165,72 @@ const App = () => {
     return (
         <div>
             <ToastContainer />
-            <div className="header">
-                <div className="header-icons">
-                    <div className="header-logo">
-                        <AppLogoIcon width="80" height="80" />
+            {!isAuthenticated ? (
+                <LoginForm onLogin={handleLogin} />
+            ) : (
+                <>
+                    <div className="header">
+                        <div className="header-icons">
+                            <div className="header-logo">
+                                <AppLogoIcon width="80" height="80" />
+                            </div>
+                            <div className="header-buttons">
+                                <AddNewDiagramIconButton
+                                    width="40"
+                                    height="40"
+                                    onClick={addNewDiagram}
+                                    className="item"
+                                />
+                                <ChooseSchemaIconButton
+                                    width="40"
+                                    height="40"
+                                    onClick={chooseSchema}
+                                    className="item"
+                                />
+                                <InfoIconButton
+                                    width="40"
+                                    height="40"
+                                    onClick={openModal}
+                                    className="item"
+                                />
+                                <div className="user-icon-container">
+                                    <UserIconButton
+                                        width="40"
+                                        height="40"
+                                        onClick={toggleUserOptionsModal}
+                                        className="item"
+                                    />
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div className="header-buttons">
-                        <AddNewDiagramIconButton
-                            width="40"
-                            height="40"
-                            onClick={addNewDiagram}
-                            className="item"
-                        />
-                        <ChooseSchemaIconButton
-                            width="40"
-                            height="40"
-                            onClick={chooseSchema}
-                            className="item"
-                        />
-                        <InfoIconButton
-                            width="40"
-                            height="40"
-                            onClick={openModal}
-                            className="item"
+                    <div className="table-container">
+                        <DiagramTable
+                            diagrams={diagrams}
+                            editItem={handleEdit}
+                            deleteItem={handleDelete}
+                            downloadFile={handleDownload}
+                            visualizeDiagram={handleVisualizeDiagram}
                         />
                     </div>
-                </div>
-            </div>
-            <div className="table-container">
-                <DiagramTable
-                    diagrams={diagrams}
-                    editItem={handleEdit}
-                    deleteItem={handleDelete}
-                    downloadFile={handleDownload}
-                    visualizeDiagram={handleVisualizeDiagram}
-                />
-            </div>
-            <AddEditDiagramModal
-                modal={modal}
-                toggle={toggle}
-                modalType={modalType}
-                handleDiagramAdd={handleDiagramAdd}
-                handleDiagramEdit={handleDiagramEdit}
-                activeItem={activeItem}
-                originalItem={originalItem}
-                handleFormChange={handleFormChange}
-            />
-            <InfoModal isOpen={isModalOpen} toggle={closeModal} />
+                    <AddEditDiagramModal
+                        modal={modal}
+                        toggle={toggle}
+                        modalType={modalType}
+                        handleDiagramAdd={handleDiagramAdd}
+                        handleDiagramEdit={handleDiagramEdit}
+                        activeItem={activeItem}
+                        originalItem={originalItem}
+                        handleFormChange={handleFormChange}
+                    />
+                    <InfoModal isOpen={isModalOpen} toggle={closeModal} />
+                    <UserOptionsModal
+                        isOpen={isUserOptionsModalOpen}
+                        toggle={toggleUserOptionsModal}
+                        handleLogout={handleLogout}
+                    />
+                </>
+            )}
         </div>
     );
 };
@@ -205,7 +239,7 @@ const WrappedApp = () => (
     <Router>
         <Routes>
             <Route path="/" element={<App />} />
-            <Route path="/visualize/:id" element={<DiagramRenderer/>} />
+            <Route path="/visualize/:id" element={<DiagramRenderer />} />
         </Routes>
     </Router>
 );
