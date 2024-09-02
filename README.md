@@ -42,6 +42,8 @@ The file should contain the following:
 
 ```
 REACT_APP_API_URL=[your_api_url]
+REACT_APP_USERNAME=[user]
+REACT_APP_PASSWORD=[password]
 ```
 
 
