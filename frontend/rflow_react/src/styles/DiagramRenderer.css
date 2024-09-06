@@ -1,48 +1,29 @@
-.container {
+.diagram-visualization-title {
+    justify-content: center;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    min-height: 100vh;
-    box-sizing: border-box;
-    padding-top: 60px;
 }
 
-.title {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    text-align: center;
-    background-color: white;
-    z-index: 1000;
-    padding: 10px 0;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.diagramVisualization {
-    position: relative;
-    width: 100%;
-    height: auto;
-    max-width: 100%;
-    padding: 20px;
-    box-sizing: border-box;
+.diagram-visualization { 
+    display: flex;
+    
 }
 
 .participant {
     position: absolute;
-    border: 1px solid black;
     z-index: 1;
 }
 
 .lane {
     position: absolute;
-    border: 1px solid black;
-    z-index: 2;
+    z-index: 2; 
 }
 
-.flow-element {
+.element {
     position: absolute;
-    border: 1px solid black;
     z-index: 3;
+}
+
+.flow-element{
+    position: absolute; 
+    z-index: 4;
 }

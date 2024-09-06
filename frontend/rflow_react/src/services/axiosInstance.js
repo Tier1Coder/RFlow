@@ -30,9 +30,16 @@ axiosInstance.interceptors.response.use(
             try {
                 const newAccessToken = await refreshToken();
                 axios.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
+                originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
                 return axiosInstance(originalRequest);
             } catch (err) {
                 console.error('Error refreshing token:', err);
+                // Redirect to login page if refresh token is blacklisted
+                if (err.response && err.response.data.code === 'token_not_valid') {
+                    localStorage.removeItem('accessToken');
+                    localStorage.removeItem('refreshToken');
+                    window.location.href = '/';
+                }
             }
         }
 

@@ -1,4 +1,3 @@
-// src/components/modals/UserOptionsModal.js
 import React from 'react';
 import '../../styles/UserOptionsModal.css';
 

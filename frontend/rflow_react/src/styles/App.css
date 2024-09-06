@@ -1,5 +1,5 @@
 /* Sticky header */
-.header {
+.app-header {
     position: -webkit-sticky; /* For Safari */
     position: sticky;
     top: 0;
@@ -12,7 +12,7 @@
     justify-content: center;
 }
 
-.header-icons {
+.app-header-icons {
     display: flex;
     align-items: center;
     gap: 20px; 
@@ -22,35 +22,31 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
 }
 
-.header-logo {
+.app-header-logo {
     display: flex;
     align-items: center;
     transition: transform 0.5s ease;
 }
 
-.header-logo:hover {
+.app-header-logo:hover {
     transform: scale(1.25);
 }
 
-.header-buttons {
+.app-header-buttons {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.item {
+.app-header-button {
     margin: 0 5px;
     position: relative;
     overflow: hidden;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
   
-  .item:hover {
+  .app-header-button:hover {
     transform: scale(1.25);
-  }
-  
-.user-icon-container {
-    position: relative;
   }
   
   .dropdown-menu {
@@ -77,3 +73,4 @@
   .dropdown-menu button:hover {
     background-color: #f0f0f0;
   }
+  

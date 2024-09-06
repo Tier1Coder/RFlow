@@ -1,16 +1,18 @@
-import React from 'react';
-import { SVGProps } from 'react';
+import * as React from 'react';
 
-export default function TextAnnotationIcon(props: SVGProps<SVGSVGElement>) {
+interface TextAnnotationIconProps {
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
+}
+
+const TextAnnotationIcon: React.FC<TextAnnotationIconProps> = ({ x = 0, y = 0, width = 512, height = 512 }) => {
   return (
     <svg
-      width="512"
-      height="512"
+      style={{ position: 'absolute', overflow: 'visible', left: x, top: y, height: height, width: width, color: 'currentColor' }}
       viewBox="0 0 512 512"
-      style={{ color: 'currentColor' }}
       xmlns="http://www.w3.org/2000/svg"
-      className="h-full w-full"
-      {...props}
     >
       <rect
         width="512"
@@ -54,4 +56,6 @@ export default function TextAnnotationIcon(props: SVGProps<SVGSVGElement>) {
       </svg>
     </svg>
   );
-}
+};
+
+export default TextAnnotationIcon;

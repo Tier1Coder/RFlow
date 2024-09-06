@@ -1,14 +1,12 @@
 import React from 'react';
 
 interface AssociationFlowIconProps {
-  waypoints: { x: number; y: number }[];
+  points: string;
 }
 
-const AssociationFlowIcon: React.FC<AssociationFlowIconProps> = ({ waypoints }) => {
-  const points = waypoints.map(wp => `${wp.x},${wp.y}`).join(' ');
-
+const AssociationFlowIcon: React.FC<AssociationFlowIconProps> = ({ points }) => {
   return (
-    <svg style={{ position: 'absolute', left: 0, top: 0, overflow: 'visible' }}>
+    <svg style={{ position: 'absolute', left: 0, top: 0, overflow: 'visible', height: 1, width: 1 }} viewBox="0 0 1 1">
       <polyline
         points={points}
         style={{ fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeDasharray: '5, 5' }}

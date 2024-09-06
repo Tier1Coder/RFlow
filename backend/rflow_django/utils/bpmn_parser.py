@@ -1,3 +1,34 @@
+"""
+This module contains a class to parse BPMN 2.0 XML files.
+
+According to BPMN 2.0 specification:
+Serializing a BPMN diagram requires the following: collection of BPMNShape(s) & collection of BPMNEdge(s) on
+BPMNPlane of BPMNDiagram. BPMNShape(s) & BPMNEdge(s) must reference BPMN model element which is bpmnElement.
+If no bpmnElement is referenced or if the reference is invalid, it is expected that
+this shape or edge should not be depicted. The only exception is for a Data Association connected to a Sequence Flow.
+
+When rendering a BPMN diagram, the correct depiction of a BPMNShape or BPMNEdge depends mainly on the
+referenced BPMN model element [bpmnElement] and its particular attributes and/or references.
+
+Parser takes an XML file as input, optionally updates the root element with default attributes and namespaces,
+and then parses the XML file into a dictionary containing the BPMN diagram elements: both logical and visual.
+
+The text of the label to be rendered is obtained by resolving the name attribute of the referenced BPMN model element
+[bpmnElement] from the BPMNShape or BPMNEdge. In the particular case when the referenced BPMN model element
+[bpmnElement] is a DataObjectReference, the text of the label to be rendered is obtained by concatenating the name
+attribute of the referenced BPMN model element [bpmnElement] and the name attribute of the dataState attribute of this
+DataObjectReference.
+
+The parser also validates the XML document against the BPMN 2.0 XML schema and raises an exception if the document is
+invalid in terms of its structure or content.
+
+List of all element (BPMNShapes and BPMNEdges) types according to the BPMN 2.0 specification:
+12.3 Notational Depiction Library and Abstract Element Resolutions (p. 380)
+or: https://github.com/Tier1Coder/RFlow/issues/20
+
+"""
+
+from typing import Union, List
 import lxml.etree as etree
 from pathlib import Path
 from utils.exceptions import DocumentInvalidError, ElementIdDuplicatedError
@@ -22,51 +53,7 @@ LOGIC_ELEMENTS_NAMESPACE = '{http://www.omg.org/spec/BPMN/20100524/MODEL'
 VISUALIZATION_ELEMENTS_NAMESPACE = '{http://www.omg.org/spec/BPMN/20100524/DI'
 
 
-def get_all_attributes_recursively(element: etree.ElementBase) -> dict:
-    """
-    Helper function to recursively collect attributes of elements and their children.
-    Includes all waypoints that must be enumerated because they have no unique identifier.
-    Removes namespaces from tag names and attribute keys.
-
-    Parameters
-    ----------
-    element : etree.ElementBase
-        The element to collect attributes from.
-
-    Returns
-    -------
-    dict
-        A dictionary containing all attributes of the element and its children.
-    """
-    children = {}
-    waypoints = []
-
-    for child in element:
-        child_tag = child.tag.split('}')[-1] if '}' in child.tag else child.tag  # Potential namespace removal
-        child_attrib = {}
-
-        for attr_key, attr_value in child.attrib.items():
-            clean_attr_key = attr_key.split('}')[-1] if '}' in attr_key else attr_key
-            child_attrib[clean_attr_key] = attr_value
-
-        grandchildren = get_all_attributes_recursively(child)
-        if grandchildren:
-            child_attrib.update(grandchildren)
-
-        if child_tag == 'waypoint':
-            waypoints.append(child_attrib)
-        elif child_attrib:
-            children[child_tag] = child_attrib
-
-    if waypoints:
-        for i, waypoint in enumerate(waypoints, start=1):
-            children[f'waypoint{i}'] = waypoint
-
-    return children
-
-
-def merge_dictionaries(old_dict: dict,
-                       priority_dict: dict) -> dict:
+def merge_dictionaries(old_dict: dict, priority_dict: dict) -> dict:
     """
     Merges two dictionaries, giving priority to the values in the second dictionary.
 
@@ -137,6 +124,142 @@ def update_xml_root_attributes_namespaces(root_element: etree.ElementBase,
     return root_element
 
 
+def get_elements_with_specific_tag(elements: List[etree.ElementBase], tag: str) -> List[etree.ElementBase]:
+    """
+    Collects all elements with a specific tag name from the root element and its children.
+
+    Parameters
+    ----------
+    elements : list
+        A list of elements to search for the specified tag name.
+    tag : str
+        The tag name to search for.
+
+    Returns
+    -------
+    list
+        A list of elements with the specified tag name.
+    """
+    elements_with_specific_tag = []
+    for element in elements:
+        if element.tag.startswith(tag):
+            elements_with_specific_tag.append(element)
+
+    if len(elements_with_specific_tag) == 0:
+        raise DocumentInvalidError(f"No elements with tag '{tag}' found in the XML document.")
+    return elements_with_specific_tag
+
+
+def check_duplicate_element_ids(elements: List[etree.ElementBase], ident: str) -> Union[ElementIdDuplicatedError, None]:
+    """
+    Checks for duplicate element IDs in a list of elements.
+
+    Parameters
+    ----------
+    elements : list
+        A list of elements to check for duplicate IDs.
+    ident : str
+        The identifier to check for duplicates.
+
+    Returns
+    -------
+    None or DocumentInvalidError
+        Returns None if no duplicate IDs are found, otherwise raises a ElementIdDuplicatedError.
+    """
+    element_ids = [element.attrib.get(ident) for element in elements if ident in element.attrib]
+    duplicate_ids = [ident for ident, count in Counter(element_ids).items() if count > 1]
+
+    if duplicate_ids:
+        raise ElementIdDuplicatedError(
+            f"Duplicated logic element(s): {', '.join(duplicate_ids)}")
+
+    return
+
+
+def get_all_attributes_recursively(element: etree.ElementBase) -> dict:
+    """
+    Helper function to recursively collect attributes of elements and their children.
+    Includes all waypoints that must be enumerated because they have no unique identifier.
+    Removes namespaces from tag names and attribute keys.
+
+    Parameters
+    ----------
+    element : etree.ElementBase
+        The element to collect attributes from.
+
+    Returns
+    -------
+    dict
+        A dictionary containing all attributes of the element and its children.
+    """
+    children = {}
+    waypoints = []
+
+    for child in element:
+        child_tag = child.tag.split('}')[-1] if '}' in child.tag else child.tag  # Potential namespace removal
+        child_attrib = {}
+
+        for attr_key, attr_value in child.attrib.items():
+            clean_attr_key = attr_key.split('}')[-1] if '}' in attr_key else attr_key
+            child_attrib[clean_attr_key] = attr_value
+
+        grandchildren = get_all_attributes_recursively(child)
+        if grandchildren:
+            child_attrib.update(grandchildren)
+
+        if child_tag == 'waypoint':
+            waypoints.append(child_attrib)
+        elif child_attrib:
+            children[child_tag] = child_attrib
+
+    if waypoints:
+        for i, waypoint in enumerate(waypoints, start=1):
+            children[f'waypoint{i}'] = waypoint
+
+    return children
+
+
+def combine_logical_and_visual_elements(logic_elements: List[etree.ElementBase],
+                                        visual_elements: List[etree.ElementBase]) -> dict:
+    """
+    Combines logical and visual elements into a dictionary.
+
+    Parameters
+    ----------
+    logic_elements : List[etree.ElementBase]
+        A list of logical elements.
+    visual_elements : List[etree.ElementBase]
+        A list of visual elements.
+
+    Returns
+    -------
+    dict
+        A dict of elements containing both logical and visual elements inside of one key-value pair.
+    """
+    combined_elements = {}
+
+    for logic_element in logic_elements:
+        logic_element_attributes = dict(logic_element.attrib)
+        if '}' in logic_element.tag:
+            logic_element_attributes['elementType'] = logic_element.tag.split('}')[1]  # Remove namespace
+        logic_element_id = logic_element.attrib.get('id')
+        if logic_element_id:
+            combined_elements[logic_element_id] = logic_element_attributes
+
+    for visual_element in visual_elements:
+        visualization_element_attributes = dict(visual_element.attrib)
+        if '}' in visual_element.tag:
+            visualization_element_attributes['elementType'] = visual_element.tag.split('}')[1]  # Remove namespace
+        visualization_element_id = visualization_element_attributes.get('bpmnElement')
+
+        if visualization_element_id and visualization_element_id in combined_elements:
+            combined_elements[visualization_element_id].update(
+                get_all_attributes_recursively(visual_element)
+            )
+
+    return combined_elements
+
+
 class BPMNParser:
     """
     A class to parse BPMN 2.0 XML files.
@@ -158,7 +281,7 @@ class BPMNParser:
         self.xsd_path = xsd_path
         self.xml_path = xml_path
 
-    def validate_xml(self, xml_root: etree.ElementBase) -> None:
+    def validate_xml(self, xml_root: etree.ElementBase) -> Union[bool, DocumentInvalidError]:
         """
         Validates the given XML root element against the schema.
 
@@ -178,6 +301,7 @@ class BPMNParser:
         if not is_valid:
             last_error = xml_schema.error_log.last_error
             raise DocumentInvalidError(f"XML file is not valid according to the BPMN 2.0 schema: {last_error}")
+        return True
 
     def parse(self) -> dict:
         """
@@ -197,52 +321,18 @@ class BPMNParser:
         self.validate_xml(updated_xml_root)
         all_elements = list(updated_xml_root.iter())
 
-        logic_elements = []  # Classes for BPMN elements (processes, tasks, etc.)
-        visualization_elements = []  # Classes for BPMN DI elements (shapes, edges, etc.)
-        full_elements = {}
+        # Classes for BPMN elements (processes, tasks, etc.)
+        logic_elements = get_elements_with_specific_tag(all_elements, LOGIC_ELEMENTS_NAMESPACE)
 
-        for element in all_elements:
-            if element.tag.startswith(LOGIC_ELEMENTS_NAMESPACE):
-                logic_elements.append(element)
-            elif element.tag.startswith(VISUALIZATION_ELEMENTS_NAMESPACE):
-                visualization_elements.append(element)
+        # Classes for BPMN DI elements (shapes, edges, etc.)
+        visual_elements = get_elements_with_specific_tag(all_elements, VISUALIZATION_ELEMENTS_NAMESPACE)
 
-        logic_element_ids = [element.attrib.get('id') for element in logic_elements if 'id' in element.attrib]
-        duplicates_logic = [item for item, count in Counter(logic_element_ids).items() if count > 1]
+        check_duplicate_element_ids(logic_elements, 'id')
+        check_duplicate_element_ids(visual_elements, 'bpmnElement')
 
-        if duplicates_logic:
-            raise ElementIdDuplicatedError(
-                f"Duplicated logic element(s): {', '.join(duplicates_logic)}")
+        combined_elements = combine_logical_and_visual_elements(logic_elements, visual_elements)
 
-        visualization_element_ids = [element.attrib.get('bpmnElement') for element in visualization_elements if
-                                     'bpmnElement' in element.attrib]
-        duplicates_visualization = [item for item, count in Counter(visualization_element_ids).items() if count > 1]
-
-        if duplicates_visualization:
-            raise ElementIdDuplicatedError(
-                f"Duplicated visualization element(s): {', '.join(duplicates_visualization)}")
-
-        for logic_element in logic_elements:
-            logic_element_attributes = dict(logic_element.attrib)
-            if '}' in logic_element.tag:
-                logic_element_attributes['elementType'] = logic_element.tag.split('}')[1]  # Remove namespace
-            logic_element_id = logic_element.attrib.get('id')
-            if logic_element_id:
-                full_elements[logic_element_id] = logic_element_attributes
-
-        for visualization_element in visualization_elements:
-            visualization_element_attributes = dict(visualization_element.attrib)
-            if '}' in visualization_element.tag:
-                visualization_element_attributes['elementType'] = visualization_element.tag.split('}')[1]
-            visualization_element_id = visualization_element_attributes.get('bpmnElement')
-
-            if visualization_element_id and visualization_element_id in full_elements:
-                full_elements[visualization_element_id].update(
-                    get_all_attributes_recursively(visualization_element)
-                )
-
-        # TODO: Elements that are not containing any bounds/waypoints should be removed from the final dictionary
         # TODO: intermediateCatchEvent and intermediateThrowEvent are not included in the final dictionary (should be
         #  properly parsed)
 
-        return full_elements
+        return combined_elements

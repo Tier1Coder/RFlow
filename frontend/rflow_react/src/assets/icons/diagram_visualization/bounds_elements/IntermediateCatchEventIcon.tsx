@@ -1,4 +1,3 @@
-<Todo></Todo>
 import React from 'react';
 
 interface IntermediateCatchEventIconProps {

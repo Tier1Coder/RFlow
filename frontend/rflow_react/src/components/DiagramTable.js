@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { ShowVisualizationIconButton } from '../assets/icons/ShowVisualizationIcon';
-import { DeleteCircleIconButton } from '../assets/icons/DeleteCircleIcon';
-import { DownloadFileIconButton } from '../assets/icons/DownloadFileIcon';
-import { EditIconButton } from '../assets/icons/EditIcon';
-import { FilterIconButton } from '../assets/icons/FilterIcon';
-import { SearchIconButton } from '../assets/icons/SearchIcon';
+import { ShowVisualizationIconButton } from '../assets/icons/ui/ShowVisualizationIcon';
+import { DeleteCircleIconButton } from '../assets/icons/ui/DeleteCircleIcon';
+import { DownloadFileIconButton } from '../assets/icons/ui/DownloadFileIcon';
+import { EditIconButton } from '../assets/icons/ui/EditIcon';
+import { FilterIconButton } from '../assets/icons/ui/FilterIcon';
+import { SearchIconButton } from '../assets/icons/ui/SearchIcon';
 import '../styles/DiagramTable.css';
 
 const DiagramTable = ({ diagrams, editItem, deleteItem, downloadFile, visualizeDiagram }) => {
@@ -73,8 +73,8 @@ const DiagramTable = ({ diagrams, editItem, deleteItem, downloadFile, visualizeD
 
     return (
         <div className="diagram-table-container">
-            <div className="search-sort-container">
-                <div className="search-bar">
+            <div className="diagram-table-search-sort-container">
+                <div className="diagram-table-search-bar">
                     <SearchIconButton width="24" height="24" />
                     <input
                         type="text"
@@ -83,7 +83,7 @@ const DiagramTable = ({ diagrams, editItem, deleteItem, downloadFile, visualizeD
                         onChange={handleSearchChange}
                     />
                 </div>
-                <div className="filter-button">
+                <div className="diagram-table-filter-button">
                     <FilterIconButton
                         width="24"
                         height="24"
@@ -91,7 +91,7 @@ const DiagramTable = ({ diagrams, editItem, deleteItem, downloadFile, visualizeD
                         title="Sort Options"
                     />
                     {showSortOptions && (
-                        <div className="sort-options">
+                        <div className="diagram-table-sort-options">
                             <button onClick={() => handleSort('name', 'asc')}>A-Z</button>
                             <button onClick={() => handleSort('name', 'desc')}>Z-A</button>
                             <button onClick={() => handleSort('creation_date', 'desc')}>Newest</button>
@@ -103,9 +103,9 @@ const DiagramTable = ({ diagrams, editItem, deleteItem, downloadFile, visualizeD
             <table className="diagram-table">
                 <thead className="diagram-table-columns">
                     <tr>
-                        <th className="column-name">Name</th>
-                        <th className="column-file">File</th>
-                        <th className="column-options">Options</th>
+                        <th className="diagram-table-column-name">Name</th>
+                        <th className="diagram-table-column-file">File</th>
+                        <th className="diagram-table-column-options">Options</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -113,29 +113,29 @@ const DiagramTable = ({ diagrams, editItem, deleteItem, downloadFile, visualizeD
                         <tr key={item.id}>
                             <td>{item.name}</td>
                             <td>{item.file}</td>
-                            <td className="button-group">
-                                <div className="item" id={`${item.name}-download-file-button`}>
+                            <td className="diagram-table-button-group">
+                                <div className="diagram-table-button-group-item" id={`${item.name}-download-file-button`}>
                                     <DownloadFileIconButton
                                         width="24"
                                         height="24"
                                         onClick={() => downloadFile(item)}
                                     />
                                 </div>
-                                <div className="item" id={`${item.name}-visualize-diagram-button`}>
+                                <div className="diagram-table-button-group-item" id={`${item.name}-visualize-diagram-button`}>
                                     <ShowVisualizationIconButton
                                         width="24"
                                         height="24"
                                         onClick={() => visualizeDiagram(item)}
                                     />
                                 </div>
-                                <div className="item" id={`${item.name}-edit-diagram-button`}>
+                                <div className="diagram-table-button-group-item" id={`${item.name}-edit-diagram-button`}>
                                     <EditIconButton
                                         width="24"
                                         height="24"
                                         onClick={() => editItem(item)}
                                     />
                                 </div>
-                                <div className="item" id={`${item.name}-delete-diagram-button`}>
+                                <div className="diagram-table-button-group-item" id={`${item.name}-delete-diagram-button`}>
                                     <DeleteCircleIconButton
                                         width="24"
                                         height="24"
@@ -148,7 +148,7 @@ const DiagramTable = ({ diagrams, editItem, deleteItem, downloadFile, visualizeD
                 </tbody>
             </table>
 
-            <div className="pagination-container">
+            <div className="diagram-table-pagination-container">
                 <button onClick={handlePrevious} disabled={currentPage === 1}>
                     Previous
                 </button>

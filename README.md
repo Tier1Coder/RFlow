@@ -10,7 +10,46 @@ diagram contained in the file.
 
 To visit the live version of the application, click [here](https://rflow.vercel.app/).
 
-## Installation
+
+## Prerequisites - DEV setup
+
+The backend requires a `.env` file to be created in the `backend/rflow_django` directory. The file should contain the following:
+
+```
+SECRET_KEY=your_secret_key
+DEBUG=True
+```
+
+
+The frontend requires a `.env` file to be created in the `frontend/rflow_react` directory. 
+The file should contain the following:
+
+```
+REACT_APP_API_URL=[your_api_url]
+```
+
+
+## Prerequisites - PROD setup
+
+```
+SECRET_KEY=your_secret_key
+DEBUG=False
+ALLOWED_HOSTS=yourdomain.com,anotherdomain.com
+CORS_ALLOWED_ORIGINS=https://yourdomain.com,https://anotherdomain.com
+CSRF_TRUSTED_ORIGINS=https://yourdomain.com,https://anotherdomain.com
+DATABASE_URL=your_database_url
+```
+
+
+The frontend requires a `.env` file to be created in the `frontend/rflow_react` directory. 
+The file should contain the following:
+
+```
+REACT_APP_API_URL=[your_api_url]
+```
+
+
+## Installation & running project locally
 
 To install the application, you need to have Python 3.12 or higher installed on your machine.
 
@@ -24,34 +63,6 @@ To install the application, you need to have Python 3.12 or higher installed on 
 8. Install the frontend dependencies by running `npm install`
 9. Start the frontend by running `npm start`
 
-
-## Required variables in .env files
-
-
-The backend requires a `.env` file to be created in the `backend/rflow_django` directory. The file should contain the following:
-
-```
-SECRET_KEY=[your_secret_key]
-DEBUG=[boolean]
-DATABASE_URL=[your_database_url]
-```
-
-
-The frontend requires a `.env` file to be created in the `frontend/rflow_react` directory. 
-The file should contain the following:
-
-```
-REACT_APP_API_URL=[your_api_url]
-REACT_APP_USERNAME=[user]
-REACT_APP_PASSWORD=[password]
-```
-
-
-## Usage
-
-1. Open your browser and navigate to frontend or backend `http://localhost:[port]`
-2. Upload a BPMN 2.0 XML file
-3. Visualise the diagram
 
 ## License
 

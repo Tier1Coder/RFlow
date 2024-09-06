@@ -23,15 +23,15 @@
   font-weight: bold;
 }
 
-.diagram-table-columns th.column-name {
+.diagram-table-columns th.diagram-table-column-name {
   width: 25%;
 }
 
-.diagram-table-columns th.column-file {
+.diagram-table-columns th.diagram-table-column-file {
   width: 45%;
 }
 
-.diagram-table-columns th.column-options {
+.diagram-table-columns th.diagram-table-column-options {
   width: 30%;
 }
 
@@ -53,19 +53,19 @@
   text-align: left;
 }
 
-.button-group {
+.diagram-table-button-group {
   display: flex;
   justify-content: space-between;
 }
 
-.item {
+.diagram-table-button-group-item {
   margin: 0 5px;
   position: relative;
   overflow: hidden;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.item:hover {
+.diagram-table-button-group-item:hover {
   transform: scale(1.25);
 }
 
@@ -75,14 +75,14 @@
   }
 }
 
-.pagination-container {
+.diagram-table-pagination-container {
   display: flex;
   justify-content: center;
   align-items: center;
   margin-top: 20px;
 }
 
-.pagination-container button {
+.diagram-table-pagination-container button {
   margin: 0 10px;
   padding: 5px 10px;
   border: 1px solid #ddd;
@@ -91,16 +91,16 @@
   transition: background-color 0.3s ease;
 }
 
-.pagination-container button:hover {
+.diagram-table-pagination-container button:hover {
   background-color: #ddd;
 }
 
-.pagination-container button:disabled {
+.diagram-table-pagination-container button:disabled {
   cursor: not-allowed;
   background-color: #f1f1f1;
 }
 
-.pagination-container input {
+.diagram-table-pagination-container input {
   width: 50px;
   text-align: center;
   margin: 0 10px;
@@ -109,11 +109,11 @@
   border-radius: 4px;
 }
 
-.pagination-container span {
+.diagram-table-pagination-container span {
   margin: 0 10px;
 }
 
-.search-sort-container {
+.diagram-table-search-sort-container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -121,24 +121,24 @@
   width: 100%;
 }
 
-.search-bar {
+.diagram-table-search-bar {
   display: flex;
   align-items: center;
   margin-right: 20px;
 }
 
-.search-bar input {
+.diagram-table-search-bar input {
   margin-left: 10px;
   padding: 5px;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
 
-.filter-button {
+.diagram-table-filter-button {
   position: relative;
 }
 
-.sort-options {
+.diagram-table-sort-options {
   position: absolute;
   top: 30px;
   right: 0;
@@ -149,7 +149,7 @@
   z-index: 10;
 }
 
-.sort-options button {
+.diagram-table-sort-options button {
   display: block;
   width: 100%;
   padding: 10px;
@@ -159,6 +159,6 @@
   cursor: pointer;
 }
 
-.sort-options button:hover {
+.diagram-table-sort-options button:hover {
   background: #f0f0f0;
 }
