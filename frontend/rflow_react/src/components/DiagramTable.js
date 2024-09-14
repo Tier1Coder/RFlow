@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { ShowVisualizationIconButton } from '../assets/icons/ui/ShowVisualizationIcon';
-import { DeleteCircleIconButton } from '../assets/icons/ui/DeleteCircleIcon';
-import { DownloadFileIconButton } from '../assets/icons/ui/DownloadFileIcon';
-import { EditIconButton } from '../assets/icons/ui/EditIcon';
-import { FilterIconButton } from '../assets/icons/ui/FilterIcon';
-import { SearchIconButton } from '../assets/icons/ui/SearchIcon';
+import { ShowVisualizationIconButton } from '../assets/ui/ShowVisualizationIcon';
+import { DeleteCircleIconButton } from '../assets/ui/DeleteCircleIcon';
+import { DownloadFileIconButton } from '../assets/ui/DownloadFileIcon';
+import { EditIconButton } from '../assets/ui/EditIcon';
+import { FilterIconButton } from '../assets/ui/FilterIcon';
+import { SearchIconButton } from '../assets/ui/SearchIcon';
 import '../styles/DiagramTable.css';
 
 const DiagramTable = ({ diagrams, editItem, deleteItem, downloadFile, visualizeDiagram }) => {

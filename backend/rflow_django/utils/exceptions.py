@@ -65,7 +65,7 @@ class DocumentInvalidError(Exception):
 
 
 class ElementIdDuplicatedError(Exception):
-    """ Raised when an element ID is duplicated in the XML document. """
+    """ Raised when an visual_element ID is duplicated in the XML document. """
     def __init__(self, message: str):
         self.message = message
         super().__init__(self.message)

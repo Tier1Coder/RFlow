@@ -3,26 +3,26 @@ This module contains a class to parse BPMN 2.0 XML files.
 
 According to BPMN 2.0 specification:
 Serializing a BPMN diagram requires the following: collection of BPMNShape(s) & collection of BPMNEdge(s) on
-BPMNPlane of BPMNDiagram. BPMNShape(s) & BPMNEdge(s) must reference BPMN model element which is bpmnElement.
+BPMNPlane of BPMNDiagram. BPMNShape(s) & BPMNEdge(s) must reference BPMN model visual_element which is bpmnElement.
 If no bpmnElement is referenced or if the reference is invalid, it is expected that
 this shape or edge should not be depicted. The only exception is for a Data Association connected to a Sequence Flow.
 
 When rendering a BPMN diagram, the correct depiction of a BPMNShape or BPMNEdge depends mainly on the
-referenced BPMN model element [bpmnElement] and its particular attributes and/or references.
+referenced BPMN model visual_element [bpmnElement] and its particular attributes and/or references.
 
-Parser takes an XML file as input, optionally updates the root element with default attributes and namespaces,
-and then parses the XML file into a dictionary containing the BPMN diagram elements: both logical and visual.
+Parser takes an XML file as input, removes namespaces from the XML document, collects logical and visual elements,
+and then parses the XML file into a single dictionary structure, containing both logical and visual elements.
 
-The text of the label to be rendered is obtained by resolving the name attribute of the referenced BPMN model element
-[bpmnElement] from the BPMNShape or BPMNEdge. In the particular case when the referenced BPMN model element
-[bpmnElement] is a DataObjectReference, the text of the label to be rendered is obtained by concatenating the name
-attribute of the referenced BPMN model element [bpmnElement] and the name attribute of the dataState attribute of this
-DataObjectReference.
+The text of the label to be rendered is obtained by resolving the name attribute of the referenced BPMN model
+visual_element [bpmnElement] from the BPMNShape or BPMNEdge. In the particular case when the referenced BPMN model
+visual_element [bpmnElement] is a DataObjectReference, the text of the label to be rendered is obtained by
+concatenating the name attribute of the referenced BPMN model visual_element [bpmnElement] and the name attribute
+of the dataState attribute of this DataObjectReference.
 
 The parser also validates the XML document against the BPMN 2.0 XML schema and raises an exception if the document is
 invalid in terms of its structure or content.
 
-List of all element (BPMNShapes and BPMNEdges) types according to the BPMN 2.0 specification:
+List of all visual_element (BPMNShapes and BPMNEdges) types according to the BPMN 2.0 specification is available in the:
 12.3 Notational Depiction Library and Abstract Element Resolutions (p. 380)
 or: https://github.com/Tier1Coder/RFlow/issues/20
 
@@ -30,124 +30,56 @@ or: https://github.com/Tier1Coder/RFlow/issues/20
 
 from typing import Union, List
 import lxml.etree as etree
+from lxml import objectify
 from pathlib import Path
 from utils.exceptions import DocumentInvalidError, ElementIdDuplicatedError
 from collections import Counter
 
 
-DEFAULT_ROOT_ATTRIBUTES = {
-    'targetNamespace': 'http://www.example.org/ComplexExample',
-    'typeLanguage': 'http://www.java.com/javaTypes',
-    'expressionLanguage': 'http://www.mvel.org/2.0',
-}
-DEFAULT_ROOT_NAMESPACES = {
-    'xsd': 'http://www.w3.org/2001/XMLSchema',
-    'xs': 'http://www.w3.org/2001/XMLSchema-instance',
-    'tns': 'http://www.example.org/ComplexExample',
-    'bpmndi': 'http://www.omg.org/spec/BPMN/20100524/DI',
-    'dc': 'http://www.omg.org/spec/DD/20100524/DC',
-    'di': 'http://www.omg.org/spec/DD/20100524/DI',
-    'bpmn': "http://www.omg.org/spec/BPMN/20100524/MODEL"
-}
-LOGIC_ELEMENTS_NAMESPACE = '{http://www.omg.org/spec/BPMN/20100524/MODEL'
-VISUALIZATION_ELEMENTS_NAMESPACE = '{http://www.omg.org/spec/BPMN/20100524/DI'
-
-
-def merge_dictionaries(old_dict: dict, priority_dict: dict) -> dict:
+def remove_namespaces(root: etree.ElementBase) -> None:
     """
-    Merges two dictionaries, giving priority to the values in the second dictionary.
-
-    This function adds key-value pairs from the first dictionary to the result if:
-    - The key does not exist in the second dictionary.
-    - The value does not exist in the second dictionary.
-
-    It then adds or updates key-value pairs from the second dictionary to the result.
-    If a value from the second dictionary already exists in the result under a different key,
-    the corresponding key-value pair is removed before adding the new pair.
+    Removes namespaces from the root and its children.
 
     Parameters
     ----------
-    old_dict : dict
-        The first dictionary (older data) to merge.
-    priority_dict : dict
-        The second dictionary (newer data) to merge, which takes precedence.
-
-    Returns
-    -------
-    dict
-        A dictionary containing the merged key-value pairs with priority given to the second dictionary.
+    root : etree.ElementBase
+        The root visual_element of the XML document.
     """
-    result = {}
+    for elem in root.getiterator():
+        if isinstance(elem, etree._Comment) or isinstance(elem, etree._ProcessingInstruction):
+            continue
+        local_name = etree.QName(elem).localname
+        if elem.tag != local_name:
+            elem.tag = etree.QName(elem).localname
 
-    for k, v in old_dict.items():
-        if k not in priority_dict and v not in priority_dict.values():
-            result[k] = v
+        for attr_name in elem.attrib:
+            local_attr_name = etree.QName(attr_name).localname
+            if attr_name != local_attr_name:
+                attr_value = elem.attrib[attr_name]
+                del elem.attrib[attr_name]
+                elem.attrib[local_attr_name] = attr_value
 
-    for k, v in priority_dict.items():
-        for existing_k, existing_v in list(result.items()):
-            if existing_v == v and existing_k != k:
-                del result[existing_k]
-        result[k] = v
-
-    return result
+    objectify.deannotate(root, cleanup_namespaces=True)
 
 
-def update_xml_root_attributes_namespaces(root_element: etree.ElementBase,
-                                          default_attributes: dict,
-                                          default_namespaces: dict) -> etree.ElementBase:
+def obtain_logical_visual_elements(elements: List[etree.ElementBase]) -> tuple:
     """
-    Updates the root element of an XML document with default attributes and namespaces.
+    Collects logical and visual elements from the list of elements.
 
     Parameters
     ----------
-    root_element : etree.ElementBase
-        The root element of the XML document to update.
-    default_attributes : dict
-        A dictionary containing default attributes to add to the root element.
-    default_namespaces : dict
-        A dictionary containing default namespaces to add to the root element.
-
-    Returns
-    -------
-    etree.ElementBase
-        The updated root element.
+    elements : List[etree.ElementBase]
     """
-    for key, value in merge_dictionaries(root_element.attrib, default_attributes).items():
-        root_element.set(key, value)
+    logical_elements = []
+    visual_elements = []
 
-    root_element.nsmap.update(default_namespaces)
-
-    # Setting schemaLocation is special because it requires the 'xs' namespace
-    root_element.set(f"{{{DEFAULT_ROOT_NAMESPACES['xs']}}}schemaLocation",
-                     "http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd")
-
-    return root_element
-
-
-def get_elements_with_specific_tag(elements: List[etree.ElementBase], tag: str) -> List[etree.ElementBase]:
-    """
-    Collects all elements with a specific tag name from the root element and its children.
-
-    Parameters
-    ----------
-    elements : list
-        A list of elements to search for the specified tag name.
-    tag : str
-        The tag name to search for.
-
-    Returns
-    -------
-    list
-        A list of elements with the specified tag name.
-    """
-    elements_with_specific_tag = []
     for element in elements:
-        if element.tag.startswith(tag):
-            elements_with_specific_tag.append(element)
+        if 'id' in element.attrib and 'bpmnElement' not in element.attrib:
+            logical_elements.append(element)
+        elif 'bpmnElement' in element.attrib:
+            visual_elements.append(element)
 
-    if len(elements_with_specific_tag) == 0:
-        raise DocumentInvalidError(f"No elements with tag '{tag}' found in the XML document.")
-    return elements_with_specific_tag
+    return logical_elements, visual_elements
 
 
 def check_duplicate_element_ids(elements: List[etree.ElementBase], ident: str) -> Union[ElementIdDuplicatedError, None]:
@@ -176,15 +108,15 @@ def check_duplicate_element_ids(elements: List[etree.ElementBase], ident: str) -
     return
 
 
-def get_all_attributes_recursively(element: etree.ElementBase) -> dict:
+def get_all_visual_element_attributes_recursively(visual_element: etree.ElementBase) -> dict:
     """
-    Helper function to recursively collect attributes of elements and their children.
+    Recursively collects attributes of the visual element and its children.
     Includes all waypoints that must be enumerated because they have no unique identifier.
-    Removes namespaces from tag names and attribute keys.
+    It only works for visual elements.
 
     Parameters
     ----------
-    element : etree.ElementBase
+    visual_element : etree.ElementBase
         The element to collect attributes from.
 
     Returns
@@ -192,88 +124,224 @@ def get_all_attributes_recursively(element: etree.ElementBase) -> dict:
     dict
         A dictionary containing all attributes of the element and its children.
     """
-    children = {}
+    children_attributes = {}
     waypoints = []
 
-    for child in element:
-        child_tag = child.tag.split('}')[-1] if '}' in child.tag else child.tag  # Potential namespace removal
-        child_attrib = {}
+    for child in visual_element:
+        child_attrib = dict(child.attrib)
 
-        for attr_key, attr_value in child.attrib.items():
-            clean_attr_key = attr_key.split('}')[-1] if '}' in attr_key else attr_key
-            child_attrib[clean_attr_key] = attr_value
-
-        grandchildren = get_all_attributes_recursively(child)
+        grandchildren = get_all_visual_element_attributes_recursively(child)
         if grandchildren:
             child_attrib.update(grandchildren)
 
-        if child_tag == 'waypoint':
+        if child.tag == 'waypoint':
             waypoints.append(child_attrib)
         elif child_attrib:
-            children[child_tag] = child_attrib
+            children_attributes[child.tag] = child_attrib
 
     if waypoints:
         for i, waypoint in enumerate(waypoints, start=1):
-            children[f'waypoint{i}'] = waypoint
+            children_attributes[f'waypoint{i}'] = waypoint
 
-    return children
+    return children_attributes
 
 
-def combine_logical_and_visual_elements(logic_elements: List[etree.ElementBase],
-                                        visual_elements: List[etree.ElementBase]) -> dict:
+def parse_process_element(process_element: etree.ElementBase) -> dict:
     """
-    Combines logical and visual elements into a dictionary.
+    Parses BPMN process element.
 
     Parameters
     ----------
-    logic_elements : List[etree.ElementBase]
-        A list of logical elements.
-    visual_elements : List[etree.ElementBase]
-        A list of visual elements.
+    process_element : etree.ElementBase
+        The BPMN process element.
 
     Returns
     -------
     dict
-        A dict of elements containing both logical and visual elements inside of one key-value pair.
+        A dictionary containing the BPMN process specific data such as attributes, text, and children.
+    """
+
+    def recursive_parse(element):
+        element_data = {
+            "tag": element.tag,
+            "attributes": dict(element.attrib),
+            "text": element.text
+        }
+        tag_counts = {}
+
+        for child in element:
+            tag = child.tag
+            if tag not in tag_counts:
+                tag_counts[tag] = 0
+            tag_counts[tag] += 1
+            key = f"{tag}{tag_counts[tag]}"
+
+            if len(child) == 0:  # If the child has no further children
+                element_data[key] = {
+                    "attributes": dict(child.attrib),
+                    "text": child.text
+                }
+            else:
+                element_data[key] = recursive_parse(child)
+
+        return element_data
+
+    return recursive_parse(process_element)
+
+
+def combine_logical_and_visual_elements(logical_elements: List[etree.ElementBase],
+                                        visual_elements: List[etree.ElementBase]) -> dict:
+    """
+    Combines logical and visual elements into a single dictionary.
+
+    Parameters
+    ----------
+    logical_elements : List[etree.ElementBase]
+    visual_elements : List[etree.ElementBase]
+
+    Returns
+    -------
+    dict
+        A combination of visual and logical elements merged into a single structure.
+        When a visual visual_element references a logical visual_element, the attributes of the visual visual_element
+        are added to the logical visual_element.
     """
     combined_elements = {}
 
-    for logic_element in logic_elements:
-        logic_element_attributes = dict(logic_element.attrib)
-        if '}' in logic_element.tag:
-            logic_element_attributes['elementType'] = logic_element.tag.split('}')[1]  # Remove namespace
-        logic_element_id = logic_element.attrib.get('id')
-        if logic_element_id:
-            combined_elements[logic_element_id] = logic_element_attributes
+    for logical_element in logical_elements:
+        logical_element_attributes = dict(logical_element.attrib)
+        logical_element_id = logical_element_attributes.pop('id', None)
+        if logical_element_id:
+            logical_element_attributes['elementType'] = logical_element.tag
+            combined_elements[logical_element_id] = logical_element_attributes
 
     for visual_element in visual_elements:
-        visualization_element_attributes = dict(visual_element.attrib)
-        if '}' in visual_element.tag:
-            visualization_element_attributes['elementType'] = visual_element.tag.split('}')[1]  # Remove namespace
-        visualization_element_id = visualization_element_attributes.get('bpmnElement')
-
-        if visualization_element_id and visualization_element_id in combined_elements:
-            combined_elements[visualization_element_id].update(
-                get_all_attributes_recursively(visual_element)
+        visual_element_attributes = dict(visual_element.attrib)
+        visual_element_id = visual_element_attributes.pop('bpmnElement', None)
+        if visual_element_id and visual_element_id in combined_elements:
+            combined_elements[visual_element_id].update(
+                get_all_visual_element_attributes_recursively(visual_element)
             )
+
+    # Add process element data to the combined elements
+    for logical_element in logical_elements:
+        for logical_element_child in logical_element:
+            if logical_element_child.tag == 'process':
+                for process_element_child in logical_element_child:
+                    try:
+                        combined_elements[process_element_child.attrib.get('id')].update(
+                            parse_process_element(process_element_child))
+                    except KeyError:
+                        pass
 
     return combined_elements
 
 
+def remove_repetitions(element_data: dict) -> dict:
+    def remove_redundant_attributes(data: dict) -> dict:
+        for data_key, data_value in list(data.items()):
+            if isinstance(data_value, dict):
+                remove_redundant_attributes(data_value)
+            if data_key == "attributes":
+                redundant_keys = [k for k in data_value if k in data and data[k] == data_value[k]]
+                for redundant_key in redundant_keys:
+                    del data_value[redundant_key]
+        return data
+
+    for key, value in list(element_data.items()):
+        if isinstance(value, dict):
+            remove_repetitions(value)
+        if key == "tag" and "elementType" in element_data and element_data["elementType"] == value:
+            del element_data[key]
+
+    return remove_redundant_attributes(element_data)
+
+
+def update_element_types(element_data: dict) -> dict:
+    for key, value in list(element_data.items()):
+        if isinstance(value, dict):
+            update_element_types(value)
+
+        current_element_type = element_data.get("elementType", None)
+        if current_element_type:
+            """ Rules for updating element types """
+            """ BPMN Shapes """
+            # artifacts
+            # call activities
+            # call choreographies
+            # choreography participant bands
+            # choreography tasks
+            # collapsed ad hoc sub - processes
+            # collapsed call activities
+            # collapsed call choreographies
+            # collapsed event sub - processes
+            # collapsed sub - choreographies
+            # collapsed sub - processes
+            # collapsed transactions
+            # conversations
+            # data
+            # events
+            if current_element_type == "startEvent" and any("messageEventDefinition" in key for key in element_data):
+                if element_data.get("isInterrupting") is True:
+                    element_data["elementType"] = "interruptingMessageStartEvent"
+                else:
+                    element_data["elementType"] = "nonInterruptingMessageStartEvent"
+            if current_element_type == "startEvent" and not any("EventDefinition" in key for key in element_data):
+                element_data["elementType"] = "noneStartEvent"
+            if current_element_type == "intermediateCatchEvent" and element_data.get("timerEventDefinition1", None):
+                element_data["elementType"] = "timerIntermediateEvent"
+            if current_element_type == "intermediateCatchEvent" and element_data.get("messageEventDefinition1", None):
+                element_data["elementType"] = "catchSignalIntermediateEvent"
+            if current_element_type == "endEvent" and not any("EventDefinition" in key for key in element_data):
+                element_data["elementType"] = "noneEndEvent"
+            if current_element_type == "endEvent" and any("terminateEventDefinition" in key for key in element_data):
+                element_data["elementType"] = "terminateEndEvent"
+            # expanded ad hoc sub - processes
+            # expanded call activities
+            # expanded call choreographies
+            # expanded event sub - processes
+            # expanded sub - choreographies
+            # expanded sub - processes
+            # expanded transactions
+            # gateways
+            if current_element_type == "exclusiveGateway" and element_data.get("isMarkerVisible", None):
+                element_data["elementType"] = "exclusiveGatewayWithMarker"
+            # lanes
+            if current_element_type == "lane" and not element_data.get("isVertical", None):
+                element_data["elementType"] = "horizontalLane"
+            if current_element_type == "lane" and element_data.get("isVertical", None):
+                element_data["elementType"] = "verticalLane"
+            # loop markers
+            # pools
+            if current_element_type == "participant" and (element_data.get("ParticipantMultiplicity") is None or
+                                                          element_data.get("ParticipantMultiplicity") == "1"):
+                element_data["elementType"] = "horizontalPool"
+            # tasks
+            if current_element_type == "task":
+                element_data["elementType"] = "abstractTask"
+
+            """ BPMN Edges """
+            # connecting objects
+            if current_element_type == "messageFlow" and (element_data.get("messageVisibleKind") is None or
+                                                          element_data.get("messageVisibleKind") == "unspecified"):
+                pass
+    return element_data
+
+
 class BPMNParser:
     """
-    A class to parse BPMN 2.0 XML files.
+    A class to parse BPMN XML files according to the provided schema.
 
     Attributes:
     ----------
     xml_path : str
-        The path to the BPMN 2.0 XML file.
+        The path to the BPMN XML file.
     xsd_path : str
-        The path to the BPMN 2.0 XML schema file.
+        The path to the BPMN XML schema file.
 
     Methods:
     --------
-    - validate_xml(xml_root: etree.ElementBase) -> None
+    - validate_xml(xml_root: etree.ElementBase) -> Union[None, DocumentInvalidError]
     - parse() -> dict
 
     """
@@ -281,14 +349,14 @@ class BPMNParser:
         self.xsd_path = xsd_path
         self.xml_path = xml_path
 
-    def validate_xml(self, xml_root: etree.ElementBase) -> Union[bool, DocumentInvalidError]:
+    def validate_xml(self, xml_root: etree.ElementBase) -> Union[None, DocumentInvalidError]:
         """
-        Validates the given XML root element against the schema.
+        Validates the given XML root visual_element against the schema.
 
         Parameters:
         ----------
         xml_root : etree.ElementBase
-            The root element of the XML document to validate.
+            The root visual_element of the XML document to validate.
 
         Raises:
         -------
@@ -300,12 +368,12 @@ class BPMNParser:
 
         if not is_valid:
             last_error = xml_schema.error_log.last_error
-            raise DocumentInvalidError(f"XML file is not valid according to the BPMN 2.0 schema: {last_error}")
-        return True
+            raise DocumentInvalidError(f"XML file is not valid according to the XSD file: {last_error}")
+        return
 
     def parse(self) -> dict:
         """
-        Parses the BPMN 2.0 XML file and returns a dictionary containing the BPMN elements.
+        Parses the BPMN XML file and returns a dictionary containing the parsed BPMN elements.
 
         Returns:
         -------
@@ -315,24 +383,17 @@ class BPMNParser:
         tree = etree.parse(self.xml_path)
         etree.strip_tags(tree, etree.Comment)  # Remove comments from the XML
         root = tree.getroot()
-        updated_xml_root = update_xml_root_attributes_namespaces(root,
-                                                                 DEFAULT_ROOT_ATTRIBUTES,
-                                                                 DEFAULT_ROOT_NAMESPACES)
-        self.validate_xml(updated_xml_root)
-        all_elements = list(updated_xml_root.iter())
 
-        # Classes for BPMN elements (processes, tasks, etc.)
-        logic_elements = get_elements_with_specific_tag(all_elements, LOGIC_ELEMENTS_NAMESPACE)
+        self.validate_xml(root)
 
-        # Classes for BPMN DI elements (shapes, edges, etc.)
-        visual_elements = get_elements_with_specific_tag(all_elements, VISUALIZATION_ELEMENTS_NAMESPACE)
+        remove_namespaces(root)
 
-        check_duplicate_element_ids(logic_elements, 'id')
-        check_duplicate_element_ids(visual_elements, 'bpmnElement')
+        all_elements = list(root.iter())
+        logical_elements, visual_elements = obtain_logical_visual_elements(all_elements)
+        check_duplicate_element_ids(logical_elements, "id")
+        check_duplicate_element_ids(visual_elements, "bpmnElement")
+        combined_elements = combine_logical_and_visual_elements(logical_elements, visual_elements)
+        updated_combined_elements = remove_repetitions(combined_elements)
+        updated_element_types = update_element_types(updated_combined_elements)
 
-        combined_elements = combine_logical_and_visual_elements(logic_elements, visual_elements)
-
-        # TODO: intermediateCatchEvent and intermediateThrowEvent are not included in the final dictionary (should be
-        #  properly parsed)
-
-        return combined_elements
+        return updated_element_types

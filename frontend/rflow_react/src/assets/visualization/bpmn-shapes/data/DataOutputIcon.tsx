@@ -1,22 +1,14 @@
 import * as React from 'react';
 
-interface DataOutputIconProps {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
-
-const DataOutputIcon: React.FC<DataOutputIconProps> = ({ x, y, width, height }) => {
+const DataOutputIcon = () => {
   return (
     <svg
-      style={{ position: 'absolute', overflow: 'visible', left: x, top: y, width: width, height: height }}
       viewBox="0 0 2000 2000"
       xmlns="http://www.w3.org/2000/svg"
     >
       <rect
-        width={width}
-        height={height}
+        width="2000"
+        height="2000"
         x="0"
         y="0"
         rx="30"

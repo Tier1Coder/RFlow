@@ -1,64 +1,142 @@
 import React, { useEffect, useState } from 'react';
 import Draggable from 'react-draggable';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import { deleteDiagram, downloadFile } from '../services/DiagramService';
 import '../styles/DiagramRenderer.css';
-import StartEventIcon from '../assets/icons/diagram_visualization/bounds_elements/StartEventIcon.tsx';
-import EndEventIcon from '../assets/icons/diagram_visualization/bounds_elements/EndEventIcon.tsx';
-import SequenceFlowIcon from '../assets/icons/diagram_visualization/waypoints_elements/SequenceFlowIcon.tsx';
-import ScriptTaskIcon from '../assets/icons/diagram_visualization/bounds_elements/ScriptTaskIcon.tsx';
-import UserTaskIcon from '../assets/icons/diagram_visualization/bounds_elements/UserTaskIcon.tsx';
-import ParallelGatewayIcon from '../assets/icons/diagram_visualization/bounds_elements/ParallelGatewayIcon.tsx';
-import ParticipantIcon from '../assets/icons/diagram_visualization/bounds_elements/ParticipantIcon.tsx';
-import ServiceTaskIcon from '../assets/icons/diagram_visualization/bounds_elements/ServiceTaskIcon.tsx';
-import ExclusiveGatewayIcon from '../assets/icons/diagram_visualization/bounds_elements/ExclusiveGatewayIcon.tsx';
-import MessageFlowIcon from '../assets/icons/diagram_visualization/waypoints_elements/MessageFlowIcon.tsx';
-import DataInputIcon from '../assets/icons/diagram_visualization/bounds_elements/DataInputIcon.tsx';
-import SendTaskIcon from '../assets/icons/diagram_visualization/bounds_elements/SendTaskIcon.tsx';
-import DataOutputIcon from '../assets/icons/diagram_visualization/bounds_elements/DataOutputIcon.tsx';
-import TaskIcon from '../assets/icons/diagram_visualization/bounds_elements/TaskIcon.tsx';
-import TextAnnotationIcon from '../assets/icons/diagram_visualization/bounds_elements/TextAnnotationIcon.tsx';
-import DataInputAssociationFlowIcon from '../assets/icons/diagram_visualization/waypoints_elements/DataInputAssociationFlowIcon.tsx';
-import DataOutputAssociationFlowIcon from '../assets/icons/diagram_visualization/waypoints_elements/DataOutputAssociationFlowIcon.tsx';
-import DataObjectIcon from '../assets/icons/diagram_visualization/bounds_elements/DataObjectIcon.tsx';
-import AssociationFlowIcon from '../assets/icons/diagram_visualization/waypoints_elements/AssociationFlowIcon.tsx';
-import EventBasedGatewayIcon from '../assets/icons/diagram_visualization/bounds_elements/EventBasedGatewayIcon.tsx';
-import LaneIcon from '../assets/icons/diagram_visualization/bounds_elements/LaneIcon.tsx';
-import { InfoIconButton } from '../assets/icons/ui/InfoIcon.jsx';
-import { UserIconButton } from '../assets/icons/ui/UserIcon.jsx';
-import { DownloadFileIconButton } from '../assets/icons/ui/DownloadFileIcon.jsx';
-import { DeleteCircleIconButton } from '../assets/icons/ui/DeleteCircleIcon.jsx';
-import { BackIconButton } from '../assets/icons/ui/BackIcon.jsx';
+
+/* -User Interface Components- */
+import { InfoIconButton } from '../assets/ui/InfoIcon.jsx';
+import { UserIconButton } from '../assets/ui/UserIcon.jsx';
+import { DownloadFileIconButton } from '../assets/ui/DownloadFileIcon.jsx';
+import { DeleteCircleIconButton } from '../assets/ui/DeleteCircleIcon.jsx';
+import { BackIconButton } from '../assets/ui/BackIcon.jsx';
+
+/* -Modals- */
 import InfoModal from './modals/InfoModal';
 import UserOptionsModal from './modals/UserOptionsModal';
 import ConfirmationModal from './modals/ConfirmationModal';
-import { deleteDiagram, downloadFile } from '../services/DiagramService';
-import { ToastContainer, toast } from 'react-toastify';
 
-const elementComponents = {
-    startEvent: StartEventIcon,
-    endEvent: EndEventIcon,
+/* -BPMN Shapes- */
+
+// artifacts
+import TextAnnotationIcon from '../assets/visualization/bpmn-shapes/artifacts/TextAnnotationIcon.tsx';
+// call activities
+// call choreographies
+// choreography participant bands
+// choreography tasks
+// collapsed ad hoc sub-processes
+// collapsed call activities
+// collapsed call choreographies
+// collapsed event sub-processes
+// collapsed sub-choreographies
+// collapsed sub-processes
+// collapsed transactions
+// conversations
+// data
+import DataInputIcon from '../assets/visualization/bpmn-shapes/data/DataInputIcon.tsx';
+import DataObjectIcon from '../assets/visualization/bpmn-shapes/data/DataObjectIcon.tsx';
+import DataOutputIcon from '../assets/visualization/bpmn-shapes/data/DataOutputIcon.tsx';
+// events
+import NoneStartEventIcon from '../assets/visualization/bpmn-shapes/events/NoneStartEventIcon.tsx';
+import NonInterruptingMessageStartEvent from '../assets/visualization/bpmn-shapes/events/NonInterruptingMessageStartEvent.tsx';
+import TimerIntermediateEventIcon from '../assets/visualization/bpmn-shapes/events/TimerIntermediateEventIcon.tsx';
+import CatchSignalIntermediateEventIcon from '../assets/visualization/bpmn-shapes/events/CatchSignalIntermediateEventIcon.tsx';
+import NoneEndEventIcon from '../assets/visualization/bpmn-shapes/events/NoneEndEventIcon.tsx';
+import TerminateEndEventIcon from '../assets/visualization/bpmn-shapes/events/TerminateEndEventIcon.tsx';
+// expanded ad hoc sub-processes
+// expanded call activities
+// expanded call choreographies
+// expanded event sub-processes
+// expanded sub-choreographies
+// expanded sub-processes
+// expanded transactions
+// gateways
+import ParallelGatewayIcon from '../assets/visualization/bpmn-shapes/gateways/ParallelGatewayIcon.tsx';
+import ExclusiveGatewayIcon from '../assets/visualization/bpmn-shapes/gateways/ExclusiveGatewayIcon.tsx';
+import ExclusiveGatewayWithMarkerIcon from '../assets/visualization/bpmn-shapes/gateways/ExclusiveGatewayWithMarkerIcon.tsx';
+import EventBasedGatewayIcon from '../assets/visualization/bpmn-shapes/gateways/EventBasedGatewayIcon.tsx';
+// lanes
+import HorizontalLaneIcon from '../assets/visualization/bpmn-shapes/lanes/HorizontalLaneIcon.tsx';
+// loop markers
+// pools
+import HorizontalPoolIcon from '../assets/visualization/bpmn-shapes/pools/HorizontalPoolIcon.tsx';
+// tasks
+import AbstractTaskIcon from '../assets/visualization/bpmn-shapes/tasks/AbstractTaskIcon.tsx';
+import ScriptTaskIcon from '../assets/visualization/bpmn-shapes/tasks/ScriptTaskIcon.tsx';
+import UserTaskIcon from '../assets/visualization/bpmn-shapes/tasks/UserTaskIcon.tsx';
+import ServiceTaskIcon from '../assets/visualization/bpmn-shapes/tasks/ServiceTaskIcon.tsx';
+import SendTaskIcon from '../assets/visualization/bpmn-shapes/tasks/SendTaskIcon.tsx';
+
+
+/* -BPMN Edges- */
+
+// connecting objects
+import SequenceFlowIcon from '../assets/visualization/bpmn-edges/connecting-objects/SequenceFlowIcon.tsx';
+import AssociationIcon from '../assets/visualization/bpmn-edges/connecting-objects/AssociationIcon.tsx';
+import MessageFlowIcon from '../assets/visualization/bpmn-edges/connecting-objects/MessageFlowIcon.tsx';
+import DataInputAssociationFlowIcon from '../assets/visualization/bpmn-edges/connecting-objects/DataInputAssociationFlowIcon.tsx'; // Directed data association
+import DataOutputAssociationFlowIcon from '../assets/visualization/bpmn-edges/connecting-objects/DataOutputAssociationFlowIcon.tsx'; // Directed data association
+
+
+const bpmnShapesComponents = {
+    // artifacts
+    textAnnotation: TextAnnotationIcon,
+    // call activities
+    // call choreographies
+    // choreography participant bands
+    // choreography tasks
+    // collapsed ad hoc sub-processes
+    // collapsed call activities
+    // collapsed call choreographies
+    // collapsed event sub-processes
+    // collapsed sub-choreographies
+    // collapsed sub-processes
+    // collapsed transactions
+    // conversations
+    // data
+    dataInput: DataInputIcon,
+    dataOutput: DataOutputIcon,
+    dataObject: DataObjectIcon,
+    // events
+    noneStartEvent: NoneStartEventIcon, 
+    nonInterruptingMessageStartEvent: NonInterruptingMessageStartEvent,
+    timerIntermediateEvent: TimerIntermediateEventIcon,
+    catchSignalIntermediateEvent: CatchSignalIntermediateEventIcon,
+    noneEndEvent: NoneEndEventIcon,
+    terminateEndEvent: TerminateEndEventIcon,
+    // expanded ad hoc sub-processes
+    // expanded call activities
+    // expanded call choreographies
+    // expanded event sub-processes
+    // expanded sub-choreographies
+    // expanded sub-processes
+    // expanded transactions
+    // gateways
+    parallelGateway: ParallelGatewayIcon,
+    eventBasedGateway: EventBasedGatewayIcon,
+    exclusiveGateway: ExclusiveGatewayIcon,
+    exclusiveGatewayWithMarker: ExclusiveGatewayWithMarkerIcon, 
+    // lanes
+    horizontalLane: HorizontalLaneIcon,
+    // loop markers
+    // pools
+    horizontalPool: HorizontalPoolIcon,
+    // tasks
+    abstractTask: AbstractTaskIcon,
     scriptTask: ScriptTaskIcon,
     userTask: UserTaskIcon,
-    parallelGateway: ParallelGatewayIcon,
-    participant: ParticipantIcon,
     serviceTask: ServiceTaskIcon,
-    exclusiveGateway: ExclusiveGatewayIcon,
-    dataInput: DataInputIcon,
     sendTask: SendTaskIcon,
-    dataOutput: DataOutputIcon,
-    task: TaskIcon,
-    textAnnotation: TextAnnotationIcon,
-    dataObject: DataObjectIcon,
-    eventBasedGateway: EventBasedGatewayIcon,
-    lane: LaneIcon
 };
 
-const flowElementComponents = {
+const bpmnEdgesComponents = {
+    // connecting objects
     sequenceFlow: SequenceFlowIcon,
     messageFlow: MessageFlowIcon,
     dataInputAssociation: DataInputAssociationFlowIcon,
     dataOutputAssociation: DataOutputAssociationFlowIcon,
-    association: AssociationFlowIcon
+    association: AssociationIcon
 }
 
 const DiagramRenderer = () => {
@@ -79,7 +157,7 @@ const DiagramRenderer = () => {
 
     const renderElement = (key, element) => {
         const { elementType, Bounds } = element;
-        const ElementComponent = elementComponents[elementType] || flowElementComponents[elementType];
+        const ElementComponent = bpmnShapesComponents[elementType] || bpmnEdgesComponents[elementType];
 
         if (!ElementComponent) {
             console.log('Unrecognized element: ', element);
@@ -90,16 +168,24 @@ const DiagramRenderer = () => {
             const { x, y, width, height } = Bounds;
             return (
                 <Draggable key={key}>
-                    <div
-                        id={key}
-                        className={element.elementType === 'participant' ? 'participant' :
-                        element.elementType === 'lane' ? 'lane' :
-                        'element'}>
-                        <ElementComponent x={x} y={y} width={width} height={height} />
-                    </div>
+                <div
+                    id={key}
+                    className={element.elementType === 'horizontalPool' ? 'participant' :
+                    element.elementType === 'horizontalLane' || element.elementType === 'verticalLane' ? 'lane' :
+                    'element'}
+                    style={{
+                    position: 'absolute', 
+                    overflow: 'visible',
+                    left: `${x}px`,
+                    top: `${y}px`,
+                    height: `${height}px`,
+                    width: `${width}px`  
+                    }}>
+                    <ElementComponent/>
+                </div>
                 </Draggable>
             );
-        } else if (flowElementComponents[elementType]) {
+        } else if (bpmnEdgesComponents[elementType]) {
             const waypoints = Object.keys(element)
                 .filter(key => key.startsWith('waypoint'))
                 .map(key => element[key]);

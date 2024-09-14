@@ -10,13 +10,13 @@ const SequenceFlowIcon: React.FC<SequenceFlowIconProps> = ({ points }) => {
       <defs>
         <marker
           id="arrowhead"
-          markerWidth="10"
-          markerHeight="7"
-          refX="5" 
-          refY="3.5"
+          markerWidth="6"
+          markerHeight="6"
+          refX="5"
+          refY="3"
           orient="auto"
         >
-          <polygon points="0 0, 10 3.5, 0 7" fill="currentColor" />
+          <polygon points="0,0 6,3 0,6 0" fill="currentColor" />
         </marker>
       </defs>
       <polyline

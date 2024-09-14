@@ -1,24 +1,14 @@
 import * as React from 'react';
 
-interface DataObjectIconProps {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
-
-const DataObjectIcon: React.FC<DataObjectIconProps> = ({ x, y, width, height }) => {
+const DataObjectIcon = () => {
   return (
     <svg
-      style={{ position: 'absolute', overflow: 'visible', left: x, top: y, width: width, height: height }}
       viewBox="0 0 2000 2000"
       xmlns="http://www.w3.org/2000/svg"
     >
       <rect
-        width={width}
-        height={height}
-        x="0"
-        y="0"
+        width="2000"
+        height="2000"
         rx="30"
         fill="transparent"
         stroke="transparent"

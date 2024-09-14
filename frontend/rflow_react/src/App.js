@@ -9,11 +9,11 @@ import UserOptionsModal from './components/modals/UserOptionsModal';
 import LoginForm from './components/forms/LoginForm';
 import HelpModal from './components/modals/HelpModal';
 import ConfirmationModal from './components/modals/ConfirmationModal';
-import { AppLogoIcon } from './assets/icons/app/AppLogoIcon';
-import { ChooseSchemaIconButton } from './assets/icons/ui/ChooseSchemaIcon';
-import { AddNewDiagramIconButton } from './assets/icons/ui/AddNewDiagramIcon';
-import { UserIconButton } from './assets/icons/ui/UserIcon';
-import { HelpIconButton } from './assets/icons/ui/HelpIcon';
+import { AppLogoIcon } from './assets/app/AppLogoIcon';
+import { ChooseSchemaIconButton } from './assets/ui/ChooseSchemaIcon';
+import { AddNewDiagramIconButton } from './assets/ui/AddNewDiagramIcon';
+import { UserIconButton } from './assets/ui/UserIcon';
+import { HelpIconButton } from './assets/ui/HelpIcon';
 import {
     fetchDiagrams,
     deleteDiagram,

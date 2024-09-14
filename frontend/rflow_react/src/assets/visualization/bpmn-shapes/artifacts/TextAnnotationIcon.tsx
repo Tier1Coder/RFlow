@@ -1,16 +1,9 @@
 import * as React from 'react';
 
-interface TextAnnotationIconProps {
-  x?: number;
-  y?: number;
-  width?: number;
-  height?: number;
-}
 
-const TextAnnotationIcon: React.FC<TextAnnotationIconProps> = ({ x = 0, y = 0, width = 512, height = 512 }) => {
+const TextAnnotationIcon = () => {
   return (
     <svg
-      style={{ position: 'absolute', overflow: 'visible', left: x, top: y, height: height, width: width, color: 'currentColor' }}
       viewBox="0 0 512 512"
       xmlns="http://www.w3.org/2000/svg"
     >
