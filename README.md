@@ -1,4 +1,4 @@
-# RFLow
+# RFlow
 
 RFlow is a tool created for parsing and visualising BPMN 2.0 diagrams contained in XML files. 
 
@@ -30,6 +30,9 @@ REACT_APP_API_URL=[your_api_url]
 
 
 ## Prerequisites - PROD setup
+
+The backend requires a .env file to be created in the backend/rflow_django directory. 
+The file should contain the following:
 
 ```
 SECRET_KEY=your_secret_key
