@@ -9,5 +9,5 @@ python backend/rflow_django/manage.py migrate
 # Create superuser if the environment variable is set
 if [[ $CREATE_SUPERUSER == "True" ]];
 then
-  python rflow_django/manage.py createsuperuser --no-input
+  python backend/rflow_django/manage.py createsuperuser --no-input
 fi
