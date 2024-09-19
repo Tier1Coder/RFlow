@@ -1,7 +1,6 @@
 import React from 'react';
-import { SVGProps } from 'react';
 
-const IntermediateEventCatchSignal: React.FC<SVGProps<SVGSVGElement>> = (props) => (
+const IntermediateEventCatchSignal: React.FC = () => (
   <svg
     width="100%"
     height="100%"
@@ -10,7 +9,6 @@ const IntermediateEventCatchSignal: React.FC<SVGProps<SVGSVGElement>> = (props) 
     style={{ color: 'currentColor' }}
     xmlns="http://www.w3.org/2000/svg"
     className="h-full w-full"
-    {...props}
   >
     <rect
       width="512"

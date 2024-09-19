@@ -1,6 +1,6 @@
 import React from 'react';
 
-const NonInterruptingMessageStartEvent: React.FC = () => (
+const NonInterruptingMessageStartEventIcon: React.FC = () => (
   <svg
     width="100%"
     height="100%"
@@ -43,4 +43,4 @@ const NonInterruptingMessageStartEvent: React.FC = () => (
   </svg>
 );
 
-export default NonInterruptingMessageStartEvent;
+export default NonInterruptingMessageStartEventIcon;

@@ -165,25 +165,19 @@ def parse_process_element(process_element: etree.ElementBase) -> dict:
         element_data = {
             "tag": element.tag,
             "attributes": dict(element.attrib),
-            "text": element.text
+            "text": element.text if element.text and element.text.strip() else 'None'
         }
         tag_counts = {}
 
         for child in element:
-            tag = child.tag
-            if tag not in tag_counts:
-                tag_counts[tag] = 0
-            tag_counts[tag] += 1
-            key = f"{tag}{tag_counts[tag]}"
+            child_data = recursive_parse(child)
+            child_tag = child.tag
+            if child_tag not in tag_counts:
+                tag_counts[child_tag] = 0
+            tag_counts[child_tag] += 1
+            key = f"{child_tag}{tag_counts[child_tag]}"
 
-            if len(child) == 0:  # If the child has no further children
-                element_data[key] = {
-                    "attributes": dict(child.attrib),
-                    "text": child.text
-                }
-            else:
-                element_data[key] = recursive_parse(child)
-
+            element_data[key] = child_data
         return element_data
 
     return recursive_parse(process_element)
@@ -228,11 +222,19 @@ def combine_logical_and_visual_elements(logical_elements: List[etree.ElementBase
         for logical_element_child in logical_element:
             if logical_element_child.tag == 'process':
                 for process_element_child in logical_element_child:
+                    #TODO: elements within subProcess elements are not included in the combined elements
                     try:
                         combined_elements[process_element_child.attrib.get('id')].update(
                             parse_process_element(process_element_child))
                     except KeyError:
                         pass
+                    if process_element_child.tag == 'subProcess':
+                        for sub_process_child in process_element_child:
+                            try:
+                                combined_elements[sub_process_child.attrib.get('id')].update(
+                                    parse_process_element(sub_process_child))
+                            except KeyError:
+                                pass
 
     return combined_elements
 
@@ -296,6 +298,17 @@ def update_element_types(element_data: dict) -> dict:
                 element_data["elementType"] = "noneEndEvent"
             if current_element_type == "endEvent" and any("terminateEventDefinition" in key for key in element_data):
                 element_data["elementType"] = "terminateEndEvent"
+            if current_element_type == "intermediateThrowEvent" and not any("EventDefinition" in key for key in
+                                                                            element_data):
+                element_data["elementType"] = "interruptingNoneIntermediateEvent"
+            if current_element_type == "intermediateThrowEvent" and any("compensateEventDefinition" in key for key in
+                                                                        element_data):
+                element_data["elementType"] = "throwCompensationIntermediateEvent"
+            if current_element_type == "boundaryEvent" and any("timerEventDefinition" in key for key in element_data)\
+                    and element_data.get("cancelActivity") == "true":
+                element_data["elementType"] = "interruptingBoundaryTimerIntermediateEvent"
+            if current_element_type == "endEvent" and any("messageEventDefinition" in key for key in element_data):
+                element_data["elementType"] = "messageEndEvent"
             # expanded ad hoc sub - processes
             # expanded call activities
             # expanded call choreographies

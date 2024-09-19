@@ -16,7 +16,8 @@ const SequenceFlowIcon: React.FC<SequenceFlowIconProps> = ({ points }) => {
           refY="3"
           orient="auto"
         >
-          <polygon points="0,0 6,3 0,6 0" fill="currentColor" />
+          <polygon 
+          points="0,0 6,3 0,6 0,0" fill="currentColor" />
         </marker>
       </defs>
       <polyline

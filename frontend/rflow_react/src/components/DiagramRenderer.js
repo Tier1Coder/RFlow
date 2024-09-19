@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Draggable from 'react-draggable';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
@@ -39,11 +39,15 @@ import DataObjectIcon from '../assets/visualization/bpmn-shapes/data/DataObjectI
 import DataOutputIcon from '../assets/visualization/bpmn-shapes/data/DataOutputIcon.tsx';
 // events
 import NoneStartEventIcon from '../assets/visualization/bpmn-shapes/events/NoneStartEventIcon.tsx';
-import NonInterruptingMessageStartEvent from '../assets/visualization/bpmn-shapes/events/NonInterruptingMessageStartEvent.tsx';
+import NonInterruptingMessageStartEventIcon from '../assets/visualization/bpmn-shapes/events/NonInterruptingMessageStartEventIcon.tsx';
 import TimerIntermediateEventIcon from '../assets/visualization/bpmn-shapes/events/TimerIntermediateEventIcon.tsx';
 import CatchSignalIntermediateEventIcon from '../assets/visualization/bpmn-shapes/events/CatchSignalIntermediateEventIcon.tsx';
 import NoneEndEventIcon from '../assets/visualization/bpmn-shapes/events/NoneEndEventIcon.tsx';
 import TerminateEndEventIcon from '../assets/visualization/bpmn-shapes/events/TerminateEndEventIcon.tsx';
+import InterruptingNoneIntermediateEventIcon from '../assets/visualization/bpmn-shapes/events/InterruptingNoneIntermediateEventIcon.tsx';
+import ThrowCompensationIntermediateEventIcon from '../assets/visualization/bpmn-shapes/events/ThrowCompensationIntermediateEventIcon.tsx';
+import InterruptingBoundaryTimerIntermediateEventIcon from '../assets/visualization/bpmn-shapes/events/InterruptingBoundaryTimerIntermediateEventIcon.tsx';
+import MessageEndEventIcon from '../assets/visualization/bpmn-shapes/events/MessageEndEventIcon.tsx';
 // expanded ad hoc sub-processes
 // expanded call activities
 // expanded call choreographies
@@ -52,6 +56,7 @@ import TerminateEndEventIcon from '../assets/visualization/bpmn-shapes/events/Te
 // expanded sub-processes
 // expanded transactions
 // gateways
+import InclusiveGatewayIcon from '../assets/visualization/bpmn-shapes/gateways/InclusiveGatewayIcon.tsx';
 import ParallelGatewayIcon from '../assets/visualization/bpmn-shapes/gateways/ParallelGatewayIcon.tsx';
 import ExclusiveGatewayIcon from '../assets/visualization/bpmn-shapes/gateways/ExclusiveGatewayIcon.tsx';
 import ExclusiveGatewayWithMarkerIcon from '../assets/visualization/bpmn-shapes/gateways/ExclusiveGatewayWithMarkerIcon.tsx';
@@ -63,10 +68,10 @@ import HorizontalLaneIcon from '../assets/visualization/bpmn-shapes/lanes/Horizo
 import HorizontalPoolIcon from '../assets/visualization/bpmn-shapes/pools/HorizontalPoolIcon.tsx';
 // tasks
 import AbstractTaskIcon from '../assets/visualization/bpmn-shapes/tasks/AbstractTaskIcon.tsx';
+import SendTaskIcon from '../assets/visualization/bpmn-shapes/tasks/SendTaskIcon.tsx';
 import ScriptTaskIcon from '../assets/visualization/bpmn-shapes/tasks/ScriptTaskIcon.tsx';
 import UserTaskIcon from '../assets/visualization/bpmn-shapes/tasks/UserTaskIcon.tsx';
 import ServiceTaskIcon from '../assets/visualization/bpmn-shapes/tasks/ServiceTaskIcon.tsx';
-import SendTaskIcon from '../assets/visualization/bpmn-shapes/tasks/SendTaskIcon.tsx';
 
 
 /* -BPMN Edges- */
@@ -100,11 +105,15 @@ const bpmnShapesComponents = {
     dataObject: DataObjectIcon,
     // events
     noneStartEvent: NoneStartEventIcon, 
-    nonInterruptingMessageStartEvent: NonInterruptingMessageStartEvent,
+    nonInterruptingMessageStartEvent: NonInterruptingMessageStartEventIcon,
     timerIntermediateEvent: TimerIntermediateEventIcon,
     catchSignalIntermediateEvent: CatchSignalIntermediateEventIcon,
     noneEndEvent: NoneEndEventIcon,
     terminateEndEvent: TerminateEndEventIcon,
+    interruptingNoneIntermediateEvent: InterruptingNoneIntermediateEventIcon,
+    throwCompensationIntermediateEvent: ThrowCompensationIntermediateEventIcon,
+    interruptingBoundaryTimerIntermediateEvent: InterruptingBoundaryTimerIntermediateEventIcon,
+    messageEndEvent: MessageEndEventIcon,
     // expanded ad hoc sub-processes
     // expanded call activities
     // expanded call choreographies
@@ -113,6 +122,7 @@ const bpmnShapesComponents = {
     // expanded sub-processes
     // expanded transactions
     // gateways
+    inclusiveGateway: InclusiveGatewayIcon,
     parallelGateway: ParallelGatewayIcon,
     eventBasedGateway: EventBasedGatewayIcon,
     exclusiveGateway: ExclusiveGatewayIcon,
@@ -124,10 +134,10 @@ const bpmnShapesComponents = {
     horizontalPool: HorizontalPoolIcon,
     // tasks
     abstractTask: AbstractTaskIcon,
+    sendTask: SendTaskIcon,
     scriptTask: ScriptTaskIcon,
     userTask: UserTaskIcon,
     serviceTask: ServiceTaskIcon,
-    sendTask: SendTaskIcon,
 };
 
 const bpmnEdgesComponents = {
@@ -139,7 +149,20 @@ const bpmnEdgesComponents = {
     association: AssociationIcon
 }
 
+// These elements are not used in the visualization
+const unusedElementComponents = [
+    'definitions', 
+    'laneSet', 
+    'collaboration', 
+    'BPMNDiagram', 
+    'process', 
+    'message',
+    'subProcess',
+    'b'
+];
+
 const DiagramRenderer = () => {
+    const refsMap = useRef({});
     const location = useLocation();
     const navigate = useNavigate();
     const diagramData = location.state?.diagramData?.xml_content;
@@ -158,17 +181,27 @@ const DiagramRenderer = () => {
     const renderElement = (key, element) => {
         const { elementType, Bounds } = element;
         const ElementComponent = bpmnShapesComponents[elementType] || bpmnEdgesComponents[elementType];
+        if (!refsMap.current[key]) {
+            refsMap.current[key] = React.createRef();
+        }
+        const draggableRef = refsMap.current[key];
 
         if (!ElementComponent) {
-            console.log('Unrecognized element: ', element);
+            if (unusedElementComponents.includes(elementType)) {
+                return null;
+            }
+            console.log('Unrecognized element: ', key, element);
             return null;
         }
 
         if (Bounds) {
             const { x, y, width, height } = Bounds;
             return (
-                <Draggable key={key}>
+                <Draggable 
+                    key={key}
+                    nodeRef={draggableRef}>
                 <div
+                    ref={draggableRef}
                     id={key}
                     className={element.elementType === 'horizontalPool' ? 'participant' :
                     element.elementType === 'horizontalLane' || element.elementType === 'verticalLane' ? 'lane' :
@@ -194,8 +227,9 @@ const DiagramRenderer = () => {
                 const points = waypoints.map(wp => `${wp.x},${wp.y}`).join(' ');
         
                 return (
-                    <Draggable key={key}>
+                    <Draggable key={key} nodeRef={draggableRef}>
                     <div 
+                        ref={draggableRef}
                         id={key} 
                         className='flow-element'>
                         <ElementComponent points={points} />
