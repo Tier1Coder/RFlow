@@ -1,24 +1,30 @@
 import * as React from 'react';
 
-
-const DataInputIcon = () => {
+const DataInputIcon: React.FC = () => {
   return (
     <svg
-      viewBox="0 0 512 512"
+      width="100%"
+      height="100%"
+      viewBox="0 0 2048 2048"
+      style={{
+        color: 'currentColor',
+      }}
       xmlns="http://www.w3.org/2000/svg"
-      preserveAspectRatio="xMidYMid meet"
+      preserveAspectRatio="none"
     >
-      <rect
-        width="512"
-        height="512"
-        rx="30"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="20"
-      />
-      <g fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="40">
-        <path d="M200 220v60h-100v60h100v60l70-90z" />
-        <rect x="250" y="180" width="200" height="200" />
+
+      <g>
+        <g fill="none" stroke="currentColor" strokeLinecap="round">
+          <path
+            strokeDashoffset="200"
+            strokeWidth="40"
+            d="M799.876 406.976v159.072H587.842v119.547h212.034v159.073l232.942-218.846z"
+          />
+          <path
+            strokeWidth="90"
+            d="M438.243 252.897h794.702l328.812 337.647v1156.564H438.243V252.897h754.486v371.647h369.028"
+          />
+        </g>
       </g>
     </svg>
   );

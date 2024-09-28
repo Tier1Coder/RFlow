@@ -22,11 +22,11 @@ const HorizontalPoolIcon: React.FC = () => (
     <rect
       x="0"
       y="0"
-      width="3"
+      width="2"
       height="20"
-      fill="#e8e8e8"
+      fill="#FFFFFF"
       stroke="currentColor"
-      strokeWidth="1"
+      strokeWidth="0.5"
     />
   </svg>
 );

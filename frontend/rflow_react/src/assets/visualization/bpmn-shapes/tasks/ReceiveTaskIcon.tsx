@@ -1,12 +1,13 @@
 import React from 'react';
 
-const ScriptTaskIcon: React.FC = () => (
+const ReceiveTaskIcon: React.FC = () => (
   <svg
     width="100%"
     height="100%"
+    preserveAspectRatio="none"
     viewBox="0 0 512 512"
-    xmlns="http://www.w3.org/2000/svg"
     style={{ color: 'currentColor' }}
+    xmlns="http://www.w3.org/2000/svg"
   >
     <rect
       width="512"
@@ -38,18 +39,16 @@ const ScriptTaskIcon: React.FC = () => (
           rx="30"
           fill="none"
           stroke="currentColor"
-          strokeWidth="40"
+          strokeWidth="20"
         />
-        <g fill="none" stroke="currentColor" strokeWidth="20">
-          <rect x="128" y="128" width="256" height="256" rx="10" ry="10" />
-          <polyline points="384,128 320,128 384,192" />
-          <line x1="160" y1="200" x2="352" y2="200" />
-          <line x1="160" y1="260" x2="352" y2="260" />
-          <line x1="160" y1="320" x2="352" y2="320" />
+        <g fill="white" stroke="black" strokeWidth="10">
+          <rect x="32" y="32" width="128" height="80" />
+          <polyline points="32,32 96,72 160,32" />
+          <line x1="32" y1="112" x2="160" y2="112" />
         </g>
       </svg>
     </foreignObject>
   </svg>
 );
 
-export default ScriptTaskIcon;
+export default ReceiveTaskIcon;

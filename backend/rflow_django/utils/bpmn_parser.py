@@ -222,7 +222,6 @@ def combine_logical_and_visual_elements(logical_elements: List[etree.ElementBase
         for logical_element_child in logical_element:
             if logical_element_child.tag == 'process':
                 for process_element_child in logical_element_child:
-                    #TODO: elements within subProcess elements are not included in the combined elements
                     try:
                         combined_elements[process_element_child.attrib.get('id')].update(
                             parse_process_element(process_element_child))
@@ -259,10 +258,13 @@ def remove_repetitions(element_data: dict) -> dict:
     return remove_redundant_attributes(element_data)
 
 
-def update_element_types(element_data: dict) -> dict:
+def update_element_types(element_data: dict, all_elements: dict = None) -> dict:
+    if all_elements is None:
+        all_elements = element_data
+
     for key, value in list(element_data.items()):
         if isinstance(value, dict):
-            update_element_types(value)
+            update_element_types(value, all_elements)
 
         current_element_type = element_data.get("elementType", None)
         if current_element_type:
@@ -275,13 +277,38 @@ def update_element_types(element_data: dict) -> dict:
             # choreography tasks
             # collapsed ad hoc sub - processes
             # collapsed call activities
+            if current_element_type == "callActivity":
+                called_element_id = element_data.get("calledElement", None)
+                if called_element_id:
+                    if all_elements[called_element_id]["elementType"] == "process":
+                        element_data["elementType"] = "callActivityCollapsed"
             # collapsed call choreographies
             # collapsed event sub - processes
+            if current_element_type == "subProcess" and \
+                    element_data.get("triggeredByEvent", "false").lower() == "true" and \
+                    not element_data.get("isExpanded", None) and \
+                    sum(1 for key in element_data if key.startswith("startEvent")) == 1:
+                if any("messageEventDefinition" in key for key in element_data.get("startEvent1", {})):
+                    if element_data.get("startEvent1", {}).get("isInterrupting", "false") is True:
+                        element_data["elementType"] = "interruptingMessageEventSubProcessCollapsed"
+                    else:
+                        element_data["elementType"] = "nonInterruptingMessageEventSubProcessCollapsed"
             # collapsed sub - choreographies
             # collapsed sub - processes
+            if current_element_type == "subProcess" and \
+                    element_data.get("triggeredByEvent", "false").lower() == "false" and \
+                    not element_data.get("isExpanded", None):
+                element_data["elementType"] = "subProcessCollapsed"
+
             # collapsed transactions
             # conversations
             # data
+            if current_element_type == "dataObjectReference":
+                data_object_ref_id = element_data.get("dataObjectRef", None)
+                if data_object_ref_id and all_elements.get(data_object_ref_id, {}).get("isCollection") is True:
+                    element_data["elementType"] = "dataObjectCollection"
+                else:
+                    element_data["elementType"] = "dataObject"
             # events
             if current_element_type == "startEvent" and any("messageEventDefinition" in key for key in element_data):
                 if element_data.get("isInterrupting") is True:
@@ -309,6 +336,33 @@ def update_element_types(element_data: dict) -> dict:
                 element_data["elementType"] = "interruptingBoundaryTimerIntermediateEvent"
             if current_element_type == "endEvent" and any("messageEventDefinition" in key for key in element_data):
                 element_data["elementType"] = "messageEndEvent"
+            if current_element_type == "startEvent" and any("timerEventDefinition" in key for key in element_data):
+                if element_data.get("isInterrupting") is True:
+                    element_data["elementType"] = "interruptingTimerStartEvent"
+                else:
+                    element_data["elementType"] = "nonInterruptingTimerStartEvent"
+            if current_element_type == "boundaryEvent" and any("errorEventDefinition" in key for key in element_data):
+                element_data["elementType"] = "boundaryCatchErrorIntermediateEvent"
+            if current_element_type == "boundaryEvent" and any(
+                    "compensateEventDefinition" in key for key in element_data):
+                element_data["elementType"] = "boundaryCatchCompensationIntermediateEvent"
+            if current_element_type == "startEvent" and \
+                    any("conditionalEventDefinition" in key for key in element_data):
+                if element_data.get("isInterrupting", None) is True:
+                    element_data["elementType"] = "interruptingConditionalStartEvent"
+                else:
+                    element_data["elementType"] = "nonInterruptingConditionalStartEvent"
+            if current_element_type == "endEvent" and any("errorEventDefinition" in key for key in element_data):
+                element_data["elementType"] = "errorEndEvent"
+            if current_element_type == "intermediateThrowEvent" and any("escalationEventDefinition" in key for key in
+                                                                        element_data):
+                element_data["elementType"] = "throwEscalationIntermediateEvent"
+            if current_element_type == "boundaryEvent" and \
+                    any("escalationEventDefinition" in key for key in element_data):
+                if element_data.get("cancelActivity") == "true":
+                    element_data["elementType"] = "interruptingBoundaryCatchEscalationIntermediateEvent"
+                else:
+                    element_data["elementType"] = "nonInterruptingBoundaryCatchEscalationIntermediateEvent"
             # expanded ad hoc sub - processes
             # expanded call activities
             # expanded call choreographies

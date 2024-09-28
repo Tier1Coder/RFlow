@@ -27,16 +27,20 @@ import TextAnnotationIcon from '../assets/visualization/bpmn-shapes/artifacts/Te
 // choreography tasks
 // collapsed ad hoc sub-processes
 // collapsed call activities
+import CallActivityCollapsedIcon from '../assets/visualization/bpmn-shapes/collapsed-call-activities/CallActivityCollapsedIcon.tsx';
 // collapsed call choreographies
 // collapsed event sub-processes
+import NonInterruptingMessageEventSubProcessCollapsedIcon from '../assets/visualization/bpmn-shapes/collapsed-event-sub-processes/NonInterruptingMessageEventSubProcessCollapsedIcon.tsx';
 // collapsed sub-choreographies
 // collapsed sub-processes
+import SubProcessCollapsedIcon from '../assets/visualization/bpmn-shapes/collapsed-sub-processes/SubProcessCollapsedIcon.tsx';
 // collapsed transactions
 // conversations
 // data
 import DataInputIcon from '../assets/visualization/bpmn-shapes/data/DataInputIcon.tsx';
 import DataObjectIcon from '../assets/visualization/bpmn-shapes/data/DataObjectIcon.tsx';
 import DataOutputIcon from '../assets/visualization/bpmn-shapes/data/DataOutputIcon.tsx';
+import DataStoreReferenceIcon from '../assets/visualization/bpmn-shapes/data/DataStoreReferenceIcon.tsx';
 // events
 import NoneStartEventIcon from '../assets/visualization/bpmn-shapes/events/NoneStartEventIcon.tsx';
 import NonInterruptingMessageStartEventIcon from '../assets/visualization/bpmn-shapes/events/NonInterruptingMessageStartEventIcon.tsx';
@@ -48,6 +52,14 @@ import InterruptingNoneIntermediateEventIcon from '../assets/visualization/bpmn-
 import ThrowCompensationIntermediateEventIcon from '../assets/visualization/bpmn-shapes/events/ThrowCompensationIntermediateEventIcon.tsx';
 import InterruptingBoundaryTimerIntermediateEventIcon from '../assets/visualization/bpmn-shapes/events/InterruptingBoundaryTimerIntermediateEventIcon.tsx';
 import MessageEndEventIcon from '../assets/visualization/bpmn-shapes/events/MessageEndEventIcon.tsx';
+import NonInterruptingTimerStartEventIcon from '../assets/visualization/bpmn-shapes/events/NonInterruptingTimerStartEventIcon.tsx';
+import InterruptingTimerStartEventIcon from '../assets/visualization/bpmn-shapes/events/InterruptingTimerStartEventIcon.tsx';
+import BoundaryCatchErrorIntermediateEventIcon from '../assets/visualization/bpmn-shapes/events/BoundaryCatchErrorIntermediateEventIcon.tsx';
+import BoundaryCatchCompensationIntermediateEventIcon from '../assets/visualization/bpmn-shapes/events/BoundaryCatchCompensationIntermediateEventIcon.tsx';
+import NonInterruptingConditionalStartEventIcon from '../assets/visualization/bpmn-shapes/events/NonInterruptingConditionalStartEventIcon.tsx';
+import ErrorEndEventIcon from '../assets/visualization/bpmn-shapes/events/ErrorEndEventIcon.tsx';
+import ThrowEscalationIntermediateEventIcon from '../assets/visualization/bpmn-shapes/events/ThrowEscalationIntermediateEventIcon.tsx';
+import NonInterruptingBoundaryCatchEscalationIntermediateEventIcon from '../assets/visualization/bpmn-shapes/events/NonInterruptingBoundaryCatchEscalationIntermediateEventIcon.tsx';
 // expanded ad hoc sub-processes
 // expanded call activities
 // expanded call choreographies
@@ -72,6 +84,7 @@ import SendTaskIcon from '../assets/visualization/bpmn-shapes/tasks/SendTaskIcon
 import ScriptTaskIcon from '../assets/visualization/bpmn-shapes/tasks/ScriptTaskIcon.tsx';
 import UserTaskIcon from '../assets/visualization/bpmn-shapes/tasks/UserTaskIcon.tsx';
 import ServiceTaskIcon from '../assets/visualization/bpmn-shapes/tasks/ServiceTaskIcon.tsx';
+import ReceiveTaskIcon from '../assets/visualization/bpmn-shapes/tasks/ReceiveTaskIcon.tsx';
 
 
 /* -BPMN Edges- */
@@ -93,16 +106,20 @@ const bpmnShapesComponents = {
     // choreography tasks
     // collapsed ad hoc sub-processes
     // collapsed call activities
+    callActivityCollapsed: CallActivityCollapsedIcon,
     // collapsed call choreographies
     // collapsed event sub-processes
+    nonInterruptingMessageEventSubProcessCollapsed: NonInterruptingMessageEventSubProcessCollapsedIcon,
     // collapsed sub-choreographies
     // collapsed sub-processes
+    subProcessCollapsed: SubProcessCollapsedIcon,
     // collapsed transactions
     // conversations
     // data
     dataInput: DataInputIcon,
     dataOutput: DataOutputIcon,
     dataObject: DataObjectIcon,
+    dataStoreReference: DataStoreReferenceIcon,
     // events
     noneStartEvent: NoneStartEventIcon, 
     nonInterruptingMessageStartEvent: NonInterruptingMessageStartEventIcon,
@@ -114,6 +131,14 @@ const bpmnShapesComponents = {
     throwCompensationIntermediateEvent: ThrowCompensationIntermediateEventIcon,
     interruptingBoundaryTimerIntermediateEvent: InterruptingBoundaryTimerIntermediateEventIcon,
     messageEndEvent: MessageEndEventIcon,
+    nonInterruptingTimerStartEvent: NonInterruptingTimerStartEventIcon,
+    interruptingTimerStartEvent: InterruptingTimerStartEventIcon,
+    boundaryCatchErrorIntermediateEvent: BoundaryCatchErrorIntermediateEventIcon,
+    boundaryCatchCompensationIntermediateEvent: BoundaryCatchCompensationIntermediateEventIcon,
+    nonInterruptingConditionalStartEvent: NonInterruptingConditionalStartEventIcon,
+    errorEndEvent: ErrorEndEventIcon,
+    throwEscalationIntermediateEvent: ThrowEscalationIntermediateEventIcon,
+    nonInterruptingBoundaryCatchEscalationIntermediateEvent: NonInterruptingBoundaryCatchEscalationIntermediateEventIcon,
     // expanded ad hoc sub-processes
     // expanded call activities
     // expanded call choreographies
@@ -138,6 +163,7 @@ const bpmnShapesComponents = {
     scriptTask: ScriptTaskIcon,
     userTask: UserTaskIcon,
     serviceTask: ServiceTaskIcon,
+    receiveTask: ReceiveTaskIcon,
 };
 
 const bpmnEdgesComponents = {
@@ -157,8 +183,7 @@ const unusedElementComponents = [
     'BPMNDiagram', 
     'process', 
     'message',
-    'subProcess',
-    'b'
+    'dataStore'
 ];
 
 const DiagramRenderer = () => {
@@ -203,9 +228,14 @@ const DiagramRenderer = () => {
                 <div
                     ref={draggableRef}
                     id={key}
-                    className={element.elementType === 'horizontalPool' ? 'participant' :
-                    element.elementType === 'horizontalLane' || element.elementType === 'verticalLane' ? 'lane' :
-                    'element'}
+                    className={
+                        !element.zIndex 
+                          ? (element.elementType === 'horizontalPool' ? 'participant' 
+                            : element.elementType === 'horizontalLane' || element.elementType === 'verticalLane' ? 'lane' 
+                              : 'element') 
+                          : ''
+                      }
+                      
                     style={{
                     position: 'absolute', 
                     overflow: 'visible',
