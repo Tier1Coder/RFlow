@@ -32,20 +32,25 @@ const LoginForm = ({ onLogin }) => {
         <h2>Login</h2>
         {error && <div className="error-message">{error}</div>}
         <div className="input-group">
-          <label>Username:</label>
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
+          <label>Username:
+            <input
+              id="username-input"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </label>
+
         </div>
         <div className="input-group">
-          <label>Password:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <label>Password:
+            <input
+              id="password-input"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </label>
         </div>
         <button type="submit">Login</button>
       </form>

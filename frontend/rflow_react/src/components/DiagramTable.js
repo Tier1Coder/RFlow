@@ -77,6 +77,7 @@ const DiagramTable = ({ diagrams, editItem, deleteItem, downloadFile, visualizeD
                 <div className="diagram-table-search-bar">
                     <SearchIconButton width="24" height="24" />
                     <input
+                        id="diagram-table-search-input"
                         type="text"
                         placeholder="Search diagrams..."
                         value={searchQuery}
@@ -153,6 +154,7 @@ const DiagramTable = ({ diagrams, editItem, deleteItem, downloadFile, visualizeD
                     Previous
                 </button>
                 <input
+                    id="diagram-table-page-input"
                     type="number"
                     value={currentPage}
                     onChange={handleInputChange}

@@ -6,6 +6,7 @@ const AddEditDiagramForm = ({ activeItem, originalItem, onChange }) => {
             <div className="form-group">
                 <label htmlFor="name">Name</label>
                 <input
+                    autoComplete="off"
                     type="text"
                     className="form-control"
                     id="name"
@@ -18,9 +19,9 @@ const AddEditDiagramForm = ({ activeItem, originalItem, onChange }) => {
             <div className="form-group">
                 <label htmlFor="file">File</label>
                 <input
+                    id="file"
                     type="file"
                     className="form-control"
-                    id="file"
                     name="file"
                     onChange={onChange}
                     accept=".xml"

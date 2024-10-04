@@ -1,19 +1,23 @@
 import React from 'react';
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap';
+import { Modal, Button } from 'react-bootstrap';
 
 const ConfirmationModal = ({ isOpen, toggle, onConfirm, message }) => {
-    return (
-        <Modal isOpen={isOpen} >
-            <ModalHeader>Confirm Action</ModalHeader>
-            <ModalBody>
-                {message}
-            </ModalBody>
-            <ModalFooter>
-                <Button color="danger" onClick={onConfirm}>Confirm</Button>{' '}
-                <Button color="secondary" onClick={toggle}>Cancel</Button>
-            </ModalFooter>
-        </Modal>
-    );
+  return (
+    <Modal show={isOpen} onHide={toggle}>
+      <Modal.Header closeButton>
+        <Modal.Title>Confirm Action</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>{message}</Modal.Body>
+      <Modal.Footer>
+        <Button variant="danger" onClick={onConfirm}>
+          Confirm
+        </Button>
+        <Button variant="secondary" onClick={toggle}>
+          Cancel
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
 };
 
 export default ConfirmationModal;

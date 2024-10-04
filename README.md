@@ -41,6 +41,11 @@ ALLOWED_HOSTS=yourdomain.com,anotherdomain.com
 CORS_ALLOWED_ORIGINS=https://yourdomain.com,https://anotherdomain.com
 CSRF_TRUSTED_ORIGINS=https://yourdomain.com,https://anotherdomain.com
 DATABASE_URL=your_database_url
+
+CREATE_SUPERUSER=True // Set to True if you want to create a superuser
+DJANGO_SUPERUSER_EMAIL=your_email // Required if CREATE_SUPERUSER is set to True
+DJANGO_SUPERUSER_PASSWORD=your_password // Required if CREATE_SUPERUSER is set to True
+DJANGO_SUPERUSER_USERNAME=your_username // Required if CREATE_SUPERUSER is set to True
 ```
 
 
@@ -55,21 +60,21 @@ REACT_APP_API_URL=[your_api_url]
 ## Installation & running project locally
 
 To install the application, you need to have Python 3.12 or higher installed on your machine.
+Example installation:
 
 1. Clone the repository
-2. Create a virtual environment and activate it
-3. Navigate to the `backend` directory
-4. Install the requirements by running `pip install -r requirements.txt`
-5. Navigate to the `backend/rflow_django` directory where `manage.py` is located
-6. Run the server by running `python manage.py runserver [port]`
-7. Open a new terminal window and navigate to the `frontend/rflow_react` directory where package.json is located
-8. Install the frontend dependencies by running `npm install`
-9. Start the frontend by running `npm start`
+2. Create environment variables in the backend and frontend directories
+3. Install the required packages by running `pip install -r requirements.txt` in the backend directory
+4. Install the required packages by running `npm install` in the frontend directory
+5. Run the backend server by running `python manage.py runserver` in the backend directory
+6. Run the frontend server by running `npm start` in the frontend directory
+
+
 
 
 ## License
 
-TODO & update the readme by adding build.sh script explanation
+TOD
 
 ## Engineering thesis
 This project is a part of my engineering thesis at University of Zielona Góra. 

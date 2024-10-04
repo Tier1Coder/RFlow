@@ -1,10 +1,9 @@
 from rest_framework import status
 from rest_framework.exceptions import APIException
 
-""" Custom base exception class for the REST API """
-
 
 class BaseCustomException(APIException):
+    """ Base class for custom exceptions. """
     detail = None
     status_code = None
 

@@ -259,6 +259,7 @@ def remove_repetitions(element_data: dict) -> dict:
 
 
 def update_element_types(element_data: dict, all_elements: dict = None) -> dict:
+    """ Updates element types based on the rules defined in the BPMN 2.0 specification. """
     if all_elements is None:
         all_elements = element_data
 
