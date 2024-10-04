@@ -2,21 +2,35 @@ import React from 'react';
 
 interface DataOutputAssociationFlowIconProps {
   points: string;
+  scale: number;
 }
 
-const DataOutputAssociationFlowIcon: React.FC<DataOutputAssociationFlowIconProps> = ({ points }) => {
+const DataOutputAssociationFlowIcon: React.FC<DataOutputAssociationFlowIconProps> = ({ points, scale = 1 }) => {
+  const strokeWidth = 2 * scale;
+  const dashArray = `${5 * scale},${5 * scale}`;
+  const markerWidth = 10 * scale;
+  const markerHeight = 7 * scale;
+  const refX = 5 * scale;
+  const refY = 3.5 * scale;
+
   return (
-    <svg style={{ position: 'absolute', left: 0, top: 0, overflow: 'visible', height: 1, width: 1 }} viewBox="0 0 1 1">
+    <svg
+      style={{ position: 'absolute', left: 0, top: 0, overflow: 'visible', height: 1, width: 1 }}
+      viewBox="0 0 1 1"
+    >
       <defs>
         <marker
           id="arrowhead"
-          markerWidth="10"
-          markerHeight="7"
-          refX="5"
-          refY="3.5"
+          markerWidth={markerWidth}
+          markerHeight={markerHeight}
+          refX={refX}
+          refY={refY}
           orient="auto"
         >
-          <polygon points="0 0, 10 3.5, 0 7" fill="currentColor" />
+          <polygon
+            points={`0 0, ${10 * scale} ${3.5 * scale}, 0 ${7 * scale}`}
+            fill="currentColor"
+          />
         </marker>
       </defs>
       <polyline
@@ -24,8 +38,8 @@ const DataOutputAssociationFlowIcon: React.FC<DataOutputAssociationFlowIconProps
         style={{
           fill: 'none',
           stroke: 'currentColor',
-          strokeWidth: 2,
-          strokeDasharray: '5,5'
+          strokeWidth: strokeWidth,
+          strokeDasharray: dashArray,
         }}
         markerEnd="url(#arrowhead)"
       />

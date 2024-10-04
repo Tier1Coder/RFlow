@@ -69,7 +69,7 @@ To install the application, you need to have Python 3.12 or higher installed on 
 
 ## License
 
-TODO
+TODO & update the readme by adding build.sh script explanation
 
 ## Engineering thesis
 This project is a part of my engineering thesis at University of Zielona Góra. 

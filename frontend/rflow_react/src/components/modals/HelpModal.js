@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap';
-import '../../styles/HelpModal.css';
+import '../../styles/components/modals/HelpModal.css';
 
 const InfoModal = ({ isOpen, toggle }) => {
     return (

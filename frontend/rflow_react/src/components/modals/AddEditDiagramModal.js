@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap';
 import AddEditDiagramForm from '../forms/AddEditDiagramForm';
-import '../../styles/AddEditDiagramModal.css';
+import '../../styles/components/modals/AddEditDiagramModal.css';
 
 const AddEditDiagramModal = ({ modal, toggle, modalType, handleDiagramAdd, handleDiagramEdit, activeItem, originalItem, handleFormChange }) => {
     return (

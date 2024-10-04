@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axiosInstance from '../../services/axiosInstance';
-import '../../styles/LoginForm.css';
+import '../../styles/components/forms/LoginForm.css';
+import { AppLogoIcon } from '../../assets/app/AppLogoIcon.jsx';
 
 const LoginForm = ({ onLogin }) => {
   const [username, setUsername] = useState('');
@@ -26,10 +27,11 @@ const LoginForm = ({ onLogin }) => {
 
   return (
     <div className="login-form-container">
+      <AppLogoIcon className="app-logo-icon" width="100" height="100" />
       <form className="login-form" onSubmit={handleSubmit}>
         <h2>Login</h2>
         {error && <div className="error-message">{error}</div>}
-        <div>
+        <div className="input-group">
           <label>Username:</label>
           <input
             type="text"
@@ -37,7 +39,7 @@ const LoginForm = ({ onLogin }) => {
             onChange={(e) => setUsername(e.target.value)}
           />
         </div>
-        <div>
+        <div className="input-group">
           <label>Password:</label>
           <input
             type="password"

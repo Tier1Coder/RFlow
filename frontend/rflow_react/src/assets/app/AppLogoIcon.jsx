@@ -43,18 +43,6 @@ const AppLogoIcon = ({ width, height }) =>  {
         fill="#212121"
       />
     </g>
-    <text
-      style={{
-        whiteSpace: 'pre',
-        fill: 'rgb(51, 51, 51)',
-        fontFamily: 'Arial, sans-serif',
-        fontSize: '28px'
-      }}
-      x="363.636"
-      y="189.457"
-    >
-      {' '}
-    </text>
     <g
       transform="matrix(0, -6.392045, 6.392045, 0, 242.332397, 197.559448)"
       style={{ transformOrigin: '12px 11.5px' }}
@@ -66,66 +54,6 @@ const AppLogoIcon = ({ width, height }) =>  {
     </g>
     <text
       style={{
-        whiteSpace: 'pre',
-        fill: 'rgb(51, 51, 51)',
-        fontFamily: 'Arial, sans-serif',
-        fontSize: '28px'
-      }}
-      x="632.955"
-      y="267.298"
-    >
-      {' '}
-    </text>
-    <text
-      style={{
-        whiteSpace: 'pre',
-        fill: 'rgb(51, 51, 51)',
-        fontFamily: 'Arial, sans-serif',
-        fontSize: '28px'
-      }}
-      x="214.192"
-      y="150.821"
-    >
-      {' '}
-    </text>
-    <text
-      style={{
-        whiteSpace: 'pre',
-        fill: 'rgb(51, 51, 51)',
-        fontFamily: 'Arial, sans-serif',
-        fontSize: '28px'
-      }}
-      x="564.205"
-      y="211.995"
-    >
-      {' '}
-    </text>
-    <text
-      style={{
-        whiteSpace: 'pre',
-        fill: 'rgb(51, 51, 51)',
-        fontFamily: 'Arial, sans-serif',
-        fontSize: '28px'
-      }}
-      x="250.568"
-      y="170.518"
-    >
-      {' '}
-    </text>
-    <text
-      style={{
-        whiteSpace: 'pre',
-        fill: 'rgb(51, 51, 51)',
-        fontFamily: 'Arial, sans-serif',
-        fontSize: '28px'
-      }}
-      x="778.977"
-      y="285.29"
-    >
-      {' '}
-    </text>
-    <text
-      style={{
         fill: 'rgb(255, 255, 255)',
         fontFamily: 'Orbitron',
         fontSize: '86px',
@@ -135,18 +63,6 @@ const AppLogoIcon = ({ width, height }) =>  {
       y="282.955"
     >
       W
-    </text>
-    <text
-      style={{
-        whiteSpace: 'pre',
-        fill: 'rgb(51, 51, 51)',
-        fontFamily: 'Arial, sans-serif',
-        fontSize: '28px'
-      }}
-      x="585.227"
-      y="262.563"
-    >
-      {' '}
     </text>
   </svg>
 );

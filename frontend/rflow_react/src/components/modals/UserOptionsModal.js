@@ -1,5 +1,5 @@
 import React from 'react';
-import '../../styles/UserOptionsModal.css';
+import '../../styles/components/modals/UserOptionsModal.css';
 
 const UserOptionsModal = ({ isOpen, toggle, handleLogout }) => {
   if (!isOpen) return null;

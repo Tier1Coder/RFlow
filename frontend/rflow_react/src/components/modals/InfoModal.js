@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../../styles/InfoModal.css';
+import '../../styles/components/modals/InfoModal.css';
 
 const InfoModal = ({ isOpen, toggle, diagramData }) => {
     return (

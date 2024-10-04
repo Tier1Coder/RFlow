@@ -3,7 +3,7 @@ import Draggable from 'react-draggable';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { deleteDiagram, downloadFile } from '../services/DiagramService';
-import '../styles/DiagramRenderer.css';
+import '../styles/components/DiagramRenderer.css';
 
 /* -User Interface Components- */
 import { InfoIconButton } from '../assets/ui/InfoIcon.jsx';
@@ -175,7 +175,7 @@ const bpmnEdgesComponents = {
     association: AssociationIcon
 }
 
-// These elements are not used in the visualization
+// These elements are not used in the visualization (they are only logical and do not have a graphical representation)
 const unusedElementComponents = [
     'definitions', 
     'laneSet', 
@@ -195,13 +195,113 @@ const DiagramRenderer = () => {
     const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
     const [isUserOptionsModalOpen, setIsUserOptionsModalOpen] = useState(false);
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+    const diagramVisualizationRef = useRef(null);
+    const [scaledDiagramData, setScaledDiagramData] = useState(null);
+    const [scale, setScale] = useState(1);
 
     useEffect(() => {
         const accessToken = localStorage.getItem('accessToken');
         if (!accessToken) {
             navigate('/');
         }
-    }, [navigate]);
+        if (!diagramData || !diagramVisualizationRef.current) {
+            return;
+        }
+    
+        const outerDiv = diagramVisualizationRef.current;
+    
+        const calculateScaledDiagramData = () => {
+            const outerDivWidth = outerDiv.clientWidth;
+            const outerDivHeight = outerDiv.clientHeight;
+    
+            let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+            Object.values(diagramData).forEach((element) => {
+                const { Bounds } = element;
+                if (Bounds) {
+                    const { x: xStr, y: yStr, width: widthStr, height: heightStr } = Bounds;
+                    const x = parseFloat(xStr);
+                    const y = parseFloat(yStr);
+                    const width = parseFloat(widthStr);
+                    const height = parseFloat(heightStr);
+                    minX = Math.min(minX, x);
+                    minY = Math.min(minY, y);
+                    maxX = Math.max(maxX, x + width);
+                    maxY = Math.max(maxY, y + height);
+                } else if (element.waypoint1 && element.waypoint2) {
+                    const waypoints = Object.keys(element)
+                        .filter(key => key.startsWith('waypoint'))
+                        .map(key => element[key]);
+    
+                    waypoints.forEach(({ x: xStr, y: yStr }) => {
+                        const x = parseFloat(xStr);
+                        const y = parseFloat(yStr);
+                        minX = Math.min(minX, x);
+                        minY = Math.min(minY, y);
+                        maxX = Math.max(maxX, x);
+                        maxY = Math.max(maxY, y);
+                    });
+                }
+            });
+    
+            const diagramWidth = maxX - minX;
+            const diagramHeight = maxY - minY;
+    
+            const scaleX = outerDivWidth / diagramWidth;
+            const scaleY = outerDivHeight / diagramHeight;
+            const scale = Math.min(scaleX, scaleY);
+            setScale(scale);
+    
+            const newScaledDiagramData = {};
+    
+            Object.entries(diagramData).forEach(([key, element]) => {
+                const scaledElement = { ...element };
+    
+                if (element.Bounds) {
+                    const { x: xStr, y: yStr, width: widthStr, height: heightStr } = element.Bounds;
+                    const x = parseFloat(xStr);
+                    const y = parseFloat(yStr);
+                    const width = parseFloat(widthStr);
+                    const height = parseFloat(heightStr);
+                    scaledElement.Bounds = {
+                        x: (x - minX) * scale,
+                        y: (y - minY) * scale,
+                        width: width * scale,
+                        height: height * scale
+                    };
+                } else if (element.waypoint1 && element.waypoint2) {
+                    const waypoints = Object.keys(element)
+                        .filter(key => key.startsWith('waypoint'))
+                        .reduce((acc, waypointKey) => {
+                            const { x: xStr, y: yStr } = element[waypointKey];
+                            const x = parseFloat(xStr);
+                            const y = parseFloat(yStr);
+                            acc[waypointKey] = {
+                                x: (x - minX) * scale,
+                                y: (y - minY) * scale
+                            };
+                            return acc;
+                        }, {});
+                    Object.assign(scaledElement, waypoints);
+                }
+    
+                newScaledDiagramData[key] = scaledElement;
+            });
+            setScaledDiagramData(newScaledDiagramData);
+        };
+    
+        calculateScaledDiagramData();
+    
+        const handleResize = () => {
+            calculateScaledDiagramData();
+        };
+    
+        window.addEventListener('resize', handleResize);
+    
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, [navigate, diagramData]);
+    
 
     const renderElement = (key, element) => {
         const { elementType, Bounds } = element;
@@ -262,7 +362,7 @@ const DiagramRenderer = () => {
                         ref={draggableRef}
                         id={key} 
                         className='flow-element'>
-                        <ElementComponent points={points} />
+                        <ElementComponent points={points} scale={scale}/>
                     </div>
                     </Draggable>
                 );
@@ -275,6 +375,7 @@ const DiagramRenderer = () => {
 
         return null;
     };
+    
 
     const handleInfo = () => setIsInfoModalOpen(true);
     const handleUserOptions = () => setIsUserOptionsModalOpen(true);
@@ -323,8 +424,10 @@ const DiagramRenderer = () => {
                 <h2 className="diagram-visualization-title">{diagramName}</h2>
             </div>
             <div 
-                className="diagram-visualization">
-                {Object.entries(diagramData).map(([key, element]) => renderElement(key, element))}
+                className="diagram-visualization"
+                ref={diagramVisualizationRef}
+                >
+                {scaledDiagramData && Object.entries(scaledDiagramData).map(([key, element]) => renderElement(key, element))}
             </div>
             <InfoModal 
                 isOpen={isInfoModalOpen} 

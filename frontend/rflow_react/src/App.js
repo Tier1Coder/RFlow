@@ -1,19 +1,25 @@
+// built-in modules
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+
+// Custom components
 import DiagramTable from './components/DiagramTable';
 import DiagramRenderer from './components/DiagramRenderer';
 import AddEditDiagramModal from './components/modals/AddEditDiagramModal';
 import UserOptionsModal from './components/modals/UserOptionsModal';
-import LoginForm from './components/forms/LoginForm';
 import HelpModal from './components/modals/HelpModal';
 import ConfirmationModal from './components/modals/ConfirmationModal';
-import { AppLogoIcon } from './assets/app/AppLogoIcon';
-import { ChooseSchemaIconButton } from './assets/ui/ChooseSchemaIcon';
-import { AddNewDiagramIconButton } from './assets/ui/AddNewDiagramIcon';
-import { UserIconButton } from './assets/ui/UserIcon';
-import { HelpIconButton } from './assets/ui/HelpIcon';
+import LoginForm from './components/forms/LoginForm';
+
+// Custom icons
+import { AppLogoIcon } from './assets/app/AppLogoIcon.jsx';
+import { ChooseSchemaIconButton } from './assets/ui/ChooseSchemaIcon.jsx';
+import { AddNewDiagramIconButton } from './assets/ui/AddNewDiagramIcon.jsx';
+import { UserIconButton } from './assets/ui/UserIcon.jsx';
+import { HelpIconButton } from './assets/ui/HelpIcon.jsx';
+
+// Custom services
 import {
     fetchDiagrams,
     deleteDiagram,
@@ -22,25 +28,28 @@ import {
     editDiagram,
     visualizeDiagram,
 } from './services/DiagramService';
+
+// CSS
+import 'react-toastify/dist/ReactToastify.css';
 import './styles/App.css';
 
 const App = () => {
     const [diagrams, setDiagrams] = useState([]);
-    const [modal, setModal] = useState(false);
-    const [modalType, setModalType] = useState('');
     const [activeItem, setActiveItem] = useState({ name: '', file: '' });
     const [originalItem, setOriginalItem] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isUserOptionsModalOpen, setIsUserOptionsModalOpen] = useState(false);
-    const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+    const [modalType, setModalType] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState({
+        helpModal: false,
+        userOptionsModal: false,
+        confirmationModal: false,
+        addEditDiagramModal: false,
+    });
     const [itemToDelete, setItemToDelete] = useState(null);
-
-    const openModal = () => setIsModalOpen(true);
-    const closeModal = () => setIsModalOpen(false);
 
     const navigate = useNavigate();
 
+    // Lifecycle methods
     useEffect(() => {
         const token = localStorage.getItem('accessToken');
         if (token) {
@@ -49,26 +58,22 @@ const App = () => {
         }
     }, []);
 
-    const handleLogin = (token) => {
-        setIsAuthenticated(true);
-        loadDiagrams();
+    // Modal methods
+    const openModal = (modalName) => {
+        setIsModalOpen((prevState) => ({
+            ...prevState,
+            [modalName]: true,
+        }));
     };
 
-    const handleLogout = () => {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        setIsAuthenticated(false);
-        navigate('/');
+    const closeModal = (modalName) => {
+        setIsModalOpen((prevState) => ({
+            ...prevState,
+            [modalName]: false,
+        }));
     };
 
-    const toggleUserOptionsModal = () => {
-        setIsUserOptionsModalOpen(!isUserOptionsModalOpen);
-    };
-
-    const toggle = () => {
-        setModal(!modal);
-    };
-
+    // Service methods
     const loadDiagrams = async () => {
         try {
             const data = await fetchDiagrams();
@@ -79,15 +84,34 @@ const App = () => {
         }
     };
 
-    const addNewDiagram = () => {
+    // Event handlers
+    const handleLogin = () => {
+        setIsAuthenticated(true);
+        loadDiagrams();
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        setIsAuthenticated(false);
+        setIsModalOpen({
+            helpModal: false,
+            userOptionsModal: false,
+            confirmationModal: false,
+            addEditDiagramModal: false,
+        });
+        navigate('/');
+    };
+
+    const handleAddNewDiagram = () => {
         const item = { name: '', file: '' };
         setActiveItem(item);
         setModalType('add');
         setOriginalItem(null);
-        toggle();
+        openModal('addEditDiagramModal');
     };
 
-    const chooseSchema = async () => {
+    const handleChooseSchema = async () => {
         //TODO: Implement schema selection
     };
 
@@ -100,19 +124,19 @@ const App = () => {
             console.error('Error deleting diagram:', error);
             toast.error('Error deleting diagram');
         }
-        setIsConfirmationModalOpen(false);
+        closeModal('confirmationModal');
     };
 
-    const confirmDelete = (item) => {
+    const handleConfirmDelete = (item) => {
         setItemToDelete(item);
-        setIsConfirmationModalOpen(true);
+        openModal('confirmationModal');
     };
 
     const handleEdit = (item) => {
         setActiveItem(item);
         setModalType('edit');
         setOriginalItem({ ...item });
-        toggle();
+        openModal('addEditDiagramModal');
     };
 
     const handleDownload = async (item) => {
@@ -125,26 +149,19 @@ const App = () => {
         }
     };
 
-    const handleDiagramAdd = async (item) => {
+    const handleSubmitDiagram = async (item) => {
         try {
-            await addDiagram(item);
-            toggle();
+            if (modalType === 'add') {
+                await addDiagram(item);
+                toast.success('Diagram added successfully');
+            } else if (modalType === 'edit') {
+                await editDiagram(item);
+                toast.success('Diagram edited successfully');
+            }
+            closeModal('addEditDiagramModal');
             loadDiagrams();
-            toast.success('Diagram added successfully');
         } catch (error) {
-            const errorMessage = error.response?.data?.message || 'Unknown error while adding diagram';
-            toast.error(errorMessage);
-        }
-    };
-
-    const handleDiagramEdit = async (item) => {
-        try {
-            await editDiagram(item);
-            toggle();
-            loadDiagrams();
-            toast.success('Diagram edited successfully');
-        } catch (error) {
-            const errorMessage = error.response?.data?.message || 'Unknown error while adding diagram';
+            const errorMessage = error.response?.data?.message || 'Unknown error while processing diagram';
             toast.error(errorMessage);
         }
     };
@@ -184,28 +201,27 @@ const App = () => {
                                 <AddNewDiagramIconButton
                                     width="40"
                                     height="40"
-                                    onClick={addNewDiagram}
+                                    onClick={handleAddNewDiagram}
                                     className="app-header-button"
                                 />
                                 <ChooseSchemaIconButton
                                     width="40"
                                     height="40"
-                                    onClick={chooseSchema}
+                                    onClick={handleChooseSchema}
                                     className="app-header-button"
                                 />
                                 <HelpIconButton
                                     width="40"
                                     height="40"
-                                    onClick={openModal}
+                                    onClick={() => openModal('helpModal')}
                                     className="app-header-button"
                                 />
                                 <UserIconButton
                                     width="40"
                                     height="40"
-                                    onClick={toggleUserOptionsModal}
+                                    onClick={() => openModal('userOptionsModal')}
                                     className="app-header-button"
                                 />
-
                             </div>
                         </div>
                     </div>
@@ -213,30 +229,33 @@ const App = () => {
                         <DiagramTable
                             diagrams={diagrams}
                             editItem={handleEdit}
-                            deleteItem={confirmDelete}
+                            deleteItem={handleConfirmDelete}
                             downloadFile={handleDownload}
                             visualizeDiagram={handleVisualizeDiagram}
                         />
                     </div>
                     <AddEditDiagramModal
-                        modal={modal}
-                        toggle={toggle}
+                        modal={isModalOpen.addEditDiagramModal}
+                        toggle={() => closeModal('addEditDiagramModal')}
                         modalType={modalType}
-                        handleDiagramAdd={handleDiagramAdd}
-                        handleDiagramEdit={handleDiagramEdit}
+                        handleDiagramAdd={handleSubmitDiagram}
+                        handleDiagramEdit={handleSubmitDiagram}
                         activeItem={activeItem}
                         originalItem={originalItem}
                         handleFormChange={handleFormChange}
                     />
-                    <HelpModal isOpen={isModalOpen} toggle={closeModal} />
+                    <HelpModal
+                        isOpen={isModalOpen.helpModal}
+                        toggle={() => closeModal('helpModal')}
+                    />
                     <UserOptionsModal
-                        isOpen={isUserOptionsModalOpen}
-                        toggle={toggleUserOptionsModal}
+                        isOpen={isModalOpen.userOptionsModal}
+                        toggle={() => closeModal('userOptionsModal')}
                         handleLogout={handleLogout}
                     />
                     <ConfirmationModal
-                        isOpen={isConfirmationModalOpen}
-                        toggle={() => setIsConfirmationModalOpen(false)}
+                        isOpen={isModalOpen.confirmationModal}
+                        toggle={() => closeModal('confirmationModal')}
                         onConfirm={handleDelete}
                         message="Are you sure you want to delete this diagram?"
                     />
