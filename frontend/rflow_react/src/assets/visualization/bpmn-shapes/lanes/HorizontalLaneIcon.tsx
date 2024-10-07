@@ -17,7 +17,7 @@ const HorizontalLaneIcon: React.FC = () => (
       height="20"
       fill="none"
       stroke="currentColor"
-      strokeWidth="0.5"
+      strokeWidth="1%"
     />
   </svg>
 );

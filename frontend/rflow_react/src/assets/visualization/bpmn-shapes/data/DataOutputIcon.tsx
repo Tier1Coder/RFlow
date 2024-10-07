@@ -1,38 +1,45 @@
 import * as React from 'react';
 
-const DataOutputIcon = () => {
-  return (
-    <svg
-      viewBox="0 0 2000 2000"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <rect
-        width="2000"
-        height="2000"
-        x="0"
-        y="0"
-        rx="30"
-        fill="transparent"
-        stroke="transparent"
-        strokeWidth="0"
-        strokeOpacity="100%"
-        paintOrder="stroke"
+const DataOutputIcon: React.FC = () => (
+  <svg
+    width="100%"
+    height="100%"
+    viewBox="0 0 512 512"
+    style={{
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      color: 'currentColor',
+    }}
+    xmlns="http://www.w3.org/2000/svg"
+    preserveAspectRatio="none"
+  >
+    <rect
+      width="512"
+      height="512"
+      x="0"
+      y="0"
+      rx="7.5"
+      fill="transparent"
+      stroke="transparent"
+      strokeWidth="0"
+      strokeOpacity="100%"
+      paintOrder="stroke"
+    />
+    <g fill="currentColor">
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeWidth="4.5%"
+        d="M112.5 63.224h198.676l82.203 84.412v289.141H112.5V63.224h188.621v92.912h92.257"
       />
-      <g fill="currentColor">
-        <path
-          fill="none"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeWidth="90"
-          d="M438.243 252.897h794.702l328.812 337.647v1156.564H438.243V252.897h754.486v371.647h369.028"
-        />
-        <path
-          fill="currentColor"
-          d="M789.963 367.952v185.303H577.928V712.8h212.035v185.305l282.15-265.078z"
-        />
-      </g>
-    </svg>
-  );
-};
+      <path
+        fill="currentColor"
+        d="M197.491 91.988v46.326H144.482v46.326h53.009v46.326l70.537-66.27z"
+      />
+    </g>
+  </svg>
+);
 
 export default DataOutputIcon;

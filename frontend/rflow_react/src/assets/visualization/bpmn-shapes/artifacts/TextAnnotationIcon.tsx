@@ -10,8 +10,8 @@ const TextAnnotationIcon: React.FC = () => (
   >
     <path
       d="M0,0 L0,512 M0,0 L256,0 M0,512 L256,512"
-      stroke="black"
-      strokeWidth="20"
+      stroke="currentColor"
+      strokeWidth="3%"
       fill="none"
     />
   </svg>

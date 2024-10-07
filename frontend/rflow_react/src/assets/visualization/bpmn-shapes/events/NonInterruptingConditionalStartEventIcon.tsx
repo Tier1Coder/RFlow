@@ -41,8 +41,8 @@ const NonInterruptingConditionalStartEventIcon: React.FC = () => {
           cy="256"
           r="200"
           stroke="currentColor"
-          strokeDasharray="20, 20"
-          strokeWidth="12"
+          strokeDasharray="90, 90"
+          strokeWidth="5%"
           fill="none"
         />
         <rect
@@ -52,7 +52,7 @@ const NonInterruptingConditionalStartEventIcon: React.FC = () => {
           height="160"
           fill="none"
           stroke="currentColor"
-          strokeWidth="12"
+          strokeWidth="5%"
         />
         <line x1="200" y1="220" x2="312" y2="220" stroke="currentColor" strokeWidth="12" />
         <line x1="200" y1="260" x2="312" y2="260" stroke="currentColor" strokeWidth="12" />

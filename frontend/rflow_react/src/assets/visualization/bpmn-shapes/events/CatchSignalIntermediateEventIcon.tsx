@@ -1,6 +1,6 @@
 import React from 'react';
 
-const IntermediateEventCatchSignal: React.FC = () => (
+const CatchSignalIntermediateEventIcon: React.FC = () => (
   <svg
     width="100%"
     height="100%"
@@ -43,4 +43,4 @@ const IntermediateEventCatchSignal: React.FC = () => (
   </svg>
 );
 
-export default IntermediateEventCatchSignal;
+export default CatchSignalIntermediateEventIcon;

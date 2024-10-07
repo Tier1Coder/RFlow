@@ -5,16 +5,22 @@ const NoneStartEventIcon: React.FC = () => (
     width="100%"
     height="100%"
     preserveAspectRatio="none"
-    viewBox="0 0 100 100"
+    viewBox="0 0 512 512"
     xmlns="http://www.w3.org/2000/svg"
+    style={{
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      color: 'currentColor',
+    }}
   >
     <circle
-      cx="50"
-      cy="50"
-      r="45"
+      cx="256"
+      cy="256"
+      r="230"
       fill="none"
       stroke="currentColor"
-      strokeWidth="5"
+      strokeWidth="7%"
     />
   </svg>
 );

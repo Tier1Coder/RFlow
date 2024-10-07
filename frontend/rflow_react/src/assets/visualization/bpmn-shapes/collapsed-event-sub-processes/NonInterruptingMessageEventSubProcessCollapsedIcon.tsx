@@ -1,54 +1,103 @@
 import * as React from 'react';
 
 const NonInterruptingMessageEventSubProcessCollapsedIcon: React.FC = () => (
-  <svg
-    width="100%"
-    height="100%"
-    viewBox="0 0 2048 2048"
-    style={{ color: 'currentColor' }}
-    xmlns="http://www.w3.org/2000/svg"
-    preserveAspectRatio="none"
-  >
-    <rect
-      width="2048"
-      height="2048"
-      x="0"
-      y="0"
-      rx="30"
-      fill="transparent"
-      stroke="transparent"
-      strokeWidth="0"
-      strokeOpacity="100%"
-      paintOrder="stroke"
-    />
-    <g fill="currentColor">
-      <g transform="translate(0 995.638)">
-        <path
-          fill="currentColor"
-          d="M677.543 48.007V740.92h692.914V48.007H677.543zm63.473 63.472h565.968v565.97H741.016v-565.97zm235.505 80.502v157.701H818.817v94.963H976.52v157.702h94.958V444.645h157.704v-94.963h-157.703v-157.7h-94.957z"
-          transform="scale(0.6) translate(700, 1000)"
-        />
-        <rect
-          width="2048"
-          height="2048"
-          y="-1000"
+  <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+    {/* 1. Outside rectangle */}
+    <svg
+      width="100%"
+      height="100%"
+      viewBox="0 0 512 512"
+      style={{ 
+        position: 'absolute', 
+        top: 0, 
+        left: 0 
+      }}
+      xmlns="http://www.w3.org/2000/svg"
+      preserveAspectRatio="none"
+    >
+      <rect
+        width="512"
+        height="512"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="3%"
+        rx="66.7"
+        strokeDasharray="30,30"
+      />
+    </svg>
+
+    {/* 2. Top left envelope with circle */}
+    <svg
+      width="100%"
+      height="100%"
+      viewBox="0 0 512 512"
+      style={{ 
+        position: 'absolute', 
+        top: 0, 
+        left: 0 
+      }}
+      xmlns="http://www.w3.org/2000/svg"
+      preserveAspectRatio="xMinYMin meet"
+    >
+      <g id="circle-and-envelope">
+        <circle
+          cx="100"
+          cy="100"
+          r="80"
           fill="none"
           stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="50"
-          rx="266.951"
-          strokeDasharray="100, 100"
+          strokeWidth="3%"
+          strokeDasharray="30,30"
         />
+        <g fill="none" stroke="currentColor" strokeWidth="15">
+          <rect x="60" y="70" width="80" height="50" />
+          <polyline points="60,70 100,100 140,70" />
+          <line x1="60" y1="120" x2="140" y2="120" />
+        </g>
       </g>
-    </g>
-    <g fill="white" stroke="black" strokeWidth="10" transform="translate(80 160)">
-      <circle cx="160" cy="112" r="166" fill="none" stroke="black" strokeWidth="10" strokeDasharray="24,24"/>
-      <rect x="32" y="32" width="256" height="160"></rect>
-      <polyline points="32,32 160,112 288,32"></polyline>
-      <line x1="32" y1="192" x2="288" y2="192"></line>
-    </g>
-  </svg>
+    </svg>
+
+    {/* 3. Plus in square */}
+    <svg
+      width="15%" 
+      height="15%"
+      viewBox="0 0 75 75"  
+      style={{ 
+        position: 'absolute', 
+        bottom: '1%', 
+        left: '50%', 
+        transform: 'translateX(-50%)'
+      }}
+      xmlns="http://www.w3.org/2000/svg"
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <rect
+        x="0"
+        y="0"
+        width="75"
+        height="75"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="15%" 
+      />
+      <line
+        x1="37.5"
+        y1="15"
+        x2="37.5"
+        y2="60"
+        stroke="currentColor"
+        strokeWidth="15%"
+      />
+      <line
+        x1="15"
+        y1="37.5"
+        x2="60"
+        y2="37.5"
+        stroke="currentColor"
+        strokeWidth="15%" 
+      />
+    </svg>
+  </div>
 );
 
 export default NonInterruptingMessageEventSubProcessCollapsedIcon;

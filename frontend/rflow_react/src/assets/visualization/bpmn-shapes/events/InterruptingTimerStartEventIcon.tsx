@@ -1,6 +1,6 @@
 import React from 'react';
 
-const NonInterruptingTimerStartEventIcon: React.FC = () => (
+const InterruptingTimerStartEventIcon: React.FC = () => (
   <svg
     width="100%"
     height="100%"
@@ -45,4 +45,4 @@ const NonInterruptingTimerStartEventIcon: React.FC = () => (
   </svg>
 );
 
-export default NonInterruptingTimerStartEventIcon;
+export default InterruptingTimerStartEventIcon;

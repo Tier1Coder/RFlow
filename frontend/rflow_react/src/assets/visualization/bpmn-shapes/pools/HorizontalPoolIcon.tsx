@@ -11,22 +11,18 @@ const HorizontalPoolIcon: React.FC = () => (
     className="h-full w-full"
   >
     <rect
-      x="0"
-      y="0"
-      width="100"
-      height="20"
+      width="100%"
+      height="99%"
       fill="#FFFFFF"
       stroke="currentColor"
-      strokeWidth="0.5"
+      strokeWidth="0.5%"
     />
     <rect
-      x="0"
-      y="0"
-      width="2"
-      height="20"
+      width="2%"
+      height="99%"
       fill="#FFFFFF"
       stroke="currentColor"
-      strokeWidth="0.5"
+      strokeWidth="0.5%"
     />
   </svg>
 );

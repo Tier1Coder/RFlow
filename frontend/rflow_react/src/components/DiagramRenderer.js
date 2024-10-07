@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { deleteDiagram, downloadFile } from '../services/DiagramService';
 import '../styles/components/DiagramRenderer.css';
+import { AppLogoIcon } from '../assets/app/AppLogoIcon.jsx';
 
 /* -User Interface Components- */
 import { InfoIconButton } from '../assets/ui/InfoIcon.jsx';
@@ -362,7 +363,10 @@ const DiagramRenderer = () => {
                         ref={draggableRef}
                         id={key} 
                         className='flow-element'>
-                        <ElementComponent points={points} scale={scale}/>
+                        <ElementComponent 
+                            points={points} 
+                            scale={scale}
+                        />
                     </div>
                     </Draggable>
                 );
@@ -414,20 +418,26 @@ const DiagramRenderer = () => {
         <div>
             <ToastContainer />
             <div className="app-header">
+                <div className="app-header-icons">
+                <div className="app-header-logo">
+                    <AppLogoIcon width="80" height="80" />
+                </div>
                 <BackIconButton width="40" height="40" onClick={handleBack} className="app-header-button" />
-                <InfoIconButton width="40" height="40" onClick={handleInfo} className="app-header-button" />
-                <DownloadFileIconButton width="40" height="40" onClick={handleDownload} className="app-header-button" />
-                <DeleteCircleIconButton width="40" height="40" onClick={confirmDelete} className="app-header-button" />
                 <UserIconButton width="40" height="40" onClick={handleUserOptions} className="app-header-button" />
+            </div>
             </div>
             <div>
                 <h2 className="diagram-visualization-title">{diagramName}</h2>
             </div>
-            <div 
-                className="diagram-visualization"
-                ref={diagramVisualizationRef}
-                >
-                {scaledDiagramData && Object.entries(scaledDiagramData).map(([key, element]) => renderElement(key, element))}
+            <div className="diagram-container">
+                <div className="toolbox">
+                    <InfoIconButton width="40" height="40" onClick={handleInfo} className="toolbox-icon" />
+                    <DownloadFileIconButton width="40" height="40" onClick={handleDownload} className="toolbox-icon" />
+                    <DeleteCircleIconButton width="40" height="40" onClick={confirmDelete} className="toolbox-icon" />
+                </div>
+                <div className="diagram-visualization" ref={diagramVisualizationRef}>
+                    {scaledDiagramData && Object.entries(scaledDiagramData).map(([key, element]) => renderElement(key, element))}
+                </div>
             </div>
             <InfoModal 
                 isOpen={isInfoModalOpen} 

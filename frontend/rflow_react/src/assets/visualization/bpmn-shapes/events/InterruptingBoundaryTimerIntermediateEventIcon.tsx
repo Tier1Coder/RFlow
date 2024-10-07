@@ -1,6 +1,6 @@
 import React from 'react';
 
-const TimerIntermediateEventIcon: React.FC = () => (
+const InterruptingBoundaryTimerIntermediateEventIcon: React.FC = () => (
   <svg
     width="100%"
     height="100%"
@@ -43,4 +43,4 @@ const TimerIntermediateEventIcon: React.FC = () => (
   </svg>
 );
 
-export default TimerIntermediateEventIcon;
+export default InterruptingBoundaryTimerIntermediateEventIcon;
