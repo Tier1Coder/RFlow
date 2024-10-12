@@ -1,7 +1,11 @@
 import React from 'react';
 import AbstractTaskIcon from './AbstractTaskIcon.tsx';
 
-const ScriptTaskIcon: React.FC = () => (
+interface ScriptTaskIconProps {
+  name?: string;
+}
+
+const ScriptTaskIcon: React.FC<ScriptTaskIconProps> = ({ name }) => (
   <div style={{ position: 'relative', width: '100%', height: '100%' }}>
     {/* Outer SVG */}
     <svg
@@ -12,7 +16,7 @@ const ScriptTaskIcon: React.FC = () => (
       xmlns="http://www.w3.org/2000/svg"
       preserveAspectRatio="none"
     >
-      <AbstractTaskIcon />
+      <AbstractTaskIcon name={name} />
     </svg>
 
     {/* Inner SVG for <g> group */}

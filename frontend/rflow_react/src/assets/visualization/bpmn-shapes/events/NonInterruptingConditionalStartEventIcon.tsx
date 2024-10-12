@@ -1,7 +1,12 @@
 import React from 'react';
+import { Textfit } from 'react-textfit';
 
-const NonInterruptingConditionalStartEventIcon: React.FC = () => {
-  return (
+interface NonInterruptingConditionalStartEventIconProps {
+  name?: string;
+}
+
+const NonInterruptingConditionalStartEventIcon: React.FC<NonInterruptingConditionalStartEventIconProps> = ({ name }) => (
+  <div style={{ position: 'relative', width: '100%', height: '100%' }}>
     <svg
       width="100%"
       height="100%"
@@ -59,7 +64,27 @@ const NonInterruptingConditionalStartEventIcon: React.FC = () => {
         <line x1="200" y1="300" x2="312" y2="300" stroke="currentColor" strokeWidth="12" />
       </svg>
     </svg>
-  );
-};
+
+    {name && (
+      <div
+        style={{
+          position: 'absolute',
+          top: '100%',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          color: 'currentColor',
+          width: '100%',
+          textAlign: 'center',
+          fontFamily: 'inherit',
+          lineHeight: 1.2,
+        }}
+      >
+        <Textfit>
+          {name}
+        </Textfit>
+      </div>
+    )}
+  </div>
+);
 
 export default NonInterruptingConditionalStartEventIcon;

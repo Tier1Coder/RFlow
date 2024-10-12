@@ -1,6 +1,11 @@
 import * as React from 'react';
+import { Textfit } from 'react-textfit';
 
-const SubProcessCollapsedIcon: React.FC = () => (
+interface SubProcessCollapsedIconProps {
+  name?: string;
+}
+
+const SubProcessCollapsedIcon: React.FC<SubProcessCollapsedIconProps> = ({ name }) => (
   <div style={{ position: 'relative', width: '100%', height: '100%' }}>
     {/* 1. Outside rectangle */}
     <svg
@@ -67,6 +72,33 @@ const SubProcessCollapsedIcon: React.FC = () => (
         strokeWidth="15%" 
       />
     </svg>
+
+    {/* 3. Text label */}
+    {name && (
+      <div
+        style={{
+          position: 'absolute',
+          color: 'currentColor',
+          overflow: 'hidden',
+          width: '90%',
+          height: '90%',
+          top: '5%',
+          left: '5%',
+        }}
+      >
+        <Textfit
+          style={{
+            width: '100%',
+            height: '100%',
+            textAlign: 'center',
+            fontFamily: 'inherit',
+            lineHeight: 1.2,
+          }}
+        >
+          {name}
+        </Textfit>
+      </div>
+    )}
   </div>
 );
 

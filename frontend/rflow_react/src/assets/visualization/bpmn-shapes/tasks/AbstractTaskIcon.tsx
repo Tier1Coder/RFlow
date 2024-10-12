@@ -1,26 +1,58 @@
-import React from "react";
+import React from 'react';
+import { Textfit } from 'react-textfit';
 
-const AbstractTaskIcon: React.FC = () => (
+interface AbstractTaskIconProps {
+  name?: string;
+}
+
+const AbstractTaskIcon: React.FC<AbstractTaskIconProps> = ({ name = '' }) => (
   <svg
     width="100%"
     height="100%"
-    preserveAspectRatio="none"
     viewBox="0 0 100 80"
     xmlns="http://www.w3.org/2000/svg"
   >
     <rect
-      x="0.5"
-      y="0.5"
-      width="99"
-      height="79"
+      width="100"
+      height="80"
       rx="10"
       ry="10"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2"
+      strokeWidth="3"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
+
+    
+    {name && (
+        <foreignObject x="0" y="0" width="100%" height="100%">
+          <div
+            style={{
+              position: 'absolute',
+              top: '30%',
+              width: '85%',
+              height: '60%',
+              left: '5%',
+              right: '5%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Textfit
+              style={{
+                width: '100%',
+                height: '100%',
+                textAlign: 'center',
+                lineHeight: 1.2,
+              }}
+            >
+              {name}
+            </Textfit>
+          </div>
+        </foreignObject>
+    )}
   </svg>
 );
 

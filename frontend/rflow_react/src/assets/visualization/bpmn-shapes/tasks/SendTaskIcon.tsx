@@ -1,9 +1,12 @@
 import React from 'react';
 import AbstractTaskIcon from './AbstractTaskIcon.tsx';
 
-const SendTaskIcon: React.FC = () => (
+interface SendTaskIconProps {
+  name?: string;
+}
+
+const SendTaskIcon: React.FC<SendTaskIconProps> = ({ name }) => (
   <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-    {/* Outer SVG */}
     <svg
       width="100%"
       height="100%"
@@ -12,15 +15,13 @@ const SendTaskIcon: React.FC = () => (
       xmlns="http://www.w3.org/2000/svg"
       preserveAspectRatio="none"
     >
-      <AbstractTaskIcon />
+      <AbstractTaskIcon name={name} />
     </svg>
-
-    {/* Inner SVG for <g> group */}
     <svg
       width="100%"
       height="100%"
       viewBox="0 0 512 512"
-      style={{ position: 'absolute', top: 0, left: 0 }}
+      style={{ position: 'absolute', top: "10%", left: 0 }}
       xmlns="http://www.w3.org/2000/svg"
       preserveAspectRatio="xMinYMin meet"
     >

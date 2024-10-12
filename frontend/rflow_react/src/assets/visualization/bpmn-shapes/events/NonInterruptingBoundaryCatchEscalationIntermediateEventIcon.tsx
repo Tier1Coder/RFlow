@@ -1,7 +1,12 @@
 import React from 'react';
+import { Textfit } from 'react-textfit';
 
-const NonInterruptingBoundaryCatchEscalationIntermediateEventIcon: React.FC = () => {
-  return (
+interface NonInterruptingBoundaryCatchEscalationIntermediateEventIconProps {
+  name?: string;
+}
+
+const NonInterruptingBoundaryCatchEscalationIntermediateEventIcon: React.FC<NonInterruptingBoundaryCatchEscalationIntermediateEventIconProps> = ({ name }) => (
+  <div style={{ position: 'relative', width: '100%', height: '100%' }}>
     <svg
       width="100%"
       height="100%"
@@ -34,7 +39,27 @@ const NonInterruptingBoundaryCatchEscalationIntermediateEventIcon: React.FC = ()
         />
       </g>
     </svg>
-  );
-};
+
+    {name && (
+      <div
+        style={{
+          position: 'absolute',
+          top: '100%',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          color: 'currentColor',
+          width: '100%',
+          textAlign: 'center',
+          fontFamily: 'inherit',
+          lineHeight: 1.2,
+        }}
+      >
+        <Textfit>
+          {name}
+        </Textfit>
+      </div>
+    )}
+  </div>
+);
 
 export default NonInterruptingBoundaryCatchEscalationIntermediateEventIcon;

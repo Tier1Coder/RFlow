@@ -345,7 +345,7 @@ const DiagramRenderer = () => {
                     height: `${height}px`,
                     width: `${width}px`  
                     }}>
-                    <ElementComponent/>
+                    <ElementComponent name={element.name || ""} text={element.text1?.text || ""} />
                 </div>
                 </Draggable>
             );
