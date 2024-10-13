@@ -87,6 +87,19 @@ const visualizeDiagram = async (id) => {
     }
 };
 
+const viewFile = async (id) => {
+    try {
+        const response = await axiosInstance.get(`/api/diagrams/${id}/view_file/`, {
+            responseType: 'blob',
+        });
+        const text = await response.data.text();
+        return text;
+    } catch (error) {
+        console.error('Error viewing file text:', error);
+        throw error;
+    }
+};
+
 export {
     fetchDiagrams,
     deleteDiagram,
@@ -94,4 +107,5 @@ export {
     addDiagram,
     editDiagram,
     visualizeDiagram,
+    viewFile,
 };

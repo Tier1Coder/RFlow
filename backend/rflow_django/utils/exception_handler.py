@@ -9,11 +9,17 @@ def custom_exception_handler(exc: Any, context: dict) -> Response:
     response = exception_handler(exc, context)
 
     if response is not None:
-        if 'detail' in response.data:
-            response.data['message'] = response.data['detail']
-            response.data['time'] = datetime.now()
-            del response.data['detail']
+        response.data['time'] = datetime.now()
+
+        detail = response.data.pop('detail', None)
+
+        if isinstance(detail, dict):
+            response.data['error'] = detail.get('error', 'An error occurred.')
+
+            for key, value in detail.items():
+                if key != 'error':
+                    response.data[key] = value
         else:
-            response.data['message'] = str(exc)
-            response.data['time'] = datetime.now()
+            response.data['message'] = detail
+
     return response

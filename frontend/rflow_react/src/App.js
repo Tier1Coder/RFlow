@@ -11,6 +11,7 @@ import UserOptionsModal from './components/modals/UserOptionsModal';
 import HelpModal from './components/modals/HelpModal';
 import ConfirmationModal from './components/modals/ConfirmationModal';
 import LoginForm from './components/forms/LoginForm';
+import ResolutionTool from './components/ResolutionTool';
 
 // Custom icons
 import { AppLogoIcon } from './assets/app/AppLogoIcon.jsx';
@@ -27,6 +28,7 @@ import {
     addDiagram,
     editDiagram,
     visualizeDiagram,
+    viewFile,
 } from './services/DiagramService';
 
 // CSS
@@ -172,10 +174,20 @@ const App = () => {
             navigate(`/visualize/${item.id}`, { state: { diagramId: item.id, diagramData: data, diagramName: item.name } });
         } catch (error) {
             console.error('Error fetching diagram data', error);
-            const errorMessage = error.response?.data?.error || 'Error fetching diagram data';
-            toast.error(errorMessage);
+            console.log('Error response data:', error.response?.data);
+    
+            const initialItemText = await viewFile(item.id);
+            const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Error fetching diagram data';
+            const errorLine = error.response?.data?.line || 0;
+            const errorColumn = error.response?.data?.column || 0;
+            const duplicatedIds = error.response?.data?.duplicatedIds || [];
+            navigate(`/resolve/${item.id}`, 
+                { state: { itemName: item.name, itemId: item.id, initialItemText, 
+                    errorMessage, errorLine, errorColumn, 
+                    duplicatedIds } });
         }
     };
+    
 
     const handleFormChange = (e) => {
         const { name, value, files } = e.target;
@@ -270,6 +282,7 @@ const WrappedApp = () => (
         <Routes>
             <Route path="/" element={<App />} />
             <Route path="/visualize/:id" element={<DiagramRenderer />} />
+            <Route path="/resolve/:id" element={<ResolutionTool />} />
         </Routes>
     </Router>
 );

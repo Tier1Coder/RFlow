@@ -174,8 +174,27 @@ class BPMNDiagramView(viewsets.ModelViewSet):
                 bpmn_factory = BPMNParser(xml_file_path)
                 parsed_json_data = bpmn_factory.parse()
                 return Response({"xml_content": parsed_json_data}, status=status.HTTP_200_OK)
-            except (DocumentInvalidError, etree.XMLSyntaxError, ElementIdDuplicatedError) as e:
-                return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+            # Custom exceptions
+            except DocumentInvalidError as e:
+                return Response({
+                    "error": e.message,
+                    "line": e.line,
+                    "column": e.column,
+                }, status=status.HTTP_400_BAD_REQUEST)
+            except ElementIdDuplicatedError as e:
+                return Response({
+                    "error": e.message,
+                    "duplicatedIds": e.duplicated_ids
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+            # lxml exceptions
+            except etree.XMLSyntaxError as e:
+                return Response({
+                    "error": e.msg,
+                    "line": e.lineno
+                }, status=status.HTTP_400_BAD_REQUEST)
+
         return Response({"error": "File not found"}, status=status.HTTP_404_NOT_FOUND)
 
 

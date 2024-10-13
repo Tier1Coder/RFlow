@@ -1,13 +1,11 @@
 from rest_framework import status
 from rest_framework.exceptions import APIException
+from typing import Union
 
 
 class BaseCustomException(APIException):
     """ Base class for custom exceptions. """
-    detail = None
-    status_code = None
-
-    def __init__(self, detail: str, status_code: int):
+    def __init__(self, detail: Union[str, dict], status_code: int = status.HTTP_500_INTERNAL_SERVER_ERROR):
         super().__init__(detail, status_code)
         self.detail = detail
         self.status_code = status_code
@@ -56,15 +54,31 @@ class DiagramFileCannotBeBlankException(BaseCustomException):
 """ BPMNParser errors """
 
 
-class DocumentInvalidError(Exception):
+class DocumentInvalidError(BaseCustomException):
     """ Raised when an XML document is not valid according to the schema. """
-    def __init__(self, message: str):
-        self.message = message
-        super().__init__(self.message)
+    status_code = status.HTTP_400_BAD_REQUEST
+
+    def __init__(self, detail: str, line: int = None, column: int = None):
+        detail = {
+            'error': detail,
+            'line': line,
+            'column': column
+        }
+        super().__init__(detail, self.status_code)
+        self.message = detail
+        self.line = line
+        self.column = column
 
 
-class ElementIdDuplicatedError(Exception):
-    """ Raised when an visual_element ID is duplicated in the XML document. """
-    def __init__(self, message: str):
-        self.message = message
-        super().__init__(self.message)
+class ElementIdDuplicatedError(BaseCustomException):
+    """ Raised when a visual_element ID is duplicated in the XML document. """
+    status_code = status.HTTP_400_BAD_REQUEST
+
+    def __init__(self, detail: str, duplicated_ids: list = None):
+        detail = {
+            'error': detail,
+            'duplicatedIds': duplicated_ids or []
+        }
+        super().__init__(detail, self.status_code)
+        self.message = detail
+        self.duplicated_ids = duplicated_ids

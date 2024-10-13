@@ -1,0 +1,19 @@
+.resolution-tool-container {
+    padding: 20px;
+}
+
+.resolution-tool-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.resolution-tool-title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.diff-editor-container {
+    margin-top: 20px;
+}

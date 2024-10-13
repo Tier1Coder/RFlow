@@ -33,7 +33,7 @@ import lxml.etree as etree
 from lxml import objectify
 from pathlib import Path
 from utils.exceptions import DocumentInvalidError, ElementIdDuplicatedError
-from collections import Counter
+from collections import defaultdict
 
 
 def remove_namespaces(root: etree.ElementBase) -> None:
@@ -98,13 +98,26 @@ def check_duplicate_element_ids(elements: List[etree.ElementBase], ident: str) -
     None or DocumentInvalidError
         Returns None if no duplicate IDs are found, otherwise raises a ElementIdDuplicatedError.
     """
-    element_ids = [element.attrib.get(ident) for element in elements if ident in element.attrib]
-    duplicate_ids = [ident for ident, count in Counter(element_ids).items() if count > 1]
+    id_occurrences = defaultdict(list)
+    for element in elements:
+        if ident in element.attrib:
+            element_id = element.attrib[ident]
+            line = element.sourceline
+            id_occurrences[element_id].append({
+                'id': element_id,
+                'line': line,
+            })
 
-    if duplicate_ids:
+    duplicated_id_info = []
+    for id_, occurrences in id_occurrences.items():
+        if len(occurrences) > 1:
+            duplicated_id_info.extend(occurrences)
+
+    if duplicated_id_info:
         raise ElementIdDuplicatedError(
-            f"Duplicated logic element(s): {', '.join(duplicate_ids)}")
-
+            f"Duplicated element(s): {', '.join([info['id'] for info in duplicated_id_info])}",
+            duplicated_ids=duplicated_id_info
+        )
     return
 
 
@@ -436,7 +449,7 @@ class BPMNParser:
 
         if not is_valid:
             last_error = xml_schema.error_log.last_error
-            raise DocumentInvalidError(f"XML file is not valid according to the XSD file: {last_error}")
+            raise DocumentInvalidError(last_error.message, last_error.line, last_error.column)
         return
 
     def parse(self) -> dict:

@@ -4,7 +4,7 @@ import os
 
 def upload_to(instance: 'BPMNDiagram', filename: str) -> str:
     base, extension = os.path.splitext(filename)
-    new_filename = f"{instance.name}_{instance.id}{extension}"
+    new_filename = f"{base}_{instance.id}{extension}"
     return new_filename
 
 
@@ -35,7 +35,7 @@ class BPMNDiagram(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
-        """ Overloaded save method to handle file renaming using following pattern: {name}_{id}{extension}. """
+        """ Overloaded save method to handle file renaming using following pattern: {file}_{id}{extension}. """
         if not self.id and self.file:
             temp_file = self.file
             self.file = None
