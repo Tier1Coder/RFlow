@@ -3,7 +3,7 @@ import React from 'react';
 const AddEditDiagramForm = ({ activeItem, originalItem, onChange }) => {
     return (
         <form>
-            <div className="form-group">
+            <div className="add-edit-diagram-form-group">
                 <label htmlFor="name">Name</label>
                 <input
                     autoComplete="off"
@@ -16,7 +16,7 @@ const AddEditDiagramForm = ({ activeItem, originalItem, onChange }) => {
                     onChange={onChange}
                 />
             </div>
-            <div className="form-group">
+            <div className="add-edit-diagram-form-group">
                 <label htmlFor="file">File</label>
                 <input
                     id="file"
@@ -27,16 +27,16 @@ const AddEditDiagramForm = ({ activeItem, originalItem, onChange }) => {
                     accept=".xml"
                 />
                 {originalItem && originalItem.file && typeof originalItem.file === 'string' && (
-                    <div 
-                        className="current-file">Current file: 
-                            <div
-                                className="current-file-path">
-                                    <a 
-                                        href={originalItem.file} 
-                                        target="_blank" 
-                                        rel="noopener noreferrer">{originalItem.file}
-                                    </a>
-                            </div>
+                    <div className="add-edit-diagram-form-current-file">
+                        Current file: 
+                        <div className="add-edit-diagram-form-current-file-path">
+                            <a 
+                                href={originalItem.file} 
+                                target="_blank" 
+                                rel="noopener noreferrer">
+                                {originalItem.file}
+                            </a>
+                        </div>
                     </div>
                 )}
             </div>

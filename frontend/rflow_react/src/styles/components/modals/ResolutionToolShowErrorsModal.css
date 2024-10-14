@@ -1,4 +1,4 @@
-.resolution-tool-modal {
+.resolution-tool-show-errors-modal-container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -12,24 +12,26 @@
     background-color: rgba(0, 0, 0, 0.5);
 }
 
-.resolution-tool-modal-content {
-    background-color: #fefefe;
+.resolution-tool-show-errors-modal-content {
+    background-color: #3c3c3c;
+    color: #f0f0f0;
     margin: 15% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 80%;
+    width: 60%;
+    border-radius: 8px;
 }
 
-.resolution-tool-close {
-    color: #aaa;
+.resolution-tool-show-errors-modal-close {
+    color: #f0f0f0;
     float: right;
     font-size: 28px;
     font-weight: bold;
 }
 
-.resolution-tool-close:hover,
-.resolution-tool-close:focus {
-    color: black;
+.resolution-tool-show-errors-modal:hover,
+.resolution-tool-show-errors-modal:focus {
+    color: #ff5722;
     text-decoration: none;
     cursor: pointer;
 }

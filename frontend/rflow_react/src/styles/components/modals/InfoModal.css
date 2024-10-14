@@ -1,17 +1,54 @@
-.diagram-data {
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    background-color: #f8f9fa;
+.info-modal {
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .info-modal-header {
+    background-color: #3c72d6;
+    color: white;
+    border-bottom: none;
+    padding: 16px;
+    font-weight: bold;
+    border-radius: 10px 10px 0 0;
+  }
+  
+  .info-modal-body {
+    background-color: #f0f4f8;
+    padding: 20px;
+    color: #333;
+    line-height: 1.6;
+  }
+  
+  .info-modal-diagram-data {
+    background-color: #ffffff;
     padding: 15px;
-    border-radius: 5px;
-    border: 1px solid #dee2e6;
-}
-
-.close-button {
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: 10px;
-    margin: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+    font-family: 'Courier New', Courier, monospace;
+    color: #3c72d6;
+  }
+  
+  .info-modal-footer {
+    background-color: #f8f9fa;
+    border-top: none;
+    padding: 16px;
+    display: flex;
+    justify-content: flex-end;
+    border-radius: 0 0 10px 10px;
+  }
+  
+  .info-modal-cancel-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
     cursor: pointer;
-}
+    transition: background-color 0.3s ease;
+  }
+  
+  .info-modal-cancel-button:hover {
+    background-color: #0056b3;
+  }
+  

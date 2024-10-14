@@ -29,6 +29,14 @@ const ResolutionTool = () => {
         setIsModalOpen(false);
     };
 
+    const handleCancel = () => {
+        setItemText(initialItemText);
+    };
+
+    const handleSave = () => {
+        console.log('Save button clicked');
+    };
+
     const setMarkers = useCallback((editor, monacoInstance) => {
         const markers = [];
 
@@ -82,9 +90,8 @@ const ResolutionTool = () => {
                 <div className="resolution-tool-title">
                     Found errors in: {itemName} file, ID: {itemId}.
                 </div>
-                <button onClick={handleOpenModal}>Show Errors</button>
             </div>
-            <div className="diff-editor-container">
+            <div className="resolution-tool-diff-editor-container">
                 <DiffEditor
                     height="70vh"
                     original={initialItemText}
@@ -92,12 +99,23 @@ const ResolutionTool = () => {
                     onChange={handleEditorChange}
                     language="xml"
                     options={{
-                        renderValidationDecorations: 'on'
+                        renderValidationDecorations: 'on',
                     }}
                     onMount={handleEditorDidMount}
+                    theme="vs-dark"
                 />
             </div>
-
+            <div className="resolution-tool-footer">
+                <button className="resolution-tool-show-errors-button" onClick={handleOpenModal}>
+                    Show Errors
+                </button>
+                <button className="resolution-tool-cancel-button" onClick={handleCancel}>
+                    Cancel
+                </button>
+                <button className="resolution-tool-save-button" onClick={handleSave}>
+                    Save
+                </button>
+            </div>
             <ResolutionToolShowErrorsModal isOpen={isModalOpen} onClose={handleCloseModal}>
                 <h2>Errors</h2>
                 <ul>

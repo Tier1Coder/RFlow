@@ -57,8 +57,6 @@ const HorizontalPoolIcon: React.FC<HorizontalPoolIconProps> = ({ name }) => (
         <Textfit
           mode="single"
           forceSingleModeWidth={false}
-          min={1} 
-          max={1000} 
           style={{
             width: '100%',
             height: '100%',

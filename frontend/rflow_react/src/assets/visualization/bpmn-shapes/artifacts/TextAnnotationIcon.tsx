@@ -56,10 +56,10 @@ const TextAnnotationIcon: React.FC<TextAnnotationIconProps> = ({ text }) => {
         <div
           style={{
             position: 'absolute',
-            top: '5px',  
-            left: '5px',
-            right: '5px',
-            bottom: '5px',
+            top: '5%',  
+            left: '5%',
+            right: '5%',
+            bottom: '5%',
             color: 'currentColor',
             overflow: 'hidden',
           }}

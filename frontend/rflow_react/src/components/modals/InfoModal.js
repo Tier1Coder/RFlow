@@ -10,7 +10,7 @@ const InfoModal = ({ isOpen, toggle, diagramData }) => {
         <Modal.Title>Parsed Diagram Data</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <pre className="diagram-data">
+        <pre className="info-modal-diagram-data">
           {JSON.stringify(diagramData, null, 2)}
         </pre>
       </Modal.Body>

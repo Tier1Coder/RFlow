@@ -12,27 +12,27 @@
     overflow: hidden;
 }
 
-.participant {
+.diagram-visualization-participant {
     position: absolute;
     z-index: 1;
 }
 
-.lane {
+.diagram-visualization-lane {
     position: absolute;
     z-index: 2; 
 }
 
-.element {
+.diagram-visualization-element {
     position: absolute;
     z-index: 3;
 }
 
-.flow-element{
+.diagram-visualization-flow-element{
     position: absolute; 
     z-index: 4;
 }
 
-.toolbox {
+.diagram-visualization-toolbox {
     position: relative;
     left: 0;
     top: 0;
@@ -48,18 +48,18 @@
     z-index: 5;
 }
 
-.toolbox-icon {
+.diagram-visualization-toolbox-icon {
     margin: 0 5px;
     position: relative;
     overflow: hidden;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.toolbox-icon:hover {
+.diagram-visualization-toolbox-icon:hover {
     transform: scale(1.25);
 }
 
-.diagram-container {
+.diagram-visualization-container {
     display: flex;
     height: 80vh; 
 }

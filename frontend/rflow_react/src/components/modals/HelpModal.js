@@ -4,11 +4,11 @@ import '../../styles/components/modals/HelpModal.css';
 
 const HelpModal = ({ isOpen, toggle }) => {
   return (
-    <Modal show={isOpen} onHide={toggle}>
-      <Modal.Header closeButton className="custom-modal-header">
+    <Modal show={isOpen} onHide={toggle} className="help-modal">
+      <Modal.Header closeButton className="help-modal-header">
         <Modal.Title>About RFlow</Modal.Title>
       </Modal.Header>
-      <Modal.Body className="custom-modal-body">
+      <Modal.Body className="help-modal-body">
         <h5>What is RFlow?</h5>
         <p>
           RFlow is a React-based web application that allows you to create and edit BPMN diagrams.
@@ -22,8 +22,8 @@ const HelpModal = ({ isOpen, toggle }) => {
           This application was created by <a href="https://github.com/Tier1Coder">Tier1Coder</a>
         </p>
       </Modal.Body>
-      <Modal.Footer className="custom-modal-footer">
-        <Button variant="secondary" onClick={toggle} className="custom-cancel-button">
+      <Modal.Footer className="help-modal-footer">
+        <Button variant="secondary" onClick={toggle} className="help-modal-cancel-button">
           Close
         </Button>
       </Modal.Footer>

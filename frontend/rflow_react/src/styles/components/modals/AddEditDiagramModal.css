@@ -1,4 +1,4 @@
-.custom-modal-header {
+.add-edit-diagram-modal-header {
     background-color: #007BFF;
     color: white;
     border-top-left-radius: 5px;
@@ -9,11 +9,11 @@
     align-items: center;
 }
 
-.custom-modal-body {
+.add-edit-diagram-modal-body {
     padding: 20px;
 }
 
-.custom-modal-footer {
+.add-edit-diagram-modal-footer {
     background-color: #f1f1f1;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px; 
@@ -22,38 +22,38 @@
     padding: 10px 20px;
 }
 
-.custom-cancel-button {
+.add-edit-diagram-modal-cancel-button {
     color: #007BFF;
     border-color: #007BFF;
     background-color: white; 
     margin-right: 10px;
 }
 
-.custom-cancel-button:hover {
+.add-edit-diagram-modal-cancel-button:hover {
     background-color: #b30000; 
     color: white; 
 }
 
-.custom-save-button {
+.add-edit-diagram-modal-save-button {
     background-color: #007BFF;
     color: white;
     border-color: #007BFF; 
 }
 
-.custom-save-button:hover {
+.add-edit-diagram-modal-save-button:hover {
     background-color: #0056b3;
     color: white; 
 }
 
-.form-group + .form-group {
+.add-edit-diagram-form-group {
     margin-top: 20px; 
 }
 
-.current-file{
+.add-edit-diagram-form-current-file {
     word-break: break-all;
     margin-top: 20px;
 }
 
-.current-file-path {
+.add-edit-diagram-form-current-file-path {
     margin-top: 5px;
 }

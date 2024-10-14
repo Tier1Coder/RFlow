@@ -5,7 +5,7 @@ import { ToastContainer, toast } from 'react-toastify';
 
 // Custom components
 import DiagramTable from './components/DiagramTable';
-import DiagramRenderer from './components/DiagramRenderer';
+import DiagramVisualization from './components/DiagramVisualization';
 import AddEditDiagramModal from './components/modals/AddEditDiagramModal';
 import UserOptionsModal from './components/modals/UserOptionsModal';
 import HelpModal from './components/modals/HelpModal';
@@ -281,7 +281,7 @@ const WrappedApp = () => (
     <Router>
         <Routes>
             <Route path="/" element={<App />} />
-            <Route path="/visualize/:id" element={<DiagramRenderer />} />
+            <Route path="/visualize/:id" element={<DiagramVisualization />} />
             <Route path="/resolve/:id" element={<ResolutionTool />} />
         </Routes>
     </Router>

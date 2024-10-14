@@ -65,7 +65,7 @@ class DocumentInvalidError(BaseCustomException):
             'column': column
         }
         super().__init__(detail, self.status_code)
-        self.message = detail
+        self.message = detail['error']
         self.line = line
         self.column = column
 

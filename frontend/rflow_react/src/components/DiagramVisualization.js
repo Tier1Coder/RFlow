@@ -2,8 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import Draggable from 'react-draggable';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
-import { deleteDiagram, downloadFile } from '../services/DiagramService';
-import '../styles/components/DiagramRenderer.css';
+import { deleteDiagram, downloadFile } from '../services/DiagramService.js';
+import '../styles/components/DiagramVisualization.css';
 import { AppLogoIcon } from '../assets/app/AppLogoIcon.jsx';
 
 /* -User Interface Components- */
@@ -14,9 +14,9 @@ import { DeleteCircleIconButton } from '../assets/ui/DeleteCircleIcon.jsx';
 import { BackIconButton } from '../assets/ui/BackIcon.jsx';
 
 /* -Modals- */
-import InfoModal from './modals/InfoModal';
-import UserOptionsModal from './modals/UserOptionsModal';
-import ConfirmationModal from './modals/ConfirmationModal';
+import InfoModal from './modals/InfoModal.js';
+import UserOptionsModal from './modals/UserOptionsModal.js';
+import ConfirmationModal from './modals/ConfirmationModal.js';
 
 /* -BPMN Shapes- */
 
@@ -331,9 +331,9 @@ const DiagramRenderer = () => {
                     id={key}
                     className={
                         !element.zIndex 
-                          ? (element.elementType === 'horizontalPool' ? 'participant' 
-                            : element.elementType === 'horizontalLane' || element.elementType === 'verticalLane' ? 'lane' 
-                              : 'element') 
+                          ? (element.elementType === 'horizontalPool' ? 'diagram-visualization-participant' 
+                            : element.elementType === 'horizontalLane' || element.elementType === 'verticalLane' ? 'diagram-visualization-lane' 
+                              : 'diagram-visualization-element') 
                           : ''
                       }
                       
@@ -362,7 +362,7 @@ const DiagramRenderer = () => {
                     <div 
                         ref={draggableRef}
                         id={key} 
-                        className='flow-element'>
+                        className='diagram-visualization-flow-element'>
                         <ElementComponent 
                             points={points} 
                             scale={scale}
@@ -429,11 +429,11 @@ const DiagramRenderer = () => {
             <div>
                 <h2 className="diagram-visualization-title">{diagramName}</h2>
             </div>
-            <div className="diagram-container">
-                <div className="toolbox">
-                    <InfoIconButton width="40" height="40" onClick={handleInfo} className="toolbox-icon" />
-                    <DownloadFileIconButton width="40" height="40" onClick={handleDownload} className="toolbox-icon" />
-                    <DeleteCircleIconButton width="40" height="40" onClick={confirmDelete} className="toolbox-icon" />
+            <div className="diagram-visualization-container">
+                <div className="diagram-visualization-toolbox">
+                    <InfoIconButton width="40" height="40" onClick={handleInfo} className="diagram-visualization-toolbox-icon" />
+                    <DownloadFileIconButton width="40" height="40" onClick={handleDownload} className="diagram-visualization-toolbox-icon" />
+                    <DeleteCircleIconButton width="40" height="40" onClick={confirmDelete} className="diagram-visualization-toolbox-icon" />
                 </div>
                 <div className="diagram-visualization" ref={diagramVisualizationRef}>
                     {scaledDiagramData && Object.entries(scaledDiagramData).map(([key, element]) => renderElement(key, element))}

@@ -44,7 +44,7 @@ const NoneStartEventIcon: React.FC<NoneStartEventIconProps> = ({ name }) => (
           lineHeight: 1.2,
         }}
       >
-        <Textfit mode="single" min={10}>
+        <Textfit>
           {name}
         </Textfit>
       </div>

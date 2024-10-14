@@ -203,7 +203,11 @@ const DiagramTable = ({
       </table>
 
       <div className="diagram-table-pagination-container">
-        <button onClick={handlePrevious} disabled={currentPage === 1}>
+        <button 
+          onClick={handlePrevious} 
+          disabled={currentPage === 1}
+          className="diagram-table-pagination-button-previous"
+        >
           Previous
         </button>
         <input
@@ -215,7 +219,11 @@ const DiagramTable = ({
           max={totalPages}
         />
         <span>out of {totalPages}</span>
-        <button onClick={handleNext} disabled={currentPage === totalPages}>
+        <button 
+          onClick={handleNext} 
+          disabled={currentPage === totalPages}
+          className="diagram-table-pagination-button-next"
+        >
           Next
         </button>
       </div>

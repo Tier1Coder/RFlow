@@ -27,25 +27,24 @@ const LoginForm = ({ onLogin }) => {
 
   return (
     <div className="login-form-container">
-      <AppLogoIcon className="app-logo-icon" width="100" height="100" />
+      <AppLogoIcon className="login-form-app-logo-icon" width="100" height="100" />
       <form className="login-form" onSubmit={handleSubmit}>
         <h2>Login</h2>
-        {error && <div className="error-message">{error}</div>}
-        <div className="input-group">
+        {error && <div className="login-form-error-message">{error}</div>}
+        <div className="login-form-input-group">
           <label>Username:
             <input
-              id="username-input"
+              id="login-form-username-input"
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
           </label>
-
         </div>
-        <div className="input-group">
+        <div className="login-form-input-group">
           <label>Password:
             <input
-              id="password-input"
+              id="login-form-password-input"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
