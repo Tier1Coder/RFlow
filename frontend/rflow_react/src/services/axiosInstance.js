@@ -33,7 +33,6 @@ axiosInstance.interceptors.response.use(
                 originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
                 return axiosInstance(originalRequest);
             } catch (err) {
-                console.error('Error refreshing token:', err);
                 // Redirect to login page if refresh token is blacklisted
                 if (err.response && err.response.data.code === 'token_not_valid') {
                     localStorage.removeItem('accessToken');

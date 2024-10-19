@@ -1,141 +1,160 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
-import { DiffEditor } from '@monaco-editor/react';
-import ResolutionToolShowErrorsModal from '../components/modals/ResolutionToolShowErrorsModal';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Editor } from '@monaco-editor/react';
+import { updateFileContent, visualizeDiagram } from '../services/DiagramService';
 import '../styles/components/ResolutionTool.css';
 
 const ResolutionTool = () => {
     const location = useLocation();
-    const { itemName, itemId, initialItemText, 
-        errorMessage, 
-        errorLine, errorColumn, 
-        duplicatedIds } = location.state;
-    
+    const navigate = useNavigate();
+    const {
+        itemName,
+        itemId,
+        initialItemText,
+    } = location.state;
+
     const [itemText, setItemText] = useState(initialItemText);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editorInstance, setEditorInstance] = useState(null);
-    
+    const [errorMessage, setErrorMessage] = useState(location.state.errorMessage);
+    const [errorLine, setErrorLine] = useState(location.state.errorLine);
+    const [errorColumn, setErrorColumn] = useState(location.state.errorColumn);
+    const [duplicatedIds, setDuplicatedIds] = useState(location.state.duplicatedIds);
+    const [isSaving, setIsSaving] = useState(false);
+    const editorRef = useRef(null);
     const monacoRef = useRef(null);
 
-    const handleEditorChange = (value) => {
-        setItemText(value);
+    const getCurrentError = () => {
+        if (errorMessage && errorLine) {
+            return {
+                message: errorMessage,
+                line: errorLine,
+                column: errorColumn || 1,
+            };
+        } else if (duplicatedIds && duplicatedIds.length > 0) {
+            const dup = duplicatedIds[0];
+            return {
+                message: `Duplicated ID: ${dup.id}`,
+                line: dup.line,
+                column: 1,
+            };
+        } else {
+            return null;
+        }
     };
 
-    const handleOpenModal = () => {
-        setIsModalOpen(true);
-    };
-
-    const handleCloseModal = () => {
-        setIsModalOpen(false);
-    };
+    const currentError = getCurrentError();
 
     const handleCancel = () => {
-        setItemText(initialItemText);
+        navigate('/');
     };
 
-    const handleSave = () => {
-        console.log('Save button clicked');
-    };
-
-    const setMarkers = useCallback((editor, monacoInstance) => {
-        const markers = [];
-
-        // handling single error message
-        if (errorMessage && errorLine) {
-            markers.push({
-                severity: monacoInstance.MarkerSeverity.Error,
-                message: errorMessage,
-                startLineNumber: errorLine,
-                startColumn: errorColumn,
-                endLineNumber: errorLine,
-                endColumn: errorColumn + 1,
-            });
+    const handleSave = async () => {
+        setIsSaving(true);
+        try {
+            await updateFileContent(itemId, itemText);
+            const updatedDiagramData = await visualizeDiagram(itemId);
+            navigate(`/visualize/${itemId}`, { state: { diagramId: itemId, diagramData: updatedDiagramData, diagramName: itemName } });
+        } catch (error) {
+            if (error.response && error.response.data) {
+                const errorData = error.response.data;
+                setErrorMessage(errorData.error || 'An unknown error occurred');
+                setErrorLine(errorData.line || null);
+                setErrorColumn(errorData.column || null);
+                setDuplicatedIds(errorData.duplicatedIds || []);
+            } else {
+                alert('An error occurred while saving the file: ' + error.message);
+            }
+        } finally {
+            setIsSaving(false);
         }
+    };
 
-        // handling duplicated IDs multiple error messages
-        if (duplicatedIds && duplicatedIds.length > 0) {
-            duplicatedIds.forEach((dup) => {
+    const focusOnError = useCallback(() => {
+        if (editorRef.current && currentError && currentError.line) {
+            const editor = editorRef.current;
+            editor.revealLineInCenter(currentError.line);
+            editor.setPosition({
+                lineNumber: currentError.line,
+                column: currentError.column || 1,
+            });
+            editor.focus();
+        }
+    }, [currentError]);
+
+    const setMarkers = useCallback(() => {
+        if (editorRef.current && monacoRef.current) {
+            const monaco = monacoRef.current;
+            const markers = [];
+
+            if (currentError && currentError.line) {
                 markers.push({
-                    severity: monacoInstance.MarkerSeverity.Error,
-                    message: `Duplicated ID: ${dup.id}`,
-                    startLineNumber: dup.line,
-                    startColumn: 1,
-                    endLineNumber: dup.line,
-                    endColumn: 1,
+                    severity: monaco.MarkerSeverity.Error,
+                    message: currentError.message,
+                    startLineNumber: currentError.line,
+                    startColumn: currentError.column || 1,
+                    endLineNumber: currentError.line,
+                    endColumn: currentError.column ? currentError.column + 1 : 1,
                 });
-            });
-        }
+            }
 
-        const model = editor.getModel().modified;
-        if (model) {
-            monacoInstance.editor.setModelMarkers(model, 'owner', markers);
+            const model = editorRef.current.getModel();
+            if (model) {
+                monaco.editor.setModelMarkers(model, 'owner', markers);
+            }
         }
-    }, [errorMessage, errorLine, errorColumn, duplicatedIds]);
+    }, [currentError]);
 
-    const handleEditorDidMount = (editor, monacoInstance) => {
-        setEditorInstance(editor);
-        monacoRef.current = monacoInstance;
-        setMarkers(editor, monacoInstance);
+    const handleEditorDidMount = (editor, monaco) => {
+        editorRef.current = editor;
+        monacoRef.current = monaco;
+        setMarkers();
+
+        if (currentError && currentError.line) {
+            setTimeout(() => {
+                focusOnError();
+            }, 100);
+        }
     };
 
     useEffect(() => {
-        if (editorInstance && monacoRef.current) {
-            setMarkers(editorInstance, monacoRef.current);
+        setMarkers();
+        if (currentError && editorRef.current) {
+            focusOnError();
         }
-    }, [itemText, editorInstance, setMarkers]);
+    }, [itemText, errorMessage, errorLine, errorColumn, duplicatedIds, setMarkers, currentError, focusOnError]);
 
     return (
         <div className="resolution-tool-container">
             <div className="resolution-tool-header">
                 <div className="resolution-tool-title">
-                    Found errors in: {itemName} file, ID: {itemId}.
+                    {errorMessage
+                        ? `Resolve the error in ${itemName} (ID: ${itemId})`
+                        : `Editing ${itemName} (ID: ${itemId})`}
                 </div>
+                {isSaving && <div className="saving-indicator">Processing...</div>}
             </div>
-            <div className="resolution-tool-diff-editor-container">
-                <DiffEditor
+            <div className="resolution-tool-editor-container">
+                <Editor
                     height="70vh"
-                    original={initialItemText}
-                    modified={itemText}
-                    onChange={handleEditorChange}
+                    value={itemText}
                     language="xml"
                     options={{
                         renderValidationDecorations: 'on',
+                        scrollBeyondLastLine: false,
+                        automaticLayout: true,
                     }}
                     onMount={handleEditorDidMount}
+                    onChange={(value) => setItemText(value)}
                     theme="vs-dark"
                 />
             </div>
             <div className="resolution-tool-footer">
-                <button className="resolution-tool-show-errors-button" onClick={handleOpenModal}>
-                    Show Errors
-                </button>
-                <button className="resolution-tool-cancel-button" onClick={handleCancel}>
+                <button className="resolution-tool-cancel-button" onClick={handleCancel} disabled={isSaving}>
                     Cancel
                 </button>
-                <button className="resolution-tool-save-button" onClick={handleSave}>
+                <button className="resolution-tool-save-button" onClick={handleSave} disabled={isSaving}>
                     Save
                 </button>
             </div>
-            <ResolutionToolShowErrorsModal isOpen={isModalOpen} onClose={handleCloseModal}>
-                <h2>Errors</h2>
-                <ul>
-                    {errorMessage.error ? (
-                        <li>
-                            <strong>Error:</strong> {errorMessage.error} at line {errorMessage.line}, column {errorMessage.column}
-                        </li>
-                    ) : (
-                        <li>
-                            <strong>Error:</strong> {errorMessage} at line {errorLine}, column {errorColumn}
-                        </li>
-
-                    )}
-                    {duplicatedIds && duplicatedIds.length > 0 && duplicatedIds.map((dup, index) => (
-                        <li key={index}>
-                            <strong>Duplicated ID:</strong> {dup.id} at line {dup.line}
-                        </li>
-                    ))}
-                </ul>
-            </ResolutionToolShowErrorsModal>
         </div>
     );
 };

@@ -199,6 +199,7 @@ const DiagramRenderer = () => {
     const diagramVisualizationRef = useRef(null);
     const [scaledDiagramData, setScaledDiagramData] = useState(null);
     const [scale, setScale] = useState(1);
+    const [key, setKey] = useState(0);
 
     useEffect(() => {
         const accessToken = localStorage.getItem('accessToken');
@@ -297,7 +298,7 @@ const DiagramRenderer = () => {
         };
     
         window.addEventListener('resize', handleResize);
-    
+        setKey(prevKey => prevKey + 1);
         return () => {
             window.removeEventListener('resize', handleResize);
         };
@@ -388,7 +389,6 @@ const DiagramRenderer = () => {
             await downloadFile(location.state.diagramId);
             toast.success('Diagram downloaded successfully');
         } catch (error) {
-            console.error('Error downloading file:', error);
             toast.error('Error downloading file');
         }
     };
@@ -398,7 +398,6 @@ const DiagramRenderer = () => {
             navigate('/');
             toast.success('Diagram deleted successfully');
         } catch (error) {
-            console.error('Error deleting diagram:', error);
             toast.error('Error deleting diagram');
         }
     };
@@ -415,7 +414,7 @@ const DiagramRenderer = () => {
     }
 
     return (
-        <div>
+        <div key={key}>
             <ToastContainer />
             <div className="app-header">
                 <div className="app-header-icons">

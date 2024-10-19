@@ -30,7 +30,7 @@ const downloadFile = async (id) => {
         link.setAttribute('download', `${id}.xml`);
         document.body.appendChild(link);
         link.click();
-        document.body.removeChild(link); // Clean up and remove the link
+        document.body.removeChild(link);
     } catch (error) {
         console.error('Error downloading file:', error);
         throw error;
@@ -87,6 +87,19 @@ const visualizeDiagram = async (id) => {
     }
 };
 
+const updateFileContent = async (id, content) => {
+    try {
+        const response = await axiosInstance.put(`/api/diagrams/${id}/update_file_content/`, {
+            content: content,
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error updating file content:', error);
+        throw error;
+    }
+};
+
+
 const viewFile = async (id) => {
     try {
         const response = await axiosInstance.get(`/api/diagrams/${id}/view_file/`, {
@@ -108,4 +121,5 @@ export {
     editDiagram,
     visualizeDiagram,
     viewFile,
+    updateFileContent,
 };

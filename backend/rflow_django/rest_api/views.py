@@ -153,6 +153,30 @@ class BPMNDiagramView(viewsets.ModelViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response({"error": "File not found"}, status=status.HTTP_404_NOT_FOUND)
 
+    @action(detail=True, methods=['put'], url_path='update_file_content')
+    def update_file_content(self, request, pk=None):
+        """
+        Updates the content of the file associated with the BPMN diagram.
+
+        Args:
+            request (Request): The HTTP request object.
+            pk (str, optional): The primary key of the BPMNDiagram instance.
+
+        Returns:
+            Response: A response with HTTP 200 OK status if the file content is updated successfully,
+                        or an error message if no content is provided.
+        """
+        _ = (request, pk)
+        diagram = self.get_object()
+        content = request.data.get('content', None)
+        if content is not None:
+            file_path = diagram.file.path
+            with open(file_path, 'w') as f:
+                f.write(content)
+            return Response({'status': 'File updated successfully'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'No content provided'}, status=status.HTTP_400_BAD_REQUEST)
+
     @action(detail=True, methods=['get'], url_path='visualize')
     def visualize_diagram(self, request, pk=None):
         """

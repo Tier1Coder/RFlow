@@ -81,7 +81,6 @@ const App = () => {
             const data = await fetchDiagrams();
             setDiagrams(data);
         } catch (error) {
-            console.error('Error loading diagrams:', error);
             toast.error('Error loading diagrams');
         }
     };
@@ -123,7 +122,6 @@ const App = () => {
             loadDiagrams();
             toast.success('Diagram deleted successfully');
         } catch (error) {
-            console.error('Error deleting diagram:', error);
             toast.error('Error deleting diagram');
         }
         closeModal('confirmationModal');
@@ -146,7 +144,6 @@ const App = () => {
             await downloadFile(item.id);
             toast.success('Diagram downloaded successfully');
         } catch (error) {
-            console.error('Error downloading file:', error);
             toast.error('Error downloading file');
         }
     };
@@ -173,9 +170,6 @@ const App = () => {
             const data = await visualizeDiagram(item.id);
             navigate(`/visualize/${item.id}`, { state: { diagramId: item.id, diagramData: data, diagramName: item.name } });
         } catch (error) {
-            console.error('Error fetching diagram data', error);
-            console.log('Error response data:', error.response?.data);
-    
             const initialItemText = await viewFile(item.id);
             const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Error fetching diagram data';
             const errorLine = error.response?.data?.line || 0;
