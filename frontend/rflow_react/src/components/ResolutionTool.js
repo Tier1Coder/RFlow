@@ -4,6 +4,26 @@ import { Editor } from '@monaco-editor/react';
 import { updateFileContent, visualizeDiagram } from '../services/DiagramService';
 import '../styles/components/ResolutionTool.css';
 
+
+// Debounce function to delay the execution of callbacks so ResizeObserver doesn't throw errors (Monaco Editor uses ResizeObserver)
+const debounce = (func, delay) => {
+    let timeout;
+    return function (...args) {
+        const context = this;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(context, args), delay);
+    };
+};
+
+// Override the global ResizeObserver with a debounced version
+const OriginalResizeObserver = window.ResizeObserver;
+
+window.ResizeObserver = class ResizeObserver extends OriginalResizeObserver {
+    constructor(callback) {
+        super(debounce(callback, 20));
+    }
+};
+
 const ResolutionTool = () => {
     const location = useLocation();
     const navigate = useNavigate();
@@ -52,7 +72,13 @@ const ResolutionTool = () => {
         try {
             await updateFileContent(itemId, itemText);
             const updatedDiagramData = await visualizeDiagram(itemId);
-            navigate(`/visualize/${itemId}`, { state: { diagramId: itemId, diagramData: updatedDiagramData, diagramName: itemName } });
+            navigate(`/visualize/${itemId}`, {
+                state: {
+                    diagramId: itemId,
+                    diagramData: updatedDiagramData,
+                    diagramName: itemName,
+                },
+            });
         } catch (error) {
             if (error.response && error.response.data) {
                 const errorData = error.response.data;
@@ -120,7 +146,16 @@ const ResolutionTool = () => {
         if (currentError && editorRef.current) {
             focusOnError();
         }
-    }, [itemText, errorMessage, errorLine, errorColumn, duplicatedIds, setMarkers, currentError, focusOnError]);
+    }, [
+        itemText,
+        errorMessage,
+        errorLine,
+        errorColumn,
+        duplicatedIds,
+        setMarkers,
+        currentError,
+        focusOnError,
+    ]);
 
     return (
         <div className="resolution-tool-container">
@@ -148,10 +183,18 @@ const ResolutionTool = () => {
                 />
             </div>
             <div className="resolution-tool-footer">
-                <button className="resolution-tool-cancel-button" onClick={handleCancel} disabled={isSaving}>
+                <button
+                    className="resolution-tool-cancel-button"
+                    onClick={handleCancel}
+                    disabled={isSaving}
+                >
                     Cancel
                 </button>
-                <button className="resolution-tool-save-button" onClick={handleSave} disabled={isSaving}>
+                <button
+                    className="resolution-tool-save-button"
+                    onClick={handleSave}
+                    disabled={isSaving}
+                >
                     Save
                 </button>
             </div>
