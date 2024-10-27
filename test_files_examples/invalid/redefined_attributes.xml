@@ -10,10 +10,7 @@
              xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              expressionLanguage="http://www.mvel.org/2.0">
-
   <process processType="Private" isExecutable="true" id="com.sample.HelloWorld" name="Hello World" >
-
-
     <startEvent id="_1" name="StartProcess" />
     <scriptTask id="_2" name="Hello" >
       <script>System.out.println("Hello World");</script>
@@ -21,13 +18,9 @@
     <endEvent id="_3" name="EndProcess" >
         <terminateEventDefinition/>
     </endEvent>
-
-
     <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
     <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
-
   </process>
-
   <bpmndi:BPMNDiagram>
     <bpmndi:BPMNPlane bpmnElement="Minimal" >
       <bpmndi:BPMNShape bpmnElement="_1" >
@@ -51,5 +44,4 @@
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
-
 </definitions>

@@ -1,10 +1,17 @@
 import axios from 'axios';
 import { refreshToken } from './AuthService';
 
+/**
+ * Creates an Axios instance with a base URL and interceptors for handling
+ * authorization tokens and refreshing tokens when they expire.
+ */
 const axiosInstance = axios.create({
     baseURL: process.env.REACT_APP_API_URL,
 });
 
+/**
+ * Interceptor for adding the access token to the request headers.
+ */
 axiosInstance.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('accessToken');
@@ -18,6 +25,10 @@ axiosInstance.interceptors.request.use(
     }
 );
 
+/**
+ * Interceptor for handling responses. If a 401 error is encountered, it attempts
+ * to refresh the access token using the refresh token.
+ */
 axiosInstance.interceptors.response.use(
     (response) => {
         return response;

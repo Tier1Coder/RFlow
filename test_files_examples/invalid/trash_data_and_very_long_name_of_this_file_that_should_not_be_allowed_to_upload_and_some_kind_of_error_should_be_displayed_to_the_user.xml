@@ -9,8 +9,6 @@
              xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              expressionLanguage="http://www.mvel.org/2.0">
-
-
   <bpmndi:BPMNDiagram>
     <bpmndi:BPMNPlane bpmnElement="Minimal" >
       <bpmndi:BPMNShape bpmnElement="_1" >
@@ -34,5 +32,4 @@
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
-
 </definitions>

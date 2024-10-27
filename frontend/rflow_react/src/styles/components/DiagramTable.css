@@ -44,11 +44,11 @@
 }
 
 .diagram-table tbody tr:hover {
-  background-color: #f9f9f9;
+  background-color: #e7f0ff;
 }
 
 .diagram-table tbody td {
-  padding: 7px;
+  padding: 10px;
   text-align: left;
 }
 
@@ -58,18 +58,12 @@
 
 .diagram-table-button-group-item {
   position: relative;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease;
   cursor: pointer;
-}
-
-.diagram-table-button-group-item button {
-  margin: 0;
-  padding: 0;
 }
 
 .diagram-table-button-group-item:hover {
   transform: scale(1.15);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .diagram-table-pagination-container {
@@ -77,7 +71,6 @@
   justify-content: center;
   align-items: center;
   gap: 15px;
-  margin-top: 20px;
 }
 
 .diagram-table-pagination-container button {
@@ -113,9 +106,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
   gap: 20px;
-  padding: 0 10px;
 }
 
 .diagram-table-search-bar {
@@ -147,16 +138,14 @@
 
 .diagram-table-sort-options {
   position: absolute;
-  z-index: 10;
+  z-index: 1000;
   top: 35px;
-  right: 0;
   background-color: #ffffff;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   overflow: hidden;
   min-width: 100px;
-  padding: 0px;
 }
 
 .diagram-table-sort-options button {
@@ -170,17 +159,12 @@
   font-family: 'Arial', sans-serif;
   font-size: 14px;
   cursor: pointer;
-  text-align: left;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .diagram-table-sort-options button:hover {
   background-color: #f0f4f8;
   color: #007bff;
-}
-
-.diagram-table-sort-options button:not(:last-child) {
-  border-bottom: 1px solid #e0e0e0;
 }
 
 @media (max-width: 768px) {
@@ -191,7 +175,6 @@
     width: 100%;
   }
   .diagram-table-search-sort-container {
-    flex-direction: column;
     gap: 15px;
   }
 }

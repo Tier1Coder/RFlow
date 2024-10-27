@@ -44,16 +44,3 @@
     background-color: #0056b3;
     color: white; 
 }
-
-.add-edit-diagram-form-group {
-    margin-top: 20px; 
-}
-
-.add-edit-diagram-form-current-file {
-    word-break: break-all;
-    margin-top: 20px;
-}
-
-.add-edit-diagram-form-current-file-path {
-    margin-top: 5px;
-}

@@ -7,6 +7,18 @@ import { FilterIconButton } from '../assets/ui/FilterIcon.jsx';
 import { SearchIconButton } from '../assets/ui/SearchIcon.jsx';
 import '../styles/components/DiagramTable.css';
 
+/**
+ * DiagramTable Component
+ * 
+ * A table component for displaying and managing BPMN diagrams.
+ * 
+ * @param {Object} props - The component props.
+ * @param {Array} props.diagrams - The list of diagrams to display.
+ * @param {Function} props.editItem - The function to call when editing a diagram.
+ * @param {Function} props.deleteItem - The function to call when deleting a diagram.
+ * @param {Function} props.downloadFile - The function to call when downloading a diagram file.
+ * @param {Function} props.visualizeDiagram - The function to call when visualizing a diagram.
+ */
 const DiagramTable = ({
   diagrams,
   editItem,
@@ -71,22 +83,43 @@ const DiagramTable = ({
 
   // Event handlers
 
+  /**
+   * Handles search input change.
+   * 
+   * @param {Event} e - The input change event.
+   */
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
     setCurrentPage(1);
   };
 
+  /**
+   * Handles sorting of diagrams.
+   * 
+   * @param {string} column - The column to sort by.
+   * @param {string} order - The order to sort (asc or desc).
+   */
   const handleSort = (column, order) => {
     setSortOrder({ column, order });
     setShowSortOptions(false);
   };
 
+  /**
+   * Handles page change.
+   * 
+   * @param {number} pageNumber - The page number to navigate to.
+   */
   const handlePageChange = (pageNumber) => {
     if (pageNumber >= 1 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber);
     }
   };
 
+  /**
+   * Handles input change for page number.
+   * 
+   * @param {Event} e - The input change event.
+   */
   const handleInputChange = (e) => {
     const pageNumber = parseInt(e.target.value, 10);
     if (!isNaN(pageNumber)) {
@@ -94,12 +127,18 @@ const DiagramTable = ({
     }
   };
 
+  /**
+   * Handles navigating to the previous page.
+   */
   const handlePrevious = () => {
     if (currentPage > 1) {
       handlePageChange(currentPage - 1);
     }
   };
 
+  /**
+   * Handles navigating to the next page.
+   */
   const handleNext = () => {
     if (currentPage < totalPages) {
       handlePageChange(currentPage + 1);

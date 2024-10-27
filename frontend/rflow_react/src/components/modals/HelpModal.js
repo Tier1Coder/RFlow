@@ -2,6 +2,15 @@ import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import '../../styles/components/modals/HelpModal.css';
 
+/**
+ * HelpModal Component
+ * 
+ * A modal component that provides information about the RFlow application.
+ * 
+ * @param {Object} props - The component props.
+ * @param {boolean} props.isOpen - Whether the modal is visible.
+ * @param {Function} props.toggle - The function to call to toggle the modal visibility.
+ */
 const HelpModal = ({ isOpen, toggle }) => {
   return (
     <Modal show={isOpen} onHide={toggle} className="help-modal">

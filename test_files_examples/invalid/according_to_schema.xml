@@ -3,44 +3,33 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
              targetNamespace="http://bpmn.io/schema/bpmn">
-
   <process id="Process_1" isExecutable="true">
     <startEvent id="StartEvent_1" name="Start">
       <outgoing>SequenceFlow_1</outgoing>
     </startEvent>
-
     <userTask id="UserTask_1" name="User Task">
       <incoming>SequenceFlow_1</incoming>
       <outgoing>SequenceFlow_2</outgoing>
     </userTask>
-
     <sequenceFlow id="SequenceFlow_1" sourceRef="StartEvent_1" targetRef="UserTask_1" />
-
     <scriptTask id="ScriptTask_1" name="Script Task">
       <incoming>SequenceFlow_2</incoming>
       <outgoing>SequenceFlow_3</outgoing>
     </scriptTask>
-
     <sequenceFlow id="SequenceFlow_2" sourceRef="UserTask_1" targetRef="ScriptTask_1" />
-
     <parallelGateway id="ParallelGateway_1" name="Parallel Gateway">
       <incoming>SequenceFlow_3</incoming>
       <outgoing>SequenceFlow_4</outgoing>
     </parallelGateway>
-
     <sequenceFlow id="SequenceFlow_3" sourceRef="ScriptTask_1" targetRef="ParallelGateway_1" />
-
     <endEvent id="EndEvent_1" name="End">
       <incoming>SequenceFlow_4</incoming>
     </endEvent>
-
     <sequenceFlow id="SequenceFlow_4" sourceRef="ParallelGateway_1" targetRef="EndEvent_1" />
-
     <participant id="Participant_1" name="Participant">
       <processRef>Process_1</processRef>
     </participant>
   </process>
-
   <BPMNDiagram id="BPMNDiagram_1">
     <BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
       <BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">

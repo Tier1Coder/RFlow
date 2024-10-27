@@ -1,20 +1,20 @@
-// built-in modules
+// Built-in modules
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 
 // Custom components
-import DiagramTable from './components/DiagramTable';
-import DiagramVisualization from './components/DiagramVisualization';
-import AddEditDiagramModal from './components/modals/AddEditDiagramModal';
-import UserOptionsModal from './components/modals/UserOptionsModal';
-import HelpModal from './components/modals/HelpModal';
-import ConfirmationModal from './components/modals/ConfirmationModal';
-import LoginForm from './components/forms/LoginForm';
-import ResolutionTool from './components/ResolutionTool';
+import DiagramTable from './components/DiagramTable.js';
+import DiagramVisualization from './components/DiagramVisualization.js';
+import AddEditDiagramModal from './components/modals/AddEditDiagramModal.js';
+import UserOptionsModal from './components/modals/UserOptionsModal.js';
+import HelpModal from './components/modals/HelpModal.js';
+import ConfirmationModal from './components/modals/ConfirmationModal.js';
+import LoginForm from './components/forms/LoginForm.js';
+import ResolutionTool from './components/ResolutionTool.js';
+import AppHeader from './components/AppHeader.js';
 
 // Custom icons
-import { AppLogoIcon } from './assets/app/AppLogoIcon.jsx';
 import { ChooseSchemaIconButton } from './assets/ui/ChooseSchemaIcon.jsx';
 import { AddNewDiagramIconButton } from './assets/ui/AddNewDiagramIcon.jsx';
 import { UserIconButton } from './assets/ui/UserIcon.jsx';
@@ -29,12 +29,14 @@ import {
     editDiagram,
     visualizeDiagram,
     viewFile,
-} from './services/DiagramService';
+} from './services/DiagramService.js';
 
 // CSS
 import 'react-toastify/dist/ReactToastify.css';
-import './styles/App.css';
 
+/**
+ * Main application component.
+ */
 const App = () => {
     const [diagrams, setDiagrams] = useState([]);
     const [activeItem, setActiveItem] = useState({ name: '', file: '' });
@@ -181,7 +183,6 @@ const App = () => {
                     duplicatedIds } });
         }
     };
-    
 
     const handleFormChange = (e) => {
         const { name, value, files } = e.target;
@@ -198,39 +199,32 @@ const App = () => {
                 <LoginForm onLogin={handleLogin} />
             ) : (
                 <>
-                    <div className="app-header">
-                        <div className="app-header-icons">
-                            <div className="app-header-logo">
-                                <AppLogoIcon width="80" height="80" />
-                            </div>
-                            <div className="app-header-buttons">
-                                <AddNewDiagramIconButton
-                                    width="40"
-                                    height="40"
-                                    onClick={handleAddNewDiagram}
-                                    className="app-header-button"
-                                />
-                                <ChooseSchemaIconButton
-                                    width="40"
-                                    height="40"
-                                    onClick={handleChooseSchema}
-                                    className="app-header-button"
-                                />
-                                <HelpIconButton
-                                    width="40"
-                                    height="40"
-                                    onClick={() => openModal('helpModal')}
-                                    className="app-header-button"
-                                />
-                                <UserIconButton
-                                    width="40"
-                                    height="40"
-                                    onClick={() => openModal('userOptionsModal')}
-                                    className="app-header-button"
-                                />
-                            </div>
-                        </div>
-                    </div>
+                    <AppHeader>
+                        <AddNewDiagramIconButton
+                            width="40"
+                            height="40"
+                            onClick={handleAddNewDiagram}
+                            className="app-header-button"
+                        />
+                        <ChooseSchemaIconButton
+                            width="40"
+                            height="40"
+                            onClick={handleChooseSchema}
+                            className="app-header-button"
+                        />
+                        <HelpIconButton
+                            width="40"
+                            height="40"
+                            onClick={() => openModal('helpModal')}
+                            className="app-header-button"
+                        />
+                        <UserIconButton
+                            width="40"
+                            height="40"
+                            onClick={() => openModal('userOptionsModal')}
+                            className="app-header-button"
+                        />
+                    </AppHeader>
                     <div className="app-diagram-table-container">
                         <DiagramTable
                             diagrams={diagrams}
@@ -271,6 +265,9 @@ const App = () => {
     );
 };
 
+/**
+ * Wrapped application component with routing.
+ */
 const WrappedApp = () => (
     <Router>
         <Routes>

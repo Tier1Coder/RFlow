@@ -1,0 +1,19 @@
+.diagram-element-participant {
+    position: absolute;
+    z-index: 1;
+}
+
+.diagram-element-lane {
+    position: absolute;
+    z-index: 2; 
+}
+
+.diagram-shape {
+    position: absolute;
+    z-index: 3;
+}
+
+.diagram-edge{
+    position: absolute; 
+    z-index: 4;
+}

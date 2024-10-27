@@ -1,5 +1,11 @@
 import axios from 'axios';
 
+/**
+ * Refreshes the access token using the refresh token stored in localStorage.
+ * 
+ * @returns {Promise<string>} The new access token.
+ * @throws Will throw an error if the token refresh fails.
+ */
 const refreshToken = async () => {
     const refresh = localStorage.getItem('refreshToken');
 

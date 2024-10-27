@@ -1,6 +1,12 @@
 import axiosInstance from './axiosInstance';
 
-const fetchDiagrams = async () => {
+/**
+ * Fetches all diagrams.
+ * 
+ * @returns {Promise<Object[]>} The list of diagrams.
+ * @throws Will throw an error if the fetch operation fails.
+ */
+async function fetchDiagrams() {
     try {
         const response = await axiosInstance.get('/api/diagrams/');
         return response.data;
@@ -8,18 +14,30 @@ const fetchDiagrams = async () => {
         console.error('Error fetching diagrams:', error);
         throw error;
     }
-};
+}
 
-const deleteDiagram = async (id) => {
+/**
+ * Deletes a diagram by ID.
+ * 
+ * @param {string} id - The ID of the diagram to delete.
+ * @throws Will throw an error if the delete operation fails.
+ */
+async function deleteDiagram(id) {
     try {
         await axiosInstance.delete(`/api/diagrams/${id}/`);
     } catch (error) {
         console.error('Error deleting diagram:', error);
         throw error;
     }
-};
+}
 
-const downloadFile = async (id) => {
+/**
+ * Downloads a file associated with a diagram by ID.
+ * 
+ * @param {string} id - The ID of the diagram whose file to download.
+ * @throws Will throw an error if the download operation fails.
+ */
+async function downloadFile(id) {
     try {
         const response = await axiosInstance.get(`/api/diagrams/${id}/view_file/`, {
             responseType: 'blob',
@@ -35,9 +53,17 @@ const downloadFile = async (id) => {
         console.error('Error downloading file:', error);
         throw error;
     }
-};
+}
 
-const addDiagram = async (item) => {
+/**
+ * Adds a new diagram.
+ * 
+ * @param {Object} item - The diagram item to add.
+ * @param {string} item.name - The name of the diagram.
+ * @param {File} [item.file] - The file associated with the diagram.
+ * @throws Will throw an error if the add operation fails.
+ */
+async function addDiagram(item) {
     const formData = new FormData();
     formData.append('name', item.name);
 
@@ -55,9 +81,18 @@ const addDiagram = async (item) => {
         console.error('Error adding diagram:', error);
         throw error;
     }
-};
+}
 
-const editDiagram = async (item) => {
+/**
+ * Edits an existing diagram.
+ * 
+ * @param {Object} item - The diagram item to edit.
+ * @param {string} item.id - The ID of the diagram.
+ * @param {string} item.name - The name of the diagram.
+ * @param {File} [item.file] - The file associated with the diagram.
+ * @throws Will throw an error if the edit operation fails.
+ */
+async function editDiagram(item) {
     const formData = new FormData();
     formData.append('name', item.name);
 
@@ -75,9 +110,16 @@ const editDiagram = async (item) => {
         console.error('Error updating diagram:', error);
         throw error;
     }
-};
+}
 
-const visualizeDiagram = async (id) => {
+/**
+ * Visualizes a diagram by ID.
+ * 
+ * @param {string} id - The ID of the diagram to visualize.
+ * @returns {Promise<Object>} The visualization data.
+ * @throws Will throw an error if the visualization operation fails.
+ */
+async function visualizeDiagram(id) {
     try {
         const response = await axiosInstance.get(`/api/diagrams/${id}/visualize/`);
         return response.data;
@@ -85,9 +127,17 @@ const visualizeDiagram = async (id) => {
         console.error('Error fetching diagram data:', error);
         throw error;
     }
-};
+}
 
-const updateFileContent = async (id, content) => {
+/**
+ * Updates the content of a file associated with a diagram by ID.
+ * 
+ * @param {string} id - The ID of the diagram.
+ * @param {string} content - The new content for the file.
+ * @returns {Promise<Object>} The updated file content.
+ * @throws Will throw an error if the update operation fails.
+ */
+async function updateFileContent(id, content) {
     try {
         const response = await axiosInstance.put(`/api/diagrams/${id}/update_file_content/`, {
             content: content,
@@ -97,10 +147,16 @@ const updateFileContent = async (id, content) => {
         console.error('Error updating file content:', error);
         throw error;
     }
-};
+}
 
-
-const viewFile = async (id) => {
+/**
+ * Views the content of a file associated with a diagram by ID.
+ * 
+ * @param {string} id - The ID of the diagram.
+ * @returns {Promise<string>} The file content as text.
+ * @throws Will throw an error if the view operation fails.
+ */
+async function viewFile(id) {
     try {
         const response = await axiosInstance.get(`/api/diagrams/${id}/view_file/`, {
             responseType: 'blob',
@@ -111,7 +167,7 @@ const viewFile = async (id) => {
         console.error('Error viewing file text:', error);
         throw error;
     }
-};
+}
 
 export {
     fetchDiagrams,

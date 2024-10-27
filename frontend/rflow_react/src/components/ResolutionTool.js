@@ -1,47 +1,48 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Editor } from '@monaco-editor/react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; 
+
 import { updateFileContent, visualizeDiagram } from '../services/DiagramService';
 import '../styles/components/ResolutionTool.css';
 
+import MonacoEditorWrapper from './MonacoEditorWrapper';
 
-// Debounce function to delay the execution of callbacks so ResizeObserver doesn't throw errors (Monaco Editor uses ResizeObserver)
-const debounce = (func, delay) => {
-    let timeout;
-    return function (...args) {
-        const context = this;
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(context, args), delay);
-    };
-};
+import useDebouncedResizeObserver from '../hooks/useDebouncedResizeObserver';
+import useMonacoMarkers from '../hooks/useMonacoMarkers';
 
-// Override the global ResizeObserver with a debounced version
-const OriginalResizeObserver = window.ResizeObserver;
-
-window.ResizeObserver = class ResizeObserver extends OriginalResizeObserver {
-    constructor(callback) {
-        super(debounce(callback, 20));
-    }
-};
-
+/**
+ * ResolutionTool Component
+ * 
+ * Provides an interface for resolving errors within a diagram's XML content using the Monaco Editor.
+ */
 const ResolutionTool = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const {
-        itemName,
-        itemId,
-        initialItemText,
-    } = location.state;
-
+        itemName = 'Unnamed Item',
+        itemId = '',
+        initialItemText = '',
+        errorMessage: initialErrorMessage = '',
+        errorLine: initialErrorLine = null,
+        errorColumn: initialErrorColumn = null,
+        duplicatedIds: initialDuplicatedIds = [],
+    } = location.state || {};
     const [itemText, setItemText] = useState(initialItemText);
-    const [errorMessage, setErrorMessage] = useState(location.state.errorMessage);
-    const [errorLine, setErrorLine] = useState(location.state.errorLine);
-    const [errorColumn, setErrorColumn] = useState(location.state.errorColumn);
-    const [duplicatedIds, setDuplicatedIds] = useState(location.state.duplicatedIds);
+    const [errorMessage, setErrorMessage] = useState(initialErrorMessage);
+    const [errorLine, setErrorLine] = useState(initialErrorLine);
+    const [errorColumn, setErrorColumn] = useState(initialErrorColumn);
+    const [duplicatedIds, setDuplicatedIds] = useState(initialDuplicatedIds);
     const [isSaving, setIsSaving] = useState(false);
     const editorRef = useRef(null);
     const monacoRef = useRef(null);
+    useDebouncedResizeObserver(20);
 
+    /**
+     * Constructs the current error object based on errorMessage, errorLine, and duplicatedIds.
+     * 
+     * @returns {Object|null} The current error object or null if no errors.
+     */
     const getCurrentError = () => {
         if (errorMessage && errorLine) {
             return {
@@ -63,10 +64,19 @@ const ResolutionTool = () => {
 
     const currentError = getCurrentError();
 
+    /**
+     * Handles navigation to the home page (Cancel action).
+     */
     const handleCancel = () => {
         navigate('/');
     };
 
+    /**
+     * Handles saving the updated XML content.
+     * 
+     * @async
+     * @returns {Promise<void>}
+     */
     const handleSave = async () => {
         setIsSaving(true);
         try {
@@ -79,6 +89,7 @@ const ResolutionTool = () => {
                     diagramName: itemName,
                 },
             });
+            toast.success('Diagram updated successfully');
         } catch (error) {
             if (error.response && error.response.data) {
                 const errorData = error.response.data;
@@ -86,14 +97,18 @@ const ResolutionTool = () => {
                 setErrorLine(errorData.line || null);
                 setErrorColumn(errorData.column || null);
                 setDuplicatedIds(errorData.duplicatedIds || []);
+                toast.warn('Error occurred while saving the file. Please resolve the error(s) and try again.');
             } else {
-                alert('An error occurred while saving the file: ' + error.message);
+                toast.error('An unexpected error occurred while saving the file.');
             }
         } finally {
             setIsSaving(false);
         }
     };
 
+    /**
+     * Focuses the Monaco Editor on the error location.
+     */
     const focusOnError = useCallback(() => {
         if (editorRef.current && currentError && currentError.line) {
             const editor = editorRef.current;
@@ -106,8 +121,29 @@ const ResolutionTool = () => {
         }
     }, [currentError]);
 
+    /**
+     * Initializes the Monaco Editor and sets markers upon mounting.
+     * 
+     * @param {Object} editor - The Monaco Editor instance.
+     * @param {Object} monaco - The Monaco namespace.
+     */
+    const handleEditorDidMount = (editor, monaco) => {
+        editorRef.current = editor;
+        monacoRef.current = monaco;
+        setMarkers();
+
+        if (currentError && currentError.line) {
+            setTimeout(() => {
+                focusOnError();
+            }, 100);
+        }
+    };
+
+    /**
+     * Handles setting markers based on the current error.
+     */
     const setMarkers = useCallback(() => {
-        if (editorRef.current && monacoRef.current) {
+        if (monacoRef.current) {
             const monaco = monacoRef.current;
             const markers = [];
 
@@ -129,33 +165,14 @@ const ResolutionTool = () => {
         }
     }, [currentError]);
 
-    const handleEditorDidMount = (editor, monaco) => {
-        editorRef.current = editor;
-        monacoRef.current = monaco;
-        setMarkers();
-
-        if (currentError && currentError.line) {
-            setTimeout(() => {
-                focusOnError();
-            }, 100);
-        }
-    };
+    // Use the custom hook to manage Monaco Editor markers
+    useMonacoMarkers(currentError, editorRef, monacoRef);
 
     useEffect(() => {
-        setMarkers();
         if (currentError && editorRef.current) {
             focusOnError();
         }
-    }, [
-        itemText,
-        errorMessage,
-        errorLine,
-        errorColumn,
-        duplicatedIds,
-        setMarkers,
-        currentError,
-        focusOnError,
-    ]);
+    }, [itemText, currentError, focusOnError]);
 
     return (
         <div className="resolution-tool-container">
@@ -167,19 +184,12 @@ const ResolutionTool = () => {
                 </div>
                 {isSaving && <div className="saving-indicator">Processing...</div>}
             </div>
+            <ToastContainer />
             <div className="resolution-tool-editor-container">
-                <Editor
-                    height="70vh"
+                <MonacoEditorWrapper
                     value={itemText}
-                    language="xml"
-                    options={{
-                        renderValidationDecorations: 'on',
-                        scrollBeyondLastLine: false,
-                        automaticLayout: true,
-                    }}
-                    onMount={handleEditorDidMount}
                     onChange={(value) => setItemText(value)}
-                    theme="vs-dark"
+                    onMount={handleEditorDidMount}
                 />
             </div>
             <div className="resolution-tool-footer">
@@ -187,6 +197,7 @@ const ResolutionTool = () => {
                     className="resolution-tool-cancel-button"
                     onClick={handleCancel}
                     disabled={isSaving}
+                    aria-label="Cancel editing"
                 >
                     Cancel
                 </button>
@@ -194,6 +205,7 @@ const ResolutionTool = () => {
                     className="resolution-tool-save-button"
                     onClick={handleSave}
                     disabled={isSaving}
+                    aria-label="Save changes"
                 >
                     Save
                 </button>

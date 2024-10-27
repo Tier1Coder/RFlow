@@ -9,15 +9,11 @@
              xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
              xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI">
-
-  <!-- Pools and Lanes -->
   <collaboration id="collaboration1">
     <participant id="pool1" name="Pool 1" processRef="process1"/>
     <participant id="pool2" name="Pool 2" processRef="process2"/>
   </collaboration>
-
   <process processType="Private" isExecutable="true" id="process1" name="Process 1" >
-    <!-- nodes -->
     <startEvent id="start" name="Start Process" />
     <userTask id="userTask1" name="User Task 1" />
     <serviceTask id="serviceTask1" name="Service Task 1" />
@@ -27,8 +23,6 @@
       <script>System.out.println("Executing script task 1");</script>
     </scriptTask>
     <endEvent id="end" name="End Process" />
-
-    <!-- connections -->
     <sequenceFlow id="flow_start_userTask1" sourceRef="start" targetRef="userTask1" />
     <sequenceFlow id="flow_userTask1_serviceTask1" sourceRef="userTask1" targetRef="serviceTask1" />
     <sequenceFlow id="flow_serviceTask1_gateway1" sourceRef="serviceTask1" targetRef="gateway1" />
@@ -36,7 +30,6 @@
     <sequenceFlow id="flow_parallelGateway1_scriptTask1" sourceRef="parallelGateway1" targetRef="scriptTask1" />
     <sequenceFlow id="flow_scriptTask1_end" sourceRef="scriptTask1" targetRef="end" />
   </process>
-
   <process processType="Private" isExecutable="true" id="process2" name="Process 2" >
     <laneSet>
       <lane id="lane2" name="Lane 2">
@@ -46,7 +39,6 @@
         <flowNodeRef>subEnd</flowNodeRef>
       </lane>
     </laneSet>
-    <!-- nodes -->
     <subProcess id="subProcess1" name="Sub Process 1">
       <startEvent id="subStart" name="Sub Start" />
       <userTask id="subUserTask1" name="Sub User Task 1" />
@@ -55,10 +47,8 @@
       <sequenceFlow id="flow2" sourceRef="subUserTask1" targetRef="subEnd" />
     </subProcess>
   </process>
-
   <bpmndi:BPMNDiagram>
     <bpmndi:BPMNPlane bpmnElement="collaboration1">
-      <!-- Pool and Lane Shapes -->
       <bpmndi:BPMNShape bpmnElement="pool1" isHorizontal="true">
         <dc:Bounds x="0" y="0" width="1100" height="400" />
       </bpmndi:BPMNShape>
@@ -71,8 +61,6 @@
       <bpmndi:BPMNShape bpmnElement="lane2" isHorizontal="true">
         <dc:Bounds x="0" y="400" width="1100" height="200" />
       </bpmndi:BPMNShape>
-
-      <!-- BPMN Shapes (nodes) -->
       <bpmndi:BPMNShape bpmnElement="start">
         <dc:Bounds x="10" y="90" width="36" height="36" />
       </bpmndi:BPMNShape>
@@ -106,8 +94,6 @@
       <bpmndi:BPMNShape bpmnElement="subEnd">
         <dc:Bounds x="320" y="500" width="36" height="36" />
       </bpmndi:BPMNShape>
-
-      <!-- BPMN Edges -->
       <bpmndi:BPMNEdge bpmnElement="flow_start_userTask1">
         <di:waypoint x="46" y="108" />
         <di:waypoint x="100" y="108" />

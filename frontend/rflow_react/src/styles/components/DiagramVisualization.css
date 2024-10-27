@@ -1,65 +1,18 @@
 .diagram-visualization-title {
+    display: flex;
     justify-content: center;
-    display: flex;
-    margin-bottom: 20px;
-}
-
-.diagram-visualization { 
-    width: 80vw;
-    height: 80vh;
-    margin: 0 auto; 
-    position: relative; 
-    overflow: hidden;
-}
-
-.diagram-visualization-participant {
-    position: absolute;
-    z-index: 1;
-}
-
-.diagram-visualization-lane {
-    position: absolute;
-    z-index: 2; 
-}
-
-.diagram-visualization-element {
-    position: absolute;
-    z-index: 3;
-}
-
-.diagram-visualization-flow-element{
-    position: absolute; 
-    z-index: 4;
-}
-
-.diagram-visualization-toolbox {
-    position: relative;
-    left: 0;
-    top: 0;
-    width: 60px;
-    height: 80vh; 
-    background-color: #f8f8f8;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 10px;
-    gap: 10px;
-    z-index: 5;
-}
-
-.diagram-visualization-toolbox-icon {
-    margin: 0 5px;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.diagram-visualization-toolbox-icon:hover {
-    transform: scale(1.25);
+    margin: 20px 0;
 }
 
 .diagram-visualization-container {
     display: flex;
-    height: 80vh; 
+    flex-direction: row;
+    height: 80vh;
+}
+
+.diagram-visualization-graphic { 
+    flex-grow: 1;
+    margin: 3vh 7vh; 
+    position: relative; 
+    overflow: hidden;
 }

@@ -2,14 +2,11 @@
 .app-header {
     position: -webkit-sticky; /* For Safari */
     position: sticky;
-    top: 0;
     background-color: white; 
-    z-index: 1000;
-    padding: 15px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     display: flex;
-    align-items: center;
     justify-content: center;
+    margin-top: 1vh;
+    margin-bottom: 1vh;
 }
 
 .app-header-icons {
@@ -18,34 +15,24 @@
     gap: 20px; 
     background-color: white;
     padding: 10px; 
-    border-radius: 5px; 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
 }
 
-.app-header-logo {
+.app-header-logo, .app-header-buttons {
     display: flex;
     align-items: center;
-    transition: transform 0.5s ease;
 }
 
-.app-header-logo:hover {
+.app-header-logo:hover, .app-header-button:hover{
     transform: scale(1.25);
-}
-
-.app-header-buttons {
-    display: flex;
-    align-items: center;
-    gap: 10px;
 }
 
 .app-header-button {
     margin: 0 5px;
-    position: relative;
-    overflow: hidden;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-  
-  .app-header-button:hover {
-    transform: scale(1.25);
-  }
+}
+
+.app-header-logo {
+    transition: transform 0.5s ease;
+}
   

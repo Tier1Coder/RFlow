@@ -3,11 +3,24 @@ import axiosInstance from '../../services/axiosInstance';
 import '../../styles/components/forms/LoginForm.css';
 import { AppLogoIcon } from '../../assets/app/AppLogoIcon.jsx';
 
+/**
+ * LoginForm Component
+ * 
+ * A form component for user login.
+ * 
+ * @param {Object} props - The component props.
+ * @param {Function} props.onLogin - The function to call when login is successful.
+ */
 const LoginForm = ({ onLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
+  /**
+   * Handles form submission.
+   * 
+   * @param {Event} e - The form submission event.
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {

@@ -1,0 +1,23 @@
+.diagram-toolbox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-right: 1px solid #dee2e6;
+    min-width: 60px;
+    max-height: 80%;
+}
+
+.diagram-toolbox-icon {
+    margin: 10px 0;
+    cursor: pointer;
+}
+
+.diagram-toolbox-icon:hover {
+    transform: scale(1.25);
+}
+
+.diagram-toolbox-icon {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
