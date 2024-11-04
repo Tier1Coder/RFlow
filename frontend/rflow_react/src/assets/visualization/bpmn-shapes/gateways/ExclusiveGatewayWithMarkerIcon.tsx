@@ -1,11 +1,11 @@
 import React from 'react';
-import { Textfit } from 'react-textfit';
+import SvgTextFit from '../../SvgTextFit.tsx';
 
 interface ExclusiveGatewayWithMarkerIconProps {
   name?: string;
 }
 
-const ExclusiveGatewayWithMarkerIcon: React.FC<ExclusiveGatewayWithMarkerIconProps> = ({ name }) => (
+const ExclusiveGatewayWithMarkerIcon: React.FC<ExclusiveGatewayWithMarkerIconProps> = ({ name='' }) => (
   <div style={{ position: 'relative', width: '100%', height: '100%' }}>
     <svg
       width="100%"
@@ -30,26 +30,27 @@ const ExclusiveGatewayWithMarkerIcon: React.FC<ExclusiveGatewayWithMarkerIconPro
         <line x1="306" y1="206" x2="206" y2="306" />
       </g>
     </svg>
-
-    {name && (
-      <div
+    <div
+      style={{
+        position: 'absolute',
+        top: '120%',
+        left: 0,
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <SvgTextFit
+        text={name}
         style={{
-          position: 'absolute',
-          top: '100%',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          color: 'currentColor',
-          width: '100%',
           textAlign: 'center',
-          fontFamily: 'inherit',
-          lineHeight: 1.2,
+          padding: '2px',
+          color: 'black',
         }}
-      >
-        <Textfit>
-          {name}
-        </Textfit>
-      </div>
-    )}
+      />
+    </div>
   </div>
 );
 

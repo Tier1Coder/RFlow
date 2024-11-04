@@ -1,77 +1,84 @@
-import React from 'react';
-import { Textfit } from 'react-textfit';
+import React, { useEffect, useRef, useState } from 'react';
+import SvgTextFit from '../../SvgTextFit.tsx';
 
 interface HorizontalPoolIconProps {
   name?: string;
 }
 
-const HorizontalPoolIcon: React.FC<HorizontalPoolIconProps> = ({ name }) => (
-  <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-    <svg
-      width="100%"
-      height="100%"
-      preserveAspectRatio="none"
-      viewBox="0 0 100 20"
-      style={{ color: 'currentColor' }}
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-full w-full"
-    >
-      <rect
-        x="1%"
-        y="1%"
-        width="98%"
-        height="98%"
-        fill="#FFFFFF"
-        stroke="currentColor"
-        strokeWidth="1%"
-        vectorEffect="non-scaling-stroke"
-      />
-      <rect
-        x="1%"
-        y="1%"
-        width="2%"
-        height="98%"
-        fill="#FFFFFF"
-        stroke="currentColor"
-        strokeWidth="1%"
-        vectorEffect="non-scaling-stroke"
-      />
-    </svg>
+const HorizontalPoolIcon: React.FC<HorizontalPoolIconProps> = ({ name = '' }) => {
+  const outerRef = useRef<HTMLDivElement>(null);
+  const [innerWidth, setInnerWidth] = useState<number>(0);
+  const [closestClass, setClosestClass] = useState<string>('');
 
+  useEffect(() => {
+    if (outerRef.current) {
+      const outerRect = outerRef.current.getBoundingClientRect();
+
+      const elements = document.querySelectorAll('.diagram-shape, .diagram-element-lane, .diagram-element-participant, .diagram-edge, .diagram-shape-horizontal-lane');
+
+      let minDistance = outerRect.width; 
+      let closestElementClass = '';
+
+      elements.forEach((element) => {
+        const elementRect = (element as HTMLElement).getBoundingClientRect();
+
+        if (
+          elementRect.top >= outerRect.top &&
+          elementRect.bottom <= outerRect.bottom
+        ) {
+          const distance = elementRect.left - outerRect.left;
+          if (distance > 0 && distance < minDistance) {
+            minDistance = distance;
+            closestElementClass = element.className;
+          }
+        }
+      });
+
+      setInnerWidth(minDistance);
+      setClosestClass(closestElementClass);
+    }
+  }, []);
+
+  return (
     <div
+      ref={outerRef}
       style={{
-        position: 'absolute',
-        top: '5%',
-        left: '0.5%',
-        right: '0.5%',
-        width: '3%',
-        height: '90%',
-        boxSizing: 'border-box',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        overflow: 'hidden',
+        position: 'relative',
+        width: '100%',
+        height: '100%',
+        border: '1px solid black',
+        borderRadius: '2px',
       }}
     >
-      {name && (
-        <Textfit
-          mode="single"
-          forceSingleModeWidth={false}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          height: '100%',
+          width: closestClass === 'diagram-shape-horizontal-lane react-draggable' ? `${innerWidth}px` : `${innerWidth - 2}px`,
+          minWidth: '14px',
+          maxWidth: '20%',
+          background: 'transparent',
+          borderRight: '1px solid black',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <SvgTextFit
+          text={name}
           style={{
-            width: '100%',
-            height: '100%',
             writingMode: 'vertical-rl',
-            transform: 'rotate(180deg)',
             textAlign: 'center',
-            overflow: 'hidden',
-            lineHeight: 1.2,
+            padding: '2px',
+            whiteSpace: 'nowrap',
+            rotate: '180deg',
           }}
-        >
-          {name}
-        </Textfit>
-      )}
+        />
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default HorizontalPoolIcon;

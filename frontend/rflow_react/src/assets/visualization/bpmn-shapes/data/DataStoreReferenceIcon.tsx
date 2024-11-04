@@ -1,11 +1,11 @@
 import React from 'react';
-import { Textfit } from 'react-textfit';
+import SvgTextFit from '../../SvgTextFit.tsx';
 
 interface DataStoreReferenceIconProps {
   name?: string;
 }
 
-const DataStoreReferenceIcon: React.FC<DataStoreReferenceIconProps> = ({ name }) => (
+const DataStoreReferenceIcon: React.FC<DataStoreReferenceIconProps> = ({ name='' }) => (
   <div style={{ position: 'relative', width: '100%', height: '100%' }}>
     <svg
       width="100%"
@@ -43,25 +43,27 @@ const DataStoreReferenceIcon: React.FC<DataStoreReferenceIconProps> = ({ name })
       </g>
     </svg>
 
-    {name && (
-      <div
+    <div
         style={{
           position: 'absolute',
-          top: '100%',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          color: 'currentColor',
+          top: 'calc(100% + 2px)',
+          left: 0,
           width: '100%',
-          textAlign: 'center',
-          fontFamily: 'inherit',
-          lineHeight: 1.2,
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
         }}
       >
-        <Textfit>
-          {name}
-        </Textfit>
+        <SvgTextFit
+          text={name}
+          style={{
+            textAlign: 'center',
+            padding: '2px',
+            color: 'black',
+          }}
+        />
       </div>
-    )}
   </div>
 );
 

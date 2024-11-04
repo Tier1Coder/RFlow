@@ -36,12 +36,14 @@ const DiagramElement = ({ element, scale, refsMap }) => {
     if (Bounds) {
         const { x, y, width, height } = Bounds;
         const className = !element.zIndex 
-            ? (element.elementType === 'horizontalPool' 
-                ? 'diagram-element-participant' 
-                : (['horizontalLane', 'verticalLane'].includes(element.elementType) 
+        ? (element.elementType === 'horizontalPool' 
+            ? 'diagram-element-participant' 
+            : (element.elementType === 'horizontalLane'
+                ? 'diagram-shape-horizontal-lane'
+                : (['verticalLane'].includes(element.elementType) 
                     ? 'diagram-element-lane' 
-                    : 'diagram-shape')) 
-            : '';
+                    : 'diagram-shape'))) 
+        : '';
 
         return (
             <Draggable 

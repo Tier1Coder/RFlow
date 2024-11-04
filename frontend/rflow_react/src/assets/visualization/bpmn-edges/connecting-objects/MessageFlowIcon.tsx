@@ -1,70 +1,34 @@
 import React from 'react';
+import {
+  viewBox,
+  connectingObjectSvgStyle,
+  dashedPolylineStyle,
+  createArrowhead,
+ emptyDotMarker,
+} from '../consts.tsx';
 
 interface MessageFlowIconProps {
   points: string;
   scale: number;
+  arrowheadType?: 'standard' | 'open';
 }
 
-const MessageFlowIcon: React.FC<MessageFlowIconProps> = ({ points, scale = 1 }) => {
-  const strokeWidth = 2 * scale; 
-  const markerSize = 6 * scale;  
-
+const MessageFlowIcon: React.FC<MessageFlowIconProps> = ({
+  points,
+  scale = 1,
+  arrowheadType = 'open',
+}) => {
   return (
-    <svg
-      style={{
-        position: 'absolute',
-        left: 0,
-        top: 0,
-        overflow: 'visible',
-        width: 1,
-        height: 1,
-      }}
-      viewBox="0 0 1 1"
-    >
+    <svg style={connectingObjectSvgStyle} viewBox={viewBox}>
       <defs>
-        <marker
-          id="openArrowhead"
-          markerWidth={markerSize}
-          markerHeight={markerSize}
-          refX={markerSize / 2}
-          refY={markerSize / 2}
-          orient="auto"
-        >
-          <polygon
-            points={`0,0 ${markerSize},${markerSize / 2} 0,${markerSize}`}
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={strokeWidth}
-          />
-        </marker>
-        <marker
-          id="emptyDot"
-          markerWidth={markerSize}
-          markerHeight={markerSize}
-          refX={markerSize / 2}
-          refY={markerSize / 2}
-          orient="auto"
-        >
-          <circle
-            cx={markerSize / 2}
-            cy={markerSize / 2}
-            r={(markerSize / 2) - (strokeWidth / 2)}
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={strokeWidth}
-          />
-        </marker>
+        {emptyDotMarker('message', scale)}
+        {createArrowhead('message', scale, arrowheadType)}
       </defs>
       <polyline
         points={points}
-        style={{
-          fill: 'none',
-          stroke: 'currentColor',
-          strokeWidth: strokeWidth,
-          strokeDasharray: `${6 * scale},${3 * scale}`,
-        }}
-        markerStart="url(#emptyDot)"
-        markerEnd="url(#openArrowhead)"
+        style={dashedPolylineStyle(scale, 10)}
+        markerStart={`url(#emptyDot-message)`}
+        markerEnd={`url(#arrowhead-message-${arrowheadType})`}
       />
     </svg>
   );

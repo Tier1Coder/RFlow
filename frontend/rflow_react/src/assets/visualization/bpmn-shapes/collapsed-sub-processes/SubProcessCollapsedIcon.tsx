@@ -1,38 +1,14 @@
 import * as React from 'react';
-import { Textfit } from 'react-textfit';
+import SvgTextFit from '../../SvgTextFit.tsx'
 
 interface SubProcessCollapsedIconProps {
   name?: string;
 }
 
-const SubProcessCollapsedIcon: React.FC<SubProcessCollapsedIconProps> = ({ name }) => (
+const SubProcessCollapsedIcon: React.FC<SubProcessCollapsedIconProps> = ({ name='' }) => (
   <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-    {/* 1. Outside rectangle */}
-    <svg
-      width="100%"
-      height="100%"
-      viewBox="0 0 512 512"
-      style={{ 
-        position: 'absolute', 
-        top: 0, 
-        left: 0 
-      }}
-      xmlns="http://www.w3.org/2000/svg"
-      preserveAspectRatio="none"
-    >
-      <rect
-        width="512"
-        height="512"
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="3%"
-        rx="66.7"
-      />
-    </svg>
-
-    {/* 2. Plus in square */}
+  
+    {/* Plus in a square */}
     <svg
       width="15%" 
       height="15%"
@@ -73,32 +49,18 @@ const SubProcessCollapsedIcon: React.FC<SubProcessCollapsedIconProps> = ({ name 
       />
     </svg>
 
-    {/* 3. Text label */}
-    {name && (
-      <div
-        style={{
-          position: 'absolute',
-          color: 'currentColor',
-          overflow: 'hidden',
-          width: '90%',
-          height: '90%',
-          top: '5%',
-          left: '5%',
-        }}
-      >
-        <Textfit
-          style={{
-            width: '100%',
-            height: '100%',
-            textAlign: 'center',
-            fontFamily: 'inherit',
-            lineHeight: 1.2,
-          }}
-        >
-          {name}
-        </Textfit>
-      </div>
-    )}
+    <div 
+      style={{ 
+        position: 'relative', 
+        width: '100%', 
+        height: '100%',
+        border: '2px solid black',
+        borderRadius: '5px',
+      }}>
+      <SvgTextFit 
+        text={name}
+        style={{width: '100%', height: '100%', padding: '2px'}} />
+    </div>
   </div>
 );
 

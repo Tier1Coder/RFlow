@@ -1,11 +1,11 @@
 import React from 'react';
-import { Textfit } from 'react-textfit';
+import SvgTextFit from '../../SvgTextFit.tsx';
 
 interface HorizontalLaneIconProps {
   name?: string;
 }
 
-const HorizontalLaneIcon: React.FC<HorizontalLaneIconProps> = ({ name }) => (
+const HorizontalLaneIcon: React.FC<HorizontalLaneIconProps> = ({ name='' }) => (
   <div style={{ position: 'relative', width: '100%', height: '100%' }}>
     <svg
       width="100%"
@@ -40,25 +40,16 @@ const HorizontalLaneIcon: React.FC<HorizontalLaneIconProps> = ({ name }) => (
         overflow: 'hidden', 
       }}
     >
-      {name && (
-        <Textfit
-          mode="single"
-          forceSingleModeWidth={false}
-          min={1} 
-          max={1000} 
-          style={{
-            width: '100%',
-            height: '100%',
-            writingMode: 'vertical-rl',
-            transform: 'rotate(180deg)',
-            textAlign: 'center',
-            overflow: 'hidden',
-            lineHeight: 1.2,
-          }}
-        >
-          {name}
-        </Textfit>
-      )}
+      <SvgTextFit
+        text={name}
+        style={{
+          writingMode: 'vertical-rl',
+          textAlign: 'center',
+          padding: '2px',
+          whiteSpace: 'nowrap',
+          transform: 'rotate(180deg)',
+        }}
+      />
     </div>
   </div>
 );

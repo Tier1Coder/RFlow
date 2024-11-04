@@ -1,59 +1,24 @@
 import React from 'react';
-import { Textfit } from 'react-textfit';
+import SvgTextFit from '../../SvgTextFit.tsx'
 
 interface AbstractTaskIconProps {
   name?: string;
 }
 
-const AbstractTaskIcon: React.FC<AbstractTaskIconProps> = ({ name = '' }) => (
-  <svg
-    width="100%"
-    height="100%"
-    viewBox="0 0 100 80"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <rect
-      width="100"
-      height="80"
-      rx="10"
-      ry="10"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="3"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-
-    
-    {name && (
-        <foreignObject x="0" y="0" width="100%" height="100%">
-          <div
-            style={{
-              position: 'absolute',
-              top: '30%',
-              width: '85%',
-              height: '60%',
-              left: '5%',
-              right: '5%',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Textfit
-              style={{
-                width: '100%',
-                height: '100%',
-                textAlign: 'center',
-                lineHeight: 1.2,
-              }}
-            >
-              {name}
-            </Textfit>
-          </div>
-        </foreignObject>
-    )}
-  </svg>
-);
+const AbstractTaskIcon: React.FC<AbstractTaskIconProps> = ({name = ''}) => {
+  return (
+    <div 
+      style={{ 
+        position: 'relative', 
+        width: '100%', 
+        height: '100%',
+        border: '1px solid black',
+        borderRadius: '5px' }}>
+      <SvgTextFit 
+        text={name}
+        style={{width: '100%', height: '100%', padding: '2px'}} />
+    </div>
+  );
+};
 
 export default AbstractTaskIcon;

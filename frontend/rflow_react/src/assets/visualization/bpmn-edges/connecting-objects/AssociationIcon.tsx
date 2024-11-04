@@ -1,4 +1,5 @@
 import React from 'react';
+import { connectingObjectSvgStyle, dashedPolylineStyle, viewBox } from '../consts.tsx';
 
 interface AssociationIconProps {
   points: string;
@@ -6,28 +7,14 @@ interface AssociationIconProps {
 }
 
 const AssociationIcon: React.FC<AssociationIconProps> = ({ points, scale = 1 }) => {
-  const strokeWidth = 2 * scale; 
-  const dashArray = `${5 * scale}, ${5 * scale}`;
   return (
     <svg
-      style={{
-        position: 'absolute',
-        left: 0,
-        top: 0,
-        overflow: 'visible',
-        height: 1,
-        width: 1,
-      }}
-      viewBox="0 0 1 1"
+      style={connectingObjectSvgStyle}
+      viewBox={viewBox}
     >
       <polyline
         points={points}
-        style={{
-          fill: 'none',
-          stroke: 'currentColor',
-          strokeWidth: strokeWidth,
-          strokeDasharray: dashArray,
-        }}
+        style={dashedPolylineStyle(scale, 2)}
       />
     </svg>
   );

@@ -1,11 +1,11 @@
 import React from 'react';
-import { Textfit } from 'react-textfit';
+import SvgTextFit from '../../SvgTextFit.tsx';
 
 interface InterruptingTimerStartEventIconProps {
   name?: string;
 }
 
-const InterruptingTimerStartEventIcon: React.FC<InterruptingTimerStartEventIconProps> = ({ name }) => (
+const InterruptingTimerStartEventIcon: React.FC<InterruptingTimerStartEventIconProps> = ({ name='' }) => (
   <div style={{ position: 'relative', width: '100%', height: '100%' }}>
     <svg
       width="100%"
@@ -48,25 +48,27 @@ const InterruptingTimerStartEventIcon: React.FC<InterruptingTimerStartEventIconP
       </foreignObject>
     </svg>
 
-    {name && (
-      <div
+    <div
+      style={{
+        position: 'absolute',
+        top: 'calc(100% + 2px)',
+        left: 0,
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <SvgTextFit
+        text={name}
         style={{
-          position: 'absolute',
-          top: '100%',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          color: 'currentColor',
-          width: '100%',
           textAlign: 'center',
-          fontFamily: 'inherit',
-          lineHeight: 1.2,
+          padding: '2px',
+          color: 'black',
         }}
-      >
-        <Textfit>
-          {name}
-        </Textfit>
-      </div>
-    )}
+      />
+    </div>
   </div>
 );
 

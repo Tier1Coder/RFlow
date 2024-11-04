@@ -1,11 +1,11 @@
 import React from 'react';
-import { Textfit } from 'react-textfit';
+import SvgTextFit from '../../SvgTextFit.tsx';
 
 interface ParallelGatewayIconProps {
   name?: string;
 }
 
-const ParallelGatewayIcon: React.FC<ParallelGatewayIconProps> = ({ name }) => (
+const ParallelGatewayIcon: React.FC<ParallelGatewayIconProps> = ({ name='' }) => (
   <div style={{ position: 'relative', width: '100%', height: '100%' }}>
     <svg
       width="100%"
@@ -28,26 +28,27 @@ const ParallelGatewayIcon: React.FC<ParallelGatewayIconProps> = ({ name }) => (
       <line x1="256" y1="156" x2="256" y2="356" stroke="currentColor" strokeWidth="40" />
       <line x1="156" y1="256" x2="356" y2="256" stroke="currentColor" strokeWidth="40" />
     </svg>
-
-    {name && (
-      <div
+    <div
+      style={{
+        position: 'absolute',
+        top: '120%',
+        left: 0,
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <SvgTextFit
+        text={name}
         style={{
-          position: 'absolute',
-          top: '100%',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          color: 'currentColor',
-          width: '100%',
           textAlign: 'center',
-          fontFamily: 'inherit',
-          lineHeight: 1.2,
+          padding: '2px',
+          color: 'black',
         }}
-      >
-        <Textfit>
-          {name}
-        </Textfit>
-      </div>
-    )}
+      />
+    </div>
   </div>
 );
 
