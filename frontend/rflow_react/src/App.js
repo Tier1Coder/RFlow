@@ -170,17 +170,24 @@ const App = () => {
     const handleVisualizeDiagram = async (item) => {
         try {
             const data = await visualizeDiagram(item.id);
-            navigate(`/visualize/${item.id}`, { state: { diagramId: item.id, diagramData: data, diagramName: item.name } });
+            navigate(`/visualize/${item.id}`, 
+                { state: { 
+                    diagramId: item.id, 
+                    diagramData: data, 
+                    diagramName: item.name 
+                } 
+            });
         } catch (error) {
             const initialItemText = await viewFile(item.id);
-            const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Error fetching diagram data';
-            const errorLine = error.response?.data?.line || 0;
-            const errorColumn = error.response?.data?.column || 0;
-            const duplicatedIds = error.response?.data?.duplicatedIds || [];
+            const errorResponseData = error.response?.data;
             navigate(`/resolve/${item.id}`, 
-                { state: { itemName: item.name, itemId: item.id, initialItemText, 
-                    errorMessage, errorLine, errorColumn, 
-                    duplicatedIds } });
+                { state: { 
+                    itemName: item.name, 
+                    itemId: item.id, 
+                    initialItemText, 
+                    errorResponseData
+                } 
+            });
         }
     };
 

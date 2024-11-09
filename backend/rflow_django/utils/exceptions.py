@@ -58,27 +58,31 @@ class DocumentInvalidError(BaseCustomException):
     """ Raised when an XML document is not valid according to the schema. """
     status_code = status.HTTP_400_BAD_REQUEST
 
-    def __init__(self, detail: str, line: int = None, column: int = None):
+    def __init__(self, message: str, line: int = None, column: int = None):
         detail = {
-            'error': detail,
-            'line': line,
-            'column': column
+            'errorType': 'DocumentInvalidError',
+            'errorMessage': message,
+            'errorLine': line,
+            'errorColumn': column
         }
         super().__init__(detail, self.status_code)
-        self.message = detail['error']
-        self.line = line
-        self.column = column
+        self.errorType = detail['errorType']
+        self.errorMessage = detail['errorMessage']
+        self.errorLine = detail['errorLine']
+        self.errorColumn = detail['errorColumn']
 
 
 class ElementIdDuplicatedError(BaseCustomException):
     """ Raised when a visual_element ID is duplicated in the XML document. """
     status_code = status.HTTP_400_BAD_REQUEST
 
-    def __init__(self, detail: str, duplicated_ids: list = None):
+    def __init__(self, message: str, duplicated_ids: list = None):
         detail = {
-            'error': detail,
-            'duplicatedIds': duplicated_ids or []
+            'errorType': 'ElementIdDuplicatedError',
+            'errorMessage': message,
+            'duplicatedIdsArray': duplicated_ids or []
         }
         super().__init__(detail, self.status_code)
-        self.message = detail
-        self.duplicated_ids = duplicated_ids
+        self.errorType = detail['errorType']
+        self.errorMessage = detail['errorMessage']
+        self.duplicatedIdsArray = detail['duplicatedIdsArray']

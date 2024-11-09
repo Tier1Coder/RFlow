@@ -202,21 +202,25 @@ class BPMNDiagramView(viewsets.ModelViewSet):
             # Custom exceptions
             except DocumentInvalidError as e:
                 return Response({
-                    "error": e.message,
-                    "line": e.line,
-                    "column": e.column,
+                    "errorType": e.errorType,
+                    "errorMessage": e.errorMessage,
+                    "errorLine": e.errorLine,
+                    "errorColumn": e.errorColumn,
                 }, status=status.HTTP_400_BAD_REQUEST)
             except ElementIdDuplicatedError as e:
                 return Response({
-                    "error": e.message,
-                    "duplicatedIds": e.duplicated_ids
+                    "errorType": e.errorType,
+                    "errorMessage": e.errorMessage,
+                    "duplicatedIdsArray": e.duplicatedIdsArray
                 }, status=status.HTTP_400_BAD_REQUEST)
 
             # lxml exceptions
             except etree.XMLSyntaxError as e:
                 return Response({
-                    "error": e.msg,
-                    "line": e.lineno
+                    "errorType": e.__class__.__name__,
+                    "errorMessage": e.msg,
+                    "errorLine": e.lineno,
+                    "errorColumn": e.offset + 1
                 }, status=status.HTTP_400_BAD_REQUEST)
 
         return Response({"error": "File not found"}, status=status.HTTP_404_NOT_FOUND)

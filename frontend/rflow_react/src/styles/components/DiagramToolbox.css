@@ -2,11 +2,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 10px;
-    background-color: #f8f9fa;
-    border-right: 1px solid #dee2e6;
+    padding: 15px;
     min-width: 60px;
     max-height: 80%;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .diagram-toolbox-icon {

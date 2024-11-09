@@ -17,23 +17,18 @@ import ConfirmationModal from './modals/ConfirmationModal.js';
 
 import useScaleDiagram from '../hooks/useScaleDiagram.js';
 
-/**
- * DiagramVisualization Component
- * 
- * Renders visualization of BPMN diagram and manages it.
- */
 const DiagramVisualization = () => {
     const refsMap = useRef({});
     const location = useLocation();
     const navigate = useNavigate();
     const diagramData = location.state?.diagramData?.xml_content;
     const diagramName = location.state?.diagramName;
+    const diagramId = location.state?.diagramId;
     const diagramVisualizationRef = useRef(null);
-
     const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
     const [isUserOptionsModalOpen, setIsUserOptionsModalOpen] = useState(false);
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
-
+    const [hiddenElements, setHiddenElements] = useState(new Set());
     const { scaledDiagramData, scale } = useScaleDiagram(diagramData, diagramVisualizationRef);
 
     /**
@@ -54,16 +49,22 @@ const DiagramVisualization = () => {
      * @returns {JSX.Element|null} Rendered element or null.
      */
     const renderElement = (key, element) => (
-        <DiagramElement key={key} element={element} scale={scale} refsMap={refsMap} />
+        <DiagramElement
+            key={key}
+            elementId={key}
+            element={element}
+            scale={scale}
+            refsMap={refsMap}
+            hiddenElements={hiddenElements}
+            setHiddenElements={setHiddenElements}
+        />
     );
 
     /**
      * Handles opening different modals based on modal name.
-     * 
-     * @param {string} modalName - Name of the modal to open.
      */
     const handleOpenModal = (modalName) => {
-        switch(modalName) {
+        switch (modalName) {
             case 'helpModal':
                 setIsHelpModalOpen(true);
                 break;
@@ -77,11 +78,9 @@ const DiagramVisualization = () => {
 
     /**
      * Handles closing different modals based on modal name.
-     * 
-     * @param {string} modalName - Name of the modal to close.
      */
     const handleCloseModal = (modalName) => {
-        switch(modalName) {
+        switch (modalName) {
             case 'helpModal':
                 setIsHelpModalOpen(false);
                 break;
@@ -98,7 +97,7 @@ const DiagramVisualization = () => {
      */
     const handleDownload = async () => {
         try {
-            await downloadFile(location.state.diagramId);
+            await downloadFile(diagramId);
             toast.success('Diagram downloaded successfully');
         } catch (error) {
             toast.error('Error downloading file');
@@ -110,7 +109,7 @@ const DiagramVisualization = () => {
      */
     const handleDelete = async () => {
         try {
-            await deleteDiagram(location.state.diagramId);
+            await deleteDiagram(diagramId);
             navigate('/');
             toast.success('Diagram deleted successfully');
         } catch (error) {
@@ -135,6 +134,13 @@ const DiagramVisualization = () => {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
         navigate('/');
+    };
+
+    /**
+     * Handles showing all hidden elements.
+     */
+    const showAllElements = () => {
+        setHiddenElements(new Set());
     };
 
     if (!diagramData) {
@@ -166,20 +172,21 @@ const DiagramVisualization = () => {
                     onInfo={() => handleOpenModal('helpModal')}
                     onDownload={handleDownload}
                     onDelete={confirmDelete}
+                    onShowAll={showAllElements}
                 />
                 <div className="diagram-visualization-graphic" ref={diagramVisualizationRef}>
                     {scaledDiagramData && Object.entries(scaledDiagramData).map(([key, element]) => renderElement(key, element))}
                 </div>
             </div>
-            <InfoModal 
-                isOpen={isHelpModalOpen} 
-                toggle={() => handleCloseModal('helpModal')} 
-                diagramData={diagramData} 
+            <InfoModal
+                isOpen={isHelpModalOpen}
+                toggle={() => handleCloseModal('helpModal')}
+                diagramData={diagramData}
             />
-            <UserOptionsModal 
-                isOpen={isUserOptionsModalOpen} 
-                toggle={() => handleCloseModal('userOptionsModal')} 
-                handleLogout={handleLogout} 
+            <UserOptionsModal
+                isOpen={isUserOptionsModalOpen}
+                toggle={() => handleCloseModal('userOptionsModal')}
+                handleLogout={handleLogout}
             />
             <ConfirmationModal
                 isOpen={isConfirmationModalOpen}
