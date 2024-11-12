@@ -74,7 +74,7 @@ Example installation:
 
 ## License
 
-TOD
+TODO
 
 ## Engineering thesis
 This project is a part of my engineering thesis at University of Zielona Góra. 
