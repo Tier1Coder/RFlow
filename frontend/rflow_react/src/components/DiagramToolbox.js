@@ -6,7 +6,6 @@ import React from 'react';
 import { InfoIconButton } from '../assets/ui/InfoIcon.jsx';
 import { DownloadFileIconButton } from '../assets/ui/DownloadFileIcon.jsx';
 import { DeleteCircleIconButton } from '../assets/ui/DeleteCircleIcon.jsx';
-import { ShowHiddenElementsIconButton } from '../assets/ui/ShowHiddenElementsIcon.jsx';
 
 /* Styles */
 import '../styles/components/DiagramToolbox.css';
@@ -23,7 +22,7 @@ import '../styles/components/DiagramToolbox.css';
  * @param {Function} props.onShowAll - Handler for Show All button
  * @returns {JSX.Element} DiagramToolbox component.
  */
-const DiagramToolbox = ({ onInfo, onDownload, onDelete, onShowAll }) => (
+const DiagramToolbox = ({ onInfo, onDownload, onDelete }) => (
     <div className="diagram-toolbox">
         <InfoIconButton
             width="40"
@@ -43,13 +42,6 @@ const DiagramToolbox = ({ onInfo, onDownload, onDelete, onShowAll }) => (
             onClick={onDelete}
             className="diagram-toolbox-icon"
         />
-        <ShowHiddenElementsIconButton
-            width="40"
-            height="40"
-            onClick={onShowAll}
-            className="diagram-toolbox-icon"
-        />
-
     </div>
 );
 

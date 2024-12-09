@@ -1,4 +1,5 @@
 import axios from 'axios';
+import axiosInstance from './axiosInstance';
 
 /**
  * Refreshes the access token using the refresh token stored in localStorage.
@@ -22,4 +23,28 @@ const refreshToken = async () => {
     }
 };
 
-export { refreshToken };
+/**
+ * Handles user login.
+ * 
+ * @param {string} username - The username.
+ * @param {string} password - The password.
+ * @returns {Promise<string>} The access token.
+ * @throws Will throw an error if the login fails.
+ */
+const login = async (username, password) => {
+    try {
+        const response = await axiosInstance.post('/api/token/', {
+            username,
+            password,
+        });
+        const { access, refresh } = response.data;
+        localStorage.setItem('accessToken', access);
+        localStorage.setItem('refreshToken', refresh);
+        return access;
+    } catch (error) {
+        console.error('Login failed', error);
+        throw new Error('Login failed. Please check your credentials.');
+    }
+};
+
+export { refreshToken, login };
