@@ -13,6 +13,7 @@ import ConfirmationModal from './components/modals/ConfirmationModal.js';
 import LoginForm from './components/forms/LoginForm.js';
 import ResolutionTool from './components/ResolutionTool.js';
 import AppHeader from './components/AppHeader.js';
+import NotFound from './components/NotFound.js';
 
 // Custom icons
 import { ChooseSchemaIconButton } from './assets/ui/ChooseSchemaIcon.jsx';
@@ -280,7 +281,9 @@ const WrappedApp = () => (
         <Routes>
             <Route path="/" element={<App />} />
             <Route path="/visualize/:id" element={<DiagramVisualization />} />
+            <Route path="/visualize/:id/collapsed/:collapsedId" element={<DiagramVisualization />} />
             <Route path="/resolve/:id" element={<ResolutionTool />} />
+            <Route path="*" element={<NotFound />} />
         </Routes>
     </Router>
 );

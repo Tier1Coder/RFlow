@@ -45,3 +45,13 @@
 .resolution-tool-save-button:hover {
     background-color: #388e3c;
 }
+
+.resolution-tool-jump-button {
+    width: 160px;
+    height: 40px;
+    background-color: #e42a2adc;
+}
+
+.resolution-tool-jump-button:hover {
+    background-color: #aa1717;
+}

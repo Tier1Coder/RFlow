@@ -238,15 +238,9 @@ const ResolutionTool = () => {
     }
   }, [currentError, focusOnError]);
 
-  return (
+return (
     <div className="resolution-tool-container">
       <div className="resolution-tool-header">
-        <div className="resolution-tool-title">
-          {errorMessage
-            ? `Resolve the error in ${itemName} (ID: ${itemId})`
-            : `Editing ${itemName} (ID: ${itemId})`}
-        </div>
-        {isSaving && <div className="saving-indicator">Processing...</div>}
       </div>
       <ToastContainer />
       <div className="resolution-tool-editor-container">
@@ -264,6 +258,14 @@ const ResolutionTool = () => {
           aria-label="Cancel editing"
         >
           Cancel
+        </button>
+        <button
+          className="resolution-tool-jump-button"
+          onClick={focusOnError}
+          disabled={!currentError || isSaving}
+          aria-label="Jump to Error"
+        >
+          Jump to Error
         </button>
         <button
           className="resolution-tool-save-button"

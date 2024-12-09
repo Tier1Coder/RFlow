@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axiosInstance from '../../services/axiosInstance';
+import { login } from '../../services/AuthService';
 import '../../styles/components/forms/LoginForm.css';
 import { AppLogoIcon } from '../../assets/app/AppLogoIcon.jsx';
 
@@ -24,17 +24,10 @@ const LoginForm = ({ onLogin }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axiosInstance.post('/api/token/', {
-        username,
-        password,
-      });
-      const { access, refresh } = response.data;
-      localStorage.setItem('accessToken', access);
-      localStorage.setItem('refreshToken', refresh);
+      const access = await login(username, password);
       onLogin(access);
     } catch (error) {
-      setError('Login failed. Please check your credentials.');
-      console.error('Login failed', error);
+      setError(error.message);
     }
   };
 

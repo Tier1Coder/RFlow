@@ -16,8 +16,7 @@ import {
  * @param {Object} props.element - BPMN element data.
  * @param {number} props.scale - Current scale factor.
  * @param {Object} props.refsMap - Reference map for draggable elements.
- * @param {Set} props.hiddenElements - Set of hidden element IDs.
- * @param {Function} props.setHiddenElements - Function to update hidden elements.
+ * @param {Function} props.onCollapseClick - Handler for collapsed element click.
  * @returns {JSX.Element|null} Rendered element or null.
  */
 const DiagramElement = ({
@@ -25,12 +24,11 @@ const DiagramElement = ({
   element,
   scale,
   refsMap,
-  hiddenElements,
-  setHiddenElements,
+  onCollapseClick,
 }) => {
   const { elementType, Bounds } = element;
   const ElementComponent = bpmnShapesComponents[elementType] || bpmnEdgesComponents[elementType];
-  const elementsToHide = ['subProcessCollapsed', 'nonInterruptingMessageEventSubProcessCollapsed', 'callActivityCollapsed'];
+  const collapsedElements = ['subProcessCollapsed', 'nonInterruptingMessageEventSubProcessCollapsed', 'callActivityCollapsed'];
 
   if (!ElementComponent) {
     if (unusedElementComponents.includes(elementType)) {
@@ -47,42 +45,31 @@ const DiagramElement = ({
   }
   const draggableRef = refsMap.current[key];
 
-  const handleClick = () => {
-    if (elementsToHide.includes(elementType)) {
-      setHiddenElements((prevState) => {
-        const newSet = new Set(prevState);
-        if (newSet.has(key)) {
-          newSet.delete(key);
-        } else {
-          newSet.add(key);
-        }
-        return newSet;
-      });
-    }
-  };
-
-  const isHidden = hiddenElements.has(key);
-
   // Determine z-index based on elementType
   let zIndex = 3; // Default z-index for shapes
 
   if (
-    elementsToHide.includes(elementType)
+    collapsedElements.includes(elementType)
   ) {
     zIndex = 10; // Set higher z-index for collapsed elements
   }
 
+  const isCollapsed = collapsedElements.includes(elementType);
+
   if (Bounds) {
     const { x, y, width, height } = Bounds;
     const className = !element.zIndex 
-    ? (element.elementType === 'horizontalPool' 
-        ? 'diagram-element-participant' 
-        : (element.elementType === 'horizontalLane'
-            ? 'diagram-shape-horizontal-lane'
-            : (['verticalLane'].includes(element.elementType) 
-                ? 'diagram-element-lane' 
-                : 'diagram-shape'))) 
-    : '';
+      ? (element.elementType === 'horizontalPool' ? 'diagram-element-participant' 
+          : (element.elementType === 'horizontalLane' ? 'diagram-shape-horizontal-lane'
+              : (['verticalLane'].includes(element.elementType) ? 'diagram-element-lane' 
+                  : 'diagram-shape'))) 
+      : '';
+
+    const handleClick = () => {
+      if (isCollapsed && onCollapseClick) {
+        onCollapseClick(element);
+      }
+    };
 
     return (
       <Draggable key={key} nodeRef={draggableRef}>
@@ -97,8 +84,8 @@ const DiagramElement = ({
             top: `${y}px`,
             height: `${height}px`,
             width: `${width}px`,
-            display: isHidden ? 'none' : 'block',
             zIndex, // Set z-index based on elementType
+            cursor: isCollapsed ? 'pointer' : 'default',
           }}
           onClick={handleClick}
         >
@@ -121,8 +108,6 @@ const DiagramElement = ({
             ref={draggableRef}
             id={key}
             className="diagram-edge"
-            style={{ display: isHidden ? 'none' : 'block' }}
-            onClick={handleClick}
           >
             <ElementComponent points={points} scale={scale} />
           </div>

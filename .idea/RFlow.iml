@@ -5,8 +5,13 @@
       <sourceFolder url="file://$MODULE_DIR$/backend/rflow_django" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/backend/rflow_django/uploads" />
       <excludeFolder url="file://$MODULE_DIR$/frontend/rflow_react/node_modules" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/venv/Include" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/venv/Lib" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/venv/Scripts" />
+      <excludeFolder url="file://$MODULE_DIR$/.idea/dataSources" />
+      <excludeFolder url="file://$MODULE_DIR$/.vscode" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Python 3.13" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PackageRequirementsSettings">

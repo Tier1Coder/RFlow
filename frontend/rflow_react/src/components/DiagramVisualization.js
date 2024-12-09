@@ -15,21 +15,17 @@ import InfoModal from './modals/InfoModal.js';
 import UserOptionsModal from './modals/UserOptionsModal.js';
 import ConfirmationModal from './modals/ConfirmationModal.js';
 
-import useScaleDiagram from '../hooks/useScaleDiagram.js';
-
 const DiagramVisualization = () => {
     const refsMap = useRef({});
     const location = useLocation();
     const navigate = useNavigate();
-    const diagramData = location.state?.diagramData?.xml_content;
-    const diagramName = location.state?.diagramName;
+    const diagramData = location.state?.diagramData?.xml_content || location.state?.innerElements;
+    const diagramName = location.state?.diagramName || 'Nested Diagram';
     const diagramId = location.state?.diagramId;
     const diagramVisualizationRef = useRef(null);
     const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
     const [isUserOptionsModalOpen, setIsUserOptionsModalOpen] = useState(false);
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
-    const [hiddenElements, setHiddenElements] = useState(new Set());
-    const { scaledDiagramData, scale } = useScaleDiagram(diagramData, diagramVisualizationRef);
 
     /**
      * Redirect to login if not authenticated.
@@ -53,10 +49,8 @@ const DiagramVisualization = () => {
             key={key}
             elementId={key}
             element={element}
-            scale={scale}
             refsMap={refsMap}
-            hiddenElements={hiddenElements}
-            setHiddenElements={setHiddenElements}
+            onCollapseClick={handleCollapseClick}
         />
     );
 
@@ -137,10 +131,67 @@ const DiagramVisualization = () => {
     };
 
     /**
-     * Handles showing all hidden elements.
+     * Handles click on a collapsed element.
+     * 
+     * @param {Object} element - Collapsed element data.
      */
-    const showAllElements = () => {
-        setHiddenElements(new Set());
+    const handleCollapseClick = (element) => {
+        const parentX = Number(element.Bounds.x);
+        const parentY = Number(element.Bounds.y);
+        const parentWidth = Number(element.Bounds.width);
+        const parentHeight = Number(element.Bounds.height);
+    
+        const innerElements = Object.entries(diagramData)
+            .filter(([key, value]) => {
+                // Skip the parent element itself
+                if (key === element.attributes.id) return false;
+    
+                let isShapeInside = false;
+                let isEdgeInside = false;
+                
+                if (value.Bounds) {
+                    const childX = Number(value.Bounds.x);
+                    const childY = Number(value.Bounds.y);
+                    const childWidth = Number(value.Bounds.width);
+                    const childHeight = Number(value.Bounds.height);
+    
+                    isShapeInside = (
+                        childX >= parentX &&
+                        childY >= parentY &&
+                        (childX + childWidth) <= (parentX + parentWidth) &&
+                        (childY + childHeight) <= (parentY + parentHeight)
+                    );
+                }
+    
+                if (value.waypoint1) {
+                    const waypointKeys = Object.keys(value).filter(k => k.startsWith("waypoint"));
+    
+                    isEdgeInside = waypointKeys.some((waypointKey) => {
+                        const wx = Number(value[waypointKey].x);
+                        const wy = Number(value[waypointKey].y);
+                        return (
+                            wx > parentX &&
+                            wy > parentY &&
+                            wx < parentX + parentWidth &&
+                            wy < parentY + parentHeight
+                        );
+                    });
+                }
+    
+                return isShapeInside || isEdgeInside;
+            })
+            .reduce((acc, [key, value]) => {
+                acc[key] = value;
+                return acc;
+            }, {});
+    
+        navigate(`/visualize/${diagramId}/collapsed/${element.attributes.id}`, {
+            state: {
+                diagramData: { xml_content: innerElements },
+                diagramName: `${diagramName} - inside ${element.attributes.id}`,
+                diagramId: element.attributes.id,
+            },
+        });
     };
 
     if (!diagramData) {
@@ -172,10 +223,9 @@ const DiagramVisualization = () => {
                     onInfo={() => handleOpenModal('helpModal')}
                     onDownload={handleDownload}
                     onDelete={confirmDelete}
-                    onShowAll={showAllElements}
                 />
                 <div className="diagram-visualization-graphic" ref={diagramVisualizationRef}>
-                    {scaledDiagramData && Object.entries(scaledDiagramData).map(([key, element]) => renderElement(key, element))}
+                    {Object.entries(diagramData).map(([key, element]) => renderElement(key, element))}
                 </div>
             </div>
             <InfoModal

@@ -40,7 +40,7 @@ const AddEditDiagramForm = ({ activeItem, originalItem, onChange }) => {
                     onChange={onChange}
                     accept=".xml"
                 />
-                {originalItem && originalItem.file && typeof originalItem.file === 'string' && (
+                {originalItem?.file && typeof originalItem.file === 'string' && (
                     <div className="add-edit-diagram-form-current-file">
                         Current file: 
                         <div className="add-edit-diagram-form-current-file-path">
