@@ -10,6 +10,17 @@ diagram contained in the file.
 
 To visit the live version of the application, click [here](https://rflow.vercel.app/).
 
+The photos below show the application's capabilities.
+
+![Login Page](https://github.com/user-attachments/assets/51564518-5272-4923-b4b5-e0adb8aec929)
+*Figure: Login page.*
+![Main Page](https://github.com/user-attachments/assets/a4d5e16f-ae9b-4576-bd88-d3aa479101bb)
+*Figure 2: Home page.*
+![Visualization](https://github.com/user-attachments/assets/d8faae13-62ed-450c-acf4-a3aa6b93f334)
+*Figure 3: XML file visualization page.*
+![Error](https://github.com/user-attachments/assets/ebc4f830-2f1f-4d1e-bb69-93d426f20af1)
+*Figure 4: Monaco Editor interface for identifying and correcting potential XML file errors.*
+
 
 ## Prerequisites - DEV setup
 
@@ -69,12 +80,6 @@ Example installation:
 5. Run the backend server by running `python manage.py runserver` in the backend directory
 6. Run the frontend server by running `npm start` in the frontend directory
 
-
-
-
-## License
-
-TODO
 
 ## Engineering thesis
 This project is a part of my engineering thesis at University of Zielona Góra. 
