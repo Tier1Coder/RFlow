@@ -13,7 +13,7 @@ To visit the live version of the application, click [here](https://rflow.vercel.
 The photos below show the application's capabilities.
 
 ![Login Page](https://github.com/user-attachments/assets/51564518-5272-4923-b4b5-e0adb8aec929)
-*Figure: Login page.*
+*Figure 1: Login page.*
 ![Main Page](https://github.com/user-attachments/assets/a4d5e16f-ae9b-4576-bd88-d3aa479101bb)
 *Figure 2: Home page.*
 ![Visualization](https://github.com/user-attachments/assets/d8faae13-62ed-450c-acf4-a3aa6b93f334)
