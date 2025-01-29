@@ -8,8 +8,6 @@ The backend is a server that serves the frontend and provides the API for the fr
 The frontend is a React application that allows the user to upload a BPMN 2.0 XML (XMI) file and visualise the 
 diagram contained in the file.
 
-The photos below show the application's capabilities.
-
 ![Login Page](https://github.com/user-attachments/assets/51564518-5272-4923-b4b5-e0adb8aec929)
 *Figure 1: Login page.*
 ![Main Page](https://github.com/user-attachments/assets/a4d5e16f-ae9b-4576-bd88-d3aa479101bb)
